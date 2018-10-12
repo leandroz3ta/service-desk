@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -49,7 +50,11 @@
 
 	$dt = new dateOpers; //Criado o objeto $dt
 	$dta = new dateOpers;
-
+	
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+	
+	
 	$cor  = TD_COLOR;
     	$cor1 = TD_COLOR;
     	$cor3 = BODY_COLOR;
@@ -67,8 +72,8 @@
 	}
 
 	$query = "SELECT a.*, u.*, ar.* from usuarios u, avisos a left join sistemas ar on a.area = ar.sis_id where (a.area in (".$uareas.") or a.area=-1) and a.origem=u.user_id and upper(a.status) = 'ALTA'";
-	$resultado = mysql_query($query) or die (TRANS('ERR_QUERY').$query);
-        $linhas = mysql_num_rows($resultado);
+	$resultado = mysqli_query($conect,$query) or die (TRANS('ERR_QUERY').$query);
+        $linhas = mysqli_num_rows($resultado);
         if ($linhas>0)
         {
         	print "<BR>";
@@ -81,7 +86,7 @@
 		print "<TR class='header'>";
 		print "<TD>".TRANS('OCO_DATE','Data')."</TD><TD>".TRANS('OCO_NOTICE','Aviso')."</TD><TD>".TRANS('OCO_RESP','Responsável')."</TD><TD>".TRANS('OCO_TOAREA','Para área')."</TD>";
 		$j=2;
-		while ($resposta = mysql_fetch_array($resultado))
+		while ($resposta = mysqli_fetch_array($resultado))
 		{
 			if ($j % 2) {
 				$trClass = "lin_par";
@@ -113,8 +118,8 @@
         //OCORRÊNCIAS VINCULADAS AO OPERADOR
         //PAINEL 1 É O PAINEL SUPERIOR DA TELA DE ABERTURA
         $query = $QRY["ocorrencias_full_ini"]." where o.aberto_por = ".$_SESSION['s_uid']." and s.stat_painel not in(3) order by numero";
-	$resultado_oco = mysql_query($query);
-        $linhas = mysql_num_rows($resultado_oco);
+	$resultado_oco = mysqli_query($conect,$query);
+        $linhas = mysqli_num_rows($resultado_oco);
 
 	if ($linhas == 0)
         {
@@ -147,7 +152,7 @@
         $i=0;
         $j=2;
 
-        while ($rowAT = mysql_fetch_array($resultado_oco))
+        while ($rowAT = mysqli_fetch_array($resultado_oco))
         {
 		if ($j % 2)
 		{
@@ -161,18 +166,18 @@
 		print "<tr class=".$trClass." id='linhax".$j."' onMouseOver=\"destaca('linhax".$j."','".$_SESSION['s_colorDestaca']."');\" onMouseOut=\"libera('linhax".$j."','".$_SESSION['s_colorLinPar']."','".$_SESSION['s_colorLinImpar']."');\"  onMouseDown=\"marca('linhax".$j."','".$_SESSION['s_colorMarca']."');\">";
 
 			$sqlSubCall = "select * from ocodeps where dep_pai = ".$rowAT['numero']." or dep_filho=".$rowAT['numero']."";
-			$execSubCall = mysql_query($sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$sqlSubCall);
-			$regSub = mysql_num_rows($execSubCall);
+			$execSubCall = mysqli_query($conect,$sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$sqlSubCall);
+			$regSub = mysqli_num_rows($execSubCall);
 			if ($regSub > 0) {
 				#É CHAMADO PAI?
 				$sqlSubCall = "select * from ocodeps where dep_pai = ".$rowAT['numero']."";
-				$execSubCall = mysql_query($sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$sqlSubCall);
-				$regSub = mysql_num_rows($execSubCall);
+				$execSubCall = mysqli_query($conect,$sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$sqlSubCall);
+				$regSub = mysqli_num_rows($execSubCall);
 				$comDeps = false;
-				while ($rowSubPai = mysql_fetch_array($execSubCall)){
+				while ($rowSubPai = mysqli_fetch_array($execSubCall)){
 					$sqlStatus = "select o.*, s.* from ocorrencias o, `status` s  where o.numero=".$rowSubPai['dep_filho']." and o.`status`=s.stat_id and s.stat_painel not in (3) ";
-					$execStatus = mysql_query($sqlStatus) or die (TRANS('MSG_ERR_RESCUE_INFO_STATUS_CALL_SON').'<br>'.$sqlStatus);
-					$regStatus = mysql_num_rows($execStatus);
+					$execStatus = mysqli_query($sqlStatus) or die (TRANS('MSG_ERR_RESCUE_INFO_STATUS_CALL_SON').'<br>'.$sqlStatus);
+					$regStatus = mysqli_num_rows($execStatus);
 					if ($regStatus > 0) {
 						$comDeps = true;
 					}
@@ -259,8 +264,8 @@
         	$query = $QRY["ocorrencias_full_ini"]." where o.aberto_por = ".$_SESSION['s_uid']." and s.stat_painel in(3) order by numero DESC ";
 
 		$qrytmp = $query;
-		$exectmp = mysql_query($qrytmp) or die (TRANS('MSG_NOT_LOAD_QRY_TEMP'). $qrytmp);
-		$linhasTotal = mysql_num_rows($exectmp);
+		$exectmp = mysqli_query($conect,$qrytmp) or die (TRANS('MSG_NOT_LOAD_QRY_TEMP'). $qrytmp);
+		$linhasTotal = mysqli_num_rows($exectmp);
 
 
 		/*------------------------------------------------------------------------------
@@ -372,8 +377,8 @@
 
 		$query.=" LIMIT ".$min.", ".$max."";
 
-		$resultado_oco = mysql_query($query) or die (TRANS('FIELD_ERROR'). $query);
-		$linhas = mysql_num_rows($resultado_oco);
+		$resultado_oco = mysqli_query($conect,$query) or die (TRANS('FIELD_ERROR'). $query);
+		$linhas = mysqli_num_rows($resultado_oco);
 
 		if ($linhas == 0) {
 			print mensagem(TRANS('MSG_NOT_OCCO_INACTIVE_YOU'));
@@ -418,7 +423,7 @@
 		}
 		$i=0;
 		$j=2;
-		while ($rowAT = mysql_fetch_array($resultado_oco))
+		while ($rowAT = mysqli_fetch_array($resultado_oco))
 		{
 			if ($j % 2)
 			{
@@ -432,18 +437,18 @@
 			print "<tr class=".$trClass." id='linhaz".$j."' onMouseOver=\"destaca('linhaz".$j."','".$_SESSION['s_colorDestaca']."');\" onMouseOut=\"libera('linhaz".$j."','".$_SESSION['s_colorLinPar']."','".$_SESSION['s_colorLinImpar']."');\"  onMouseDown=\"marca('linhaz".$j."','".$_SESSION['s_colorMarca']."');\">";
 
 			$sqlSubCall = "select * from ocodeps where dep_pai = ".$rowAT['numero']." or dep_filho=".$rowAT['numero']."";
-			$execSubCall = mysql_query($sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$sqlSubCall);
-			$regSub = mysql_num_rows($execSubCall);
+			$execSubCall = mysqli_query($conect,$sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$sqlSubCall);
+			$regSub = mysqli_num_rows($execSubCall);
 			if ($regSub > 0) {
 				#É CHAMADO PAI?
 				$sqlSubCall = "select * from ocodeps where dep_pai = ".$rowAT['numero']."";
-				$execSubCall = mysql_query($sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$sqlSubCall);
-				$regSub = mysql_num_rows($execSubCall);
+				$execSubCall = mysqli_query($conect,$sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$sqlSubCall);
+				$regSub = mysqli_num_rows($execSubCall);
 				$comDeps = false;
-				while ($rowSubPai = mysql_fetch_array($execSubCall)){
+				while ($rowSubPai = mysqli_fetch_array($conect,$execSubCall)){
 					$sqlStatus = "select o.*, s.* from ocorrencias o, `status` s  where o.numero=".$rowSubPai['dep_filho']." and o.`status`=s.stat_id and s.stat_painel not in (3) ";
-					$execStatus = mysql_query($sqlStatus) or die (TRANS('MSG_ERR_RESCUE_INFO_STATUS_CALL_SON').'<br>'.$sqlStatus);
-					$regStatus = mysql_num_rows($execStatus);
+					$execStatus = mysqli_query($sqlStatus) or die (TRANS('MSG_ERR_RESCUE_INFO_STATUS_CALL_SON').'<br>'.$sqlStatus);
+					$regStatus = mysqli_num_rows($execStatus);
 					if ($regStatus > 0) {
 						$comDeps = true;
 					}
@@ -477,8 +482,8 @@
         	$queryClose = $QRY["ocorrencias_full_ini"]." where o.operador = ".$_SESSION['s_uid']." and s.stat_painel in(3) order by numero DESC ";
 
 		$qryCloseTmp = $queryClose;
-		$execCloseTmp = mysql_query($qryCloseTmp) or die (TRANS('MSG_NOT_LOAD_QRY_TEMP'). $qryCloseTmp);
-		$linhasCloseTotal = mysql_num_rows($execCloseTmp);
+		$execCloseTmp = mysqli_query($conect,$qryCloseTmp) or die (TRANS('MSG_NOT_LOAD_QRY_TEMP'). $qryCloseTmp);
+		$linhasCloseTotal = mysqli_num_rows($execCloseTmp);
 
 		/*------------------------------------------------------------------------------
 		@$min = PRIMEIRO REGISTRO A SER EXIBIDO
@@ -589,8 +594,8 @@
 
 		$queryClose.=" LIMIT ".$minClose.", ".$maxClose."";
 
-		$resultado_ocoClose = mysql_query($queryClose) or die ('ERRO: '.$queryClose);
-		$linhasClose = mysql_num_rows($resultado_ocoClose);
+		$resultado_ocoClose = mysqli_query($conect,$queryClose) or die ('ERRO: '.$queryClose);
+		$linhasClose = mysqli_num_rows($resultado_ocoClose);
 
 		if ($linhasClose == 0) {
 			print mensagem("".TRANS('MSG_NO_EXIST_CLOSE_CALLS','Não existem ocorrências concluídas por você no sistema')."!");
@@ -635,7 +640,7 @@
         	}
 		$i=0;
 		$j=2;
-		while ($rowAT = mysql_fetch_array($resultado_ocoClose))
+		while ($rowAT = mysqli_fetch_array($resultado_ocoClose))
 		{
 			if ($j % 2)
 			{
@@ -648,18 +653,18 @@
 			$j++;
 			print "<tr class=".$trClass." id='linhazx".$j."' onMouseOver=\"destaca('linhazx".$j."','".$_SESSION['s_colorDestaca']."');\" onMouseOut=\"libera('linhazx".$j."','".$_SESSION['s_colorLinPar']."','".$_SESSION['s_colorLinImpar']."');\"  onMouseDown=\"marca('linhazx".$j."','".$_SESSION['s_colorMarca']."');\">";
 			$sqlSubCall = "select * from ocodeps where dep_pai = ".$rowAT['numero']." or dep_filho=".$rowAT['numero']."";
-			$execSubCall = mysql_query($sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL'). '<br>'.$sqlSubCall);
-			$regSub = mysql_num_rows($execSubCall);
+			$execSubCall = mysqli_query($conect,$sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL'). '<br>'.$sqlSubCall);
+			$regSub = mysqli_num_rows($execSubCall);
 			if ($regSub > 0) {
 				#É CHAMADO PAI?
 				$sqlSubCall = "select * from ocodeps where dep_pai = ".$rowAT['numero']."";
-				$execSubCall = mysql_query($sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL'). '<br>'.$sqlSubCall);
-				$regSub = mysql_num_rows($execSubCall);
+				$execSubCall = mysqli_query($conect,$sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL'). '<br>'.$sqlSubCall);
+				$regSub = mysqli_num_rows($execSubCall);
 				$comDeps = false;
-				while ($rowSubPai = mysql_fetch_array($execSubCall)){
+				while ($rowSubPai = mysqli_fetch_array($execSubCall)){
 					$sqlStatus = "select o.*, s.* from ocorrencias o, `status` s  where o.numero=".$rowSubPai['dep_filho']." and o.`status`=s.stat_id and s.stat_painel not in (3) ";
-					$execStatus = mysql_query($sqlStatus) or die (TRANS('MSG_ERR_RESCUE_INFO_STATUS_CALL_SON'). '<br>'.$sqlStatus);
-					$regStatus = mysql_num_rows($execStatus);
+					$execStatus = mysqli_query($conect,$sqlStatus) or die (TRANS('MSG_ERR_RESCUE_INFO_STATUS_CALL_SON'). '<br>'.$sqlStatus);
+					$regStatus = mysqli_num_rows($execStatus);
 					if ($regStatus > 0) {
 						$comDeps = true;
 					}
