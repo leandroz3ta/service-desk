@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -18,12 +19,16 @@
          Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
   */session_start();
 
+
+  
 	include ("../../includes/include_geral.inc.php");
 	include ("../../includes/include_geral_II.inc.php");
 	print "<link rel='stylesheet' href='../../includes/css/calendar.css.php' media='screen'></LINK>";
 	$_SESSION['s_page_ocomon'] = $_SERVER['PHP_SELF'];
 
-
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');  
+	
 	print "<HTML>";
 	print "<head><script language='JavaScript' src=\"../../includes/javascript/calendar.js\"></script>";
 	include ('includes/header.php');
@@ -49,8 +54,8 @@
                		print "<SELECT class='select' name='problema' size=1>";
                 		print "<option value=-1 selected>".TRANS('OCO_SEL_PROB')."</option>";
                 		$query = "SELECT * from problemas order by problema";
-                		$resultado = mysql_query($query);
-				while ($row = mysql_fetch_array($resultado))
+                		$resultado = mysqli_query($conect,$query);
+				while ($row = mysqli_fetch_array($resultado))
 				{
 					print "<option value='".$row['prob_id']."'>".$row['problema']."</option>";
 				}
@@ -64,8 +69,8 @@
                 	print "<SELECT class='select' name='sistema' size=1>";
 				print "<option value=-1 selected>".TRANS('OCO_SEL_AREA')."</option>";
 				$query = "SELECT * from sistemas order by sistema";
-				$resultado = mysql_query($query);
-				while ($row = mysql_fetch_array($resultado))
+				$resultado = mysqli_query($conect,$query);
+				while ($row = mysqli_fetch_array($resultado))
 				{
 					print "<option value='".$row['sis_id']."'>".$row['sistema']."</option>";
 				}
@@ -86,8 +91,8 @@
 			print "<SELECT class='select' name='instituicao' size='1'>";
 				print "<option value=-1 selected>".TRANS('OCO_SEL_UNIT')."</option>";
 				$query2 = "SELECT * from instituicao order by inst_cod";
-				$resultado2 = mysql_query($query2);
-				while ($row = mysql_fetch_array($resultado2))
+				$resultado2 = mysqli_query($conect,$query2);
+				while ($row = mysqli_fetch_array($resultado2))
 				{
 					print "<option value='".$row['inst_cod']."'>".$row['inst_nome']."</option>";
 				}
@@ -114,8 +119,8 @@
                 	print "<SELECT class='select' name='local' size='1'>";
                 		print "<option value=-1 selected".TRANS('OCO_SEL_LOCAL')."</option>";
                 		$query = "SELECT * from localizacao order by local";
-				$resultado = mysql_query($query);
-				while ($row = mysql_fetch_array($resultado))
+				$resultado = mysqli_query($conect,$query);
+				while ($row = mysqli_fetch_array($resultado))
 				{
 					print "<option value='".$row['loc_id']."'>".$row['local']."</option>";
 				}
@@ -128,8 +133,8 @@
                 print "<SELECT class='select' name='operador' size='1'>";
                 	print "<option value=-1 selected>".TRANS('OCO_SEL_OPERATOR')."</option>";
 			$query = "SELECT * from usuarios order by nome";
-			$resultado = mysql_query($query);
-			while ($rowU = mysql_fetch_array($resultado))
+			$resultado = mysqli_query($conect,$query);
+			while ($rowU = mysqli_fetch_array($resultado))
 			{
 				print "<option value='".$rowU['user_id']."'>".$rowU['nome']."</option>";
 			}
@@ -181,8 +186,8 @@
 	                print "<SELECT class='select' name='status'>";
         	        print "<option value='".TRANS('OCO_IN_OPEN')."'>".TRANS('OCO_IN_OPEN')."</option>";
 			$query = "SELECT * from status order by status";
-			$resultado = mysql_query($query);
-				while ($row = mysql_fetch_array($resultado))
+			$resultado = mysqli_query($conect,$query);
+				while ($row = mysqli_fetch_array($resultado))
 				{
 					print "<option value='".$row['stat_id']."'";
 					if ($row['stat_id'] == 15) print " selected";
