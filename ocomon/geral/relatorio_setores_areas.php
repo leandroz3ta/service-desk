@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -20,6 +21,10 @@
 
 	include ("../../includes/include_geral.inc.php");
 	include ("../../includes/include_geral_II.inc.php");
+	
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');		
+	
 	print "<link rel='stylesheet' href='../../includes/css/calendar.css.php' media='screen'></link>";
 
 	$_SESSION['s_page_ocomon'] = $_SERVER['PHP_SELF'];
@@ -43,9 +48,9 @@
 		print "					<td class='line'><Select name='area' class='select' size='1'>";
 		print "							<OPTION value=-1 selected".TRANS('OPT_ALL')."</OPTION>";
 										$query="select * from sistemas where sis_status not in (0) order by sistema";
-										$resultado=mysql_query($query);
-										$linhas = mysql_num_rows($resultado);
-										while($row=mysql_fetch_array($resultado))
+										$resultado=mysqli_query($conect, $query);
+										$linhas = mysqli_num_rows($resultado);
+										while($row=mysqli_fetch_array($resultado))
 										{
 											print "<option value=".$row['sis_id']."";
 											if ($row['sis_id']==$_SESSION['s_area']) print " selected";
@@ -120,8 +125,8 @@
 					    o.data_atendimento is not null
 					GROUP  BY l.local, s.sistema order by area, quantidade desc, setor";
 
-				$resultado = mysql_query($query);
-				$linhas = mysql_num_rows($resultado);
+				$resultado = mysqli_query($conect, $query);
+				$linhas = mysqli_num_rows($resultado);
 
 
 				if (($linhas==0) ) {
@@ -142,7 +147,7 @@
 		                                       <td bgcolor=$background ><B>".TRANS('COL_ATTEN_AREA')."</td>
 						  </tr>";
 		                             	$total = 0;
-						while ($row = mysql_fetch_array($resultado)) {
+						while ($row = mysqli_fetch_array($resultado)) {
 						print "<tr>";
 						print "<td class='line'>".$row['quantidade']."</td><td class='line'>".$row['setor']."</td><td class='line'>".$row['area']."</td>";
 						print "</tr>";
