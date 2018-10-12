@@ -34,15 +34,15 @@
 
 
 				$qry_config = "SELECT * FROM config ";
- 				$exec_config = mysql_query($qry_config) or die (TRANS('ERR_TABLE_CONFIG'));
- 				$row_config = mysql_fetch_array($exec_config);
+ 				$exec_config = mysqli_query($conect, $qry_config) or die (TRANS('ERR_TABLE_CONFIG'));
+ 				$row_config = mysqli_fetch_array($exec_config);
 
 				$selProb = 0;
 				if (isset($_GET['prob'])) {
 					$selProb = $_GET['prob'];
 					$qry_id = "SELECT * FROM problemas WHERE prob_id = ".$selProb."";
-					$exec_qry_id = mysql_query($qry_id) or die();
-					$rowId = mysql_fetch_array($exec_qry_id);
+					$exec_qry_id = mysqli_query($conect, $qry_id) or die();
+					$rowId = mysqli_fetch_array($exec_qry_id);
 				}
 
 				$query = "SELECT * FROM problemas as p ".
@@ -69,11 +69,11 @@
 				$query .=" ORDER  BY s.sistema, p.problema";
 				
 				//print $query;
-				$resultado = mysql_query($query) or die(TRANS('ERR_QUERY'));
-				$registros = mysql_num_rows($resultado);
+				$resultado = mysqli_query($conect, $query) or die(TRANS('ERR_QUERY'));
+				$registros = mysqli_num_rows($resultado);
 
 
-				if (mysql_num_rows($resultado) == 0)
+				if (mysqli_num_rows($resultado) == 0)
 				{
 					//print "<tr><td align='center'>";
 					//echo mensagem(TRANS('NO_CAT_TIL_SEL_PROB'));
@@ -87,7 +87,7 @@
 						"<td class='line'>".$row_config['conf_prob_tipo_3']."</TD></tr>";
 
 					$j=2;
-					while ($row = mysql_fetch_array($resultado))
+					while ($row = mysqli_fetch_array($resultado))
 					{
 						if ($j % 2)
 						{
