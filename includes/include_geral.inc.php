@@ -28,23 +28,23 @@
 	print "<link rel='shortcut icon' href='../../includes/icons/favicon.ico'>";
 
 	$conec = new conexao;
-	$conec->conecta('MYSQL');
+	$conect = $conec->conecta('MYSQL');
 
 
 	if (isset($_SESSION['s_uid'])) {
 		$qry = "SELECT * FROM temas t, uthemes u  WHERE u.uth_uid = ".$_SESSION['s_uid']." and t.tm_id = u.uth_thid";
-		$exec = mysql_query($qry) or die('ERRO NA TENTATIVA DE RECUPERAR AS INFORMAÇÕES DO TEMA!<BR>'.$qry);
-		$row = mysql_fetch_array($exec);
-		$regs = mysql_num_rows($exec);
+		$exec = mysqli_query($conect,$qry) or die('ERRO NA TENTATIVA DE RECUPERAR AS INFORMAÇÕES DO TEMA!<BR>'.$qry);
+		$row = mysqli_fetch_array($exec);
+		$regs = mysqli_num_rows($exec);
 		if ($regs==0){ //SE NÃO ENCONTROU TEMA ESPECÍFICO PARA O USUÁRIO
 			$qry = "SELECT * FROM styles";
-			$exec = mysql_query($qry);
-			$row = mysql_fetch_array($exec);
+			$exec = mysqli_query($conect,$qry);
+			$row = mysqli_fetch_array($exec);
 		}
 	} else {
 		$qry = "SELECT * FROM styles";
-		$exec = mysql_query($qry);
-		$row = mysql_fetch_array($exec);
+		$exec = mysqli_query($conect, $qry);
+		$row = mysqli_fetch_array($exec);
 	}
 
 
