@@ -36,8 +36,8 @@
 
 
 	$query = "SELECT * FROM mailconfig";
-	$resultado = mysql_query($query) or die(TRANS('ERR_QUERY'));
-	$row = mysql_fetch_array($resultado);
+	$resultado = mysqli_query($conect, $query) or die(TRANS('ERR_QUERY'));
+	$row = mysqli_fetch_array($resultado);
 
 
 
@@ -47,7 +47,7 @@
         		"<input type='button' class='button' id='idBtIncluir' value='".TRANS('BT_EDIT_CONFIG')."' onClick=\"redirect('".$_SERVER['PHP_SELF']."?action=alter&cellStyle=true');\">".
         	"</TD><br><BR>";
 
-        if (mysql_numrows($resultado) == 0)
+        if (mysqli_num_rows($resultado) == 0)
         {
                 echo mensagem(TRANS('ALERT_CONFIG_EMPTY'));
         }
@@ -55,7 +55,7 @@
         {
 			$cor=TD_COLOR;
 			$cor1=TD_COLOR;
-			$linhas = mysql_numrows($resultado);
+			$linhas = mysqli_num_rows($resultado);
 			print "<td>";
 			print "<TABLE border='0' cellpadding='5' cellspacing='0'  width='50%'>";
 			print "<tr><td colspan='2'><b>".TRANS('TTL_CONFIG','Configuração').":</b></td></tr>";
@@ -154,7 +154,7 @@
 				"mail_pass = '".noHtml($_POST['pass'])."', mail_from = '".noHtml($_POST['from'])."', ".
 				"mail_from_name = '".noHtml($_POST['from_name'])."', mail_ishtml = ".$_POST['ishtml']."";
 
-		$exec= mysql_query($qry) or die(TRANS('ERR_EDIT'));
+		$exec= mysqli_query($conect,$qry) or die(TRANS('ERR_EDIT'));
 
 		print "<script>mensagem('".TRANS('OPT_SUCCES_CONFIG','',0)."!'); redirect('configmail.php');</script>";
 	}
