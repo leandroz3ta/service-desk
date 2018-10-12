@@ -39,7 +39,7 @@
 			$query .= "WHERE msg_cod=".$_GET['event']."";
 		}
 
-		$resultado = mysql_query($query) or die (TRANS('ERR_QUERY'));
+		$resultado = mysqli_query($conect, $query) or die (TRANS('ERR_QUERY'));
 		//$row = mysql_fetch_array($resultado);
 
 
@@ -47,7 +47,7 @@
 	if ((empty($_GET['action'])) and empty($_POST['submit'])){
 
 
-		if (mysql_numrows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('ALERT_CONFIG_EMPTY'));
 		}
@@ -55,7 +55,7 @@
 		{
 				$cor=TD_COLOR;
 				$cor1=TD_COLOR;
-				$linhas = mysql_numrows($resultado);
+				$linhas = mysqli_num_rows($resultado);
 
 				print "<TABLE border='0' cellpadding='1' cellspacing='0' width='100%'>";
 				print "<tr class='header'>";
@@ -66,7 +66,7 @@
 				print "</tr>";
 
 				$j = 2;
-				while ($row = mysql_fetch_array($resultado)) {
+				while ($row = mysqli_fetch_array($resultado)) {
 					if ($j % 2) {
 							$trClass = "lin_par";
 					}
@@ -89,7 +89,7 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="alter") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<script type='text/javascript' src='../../includes/fckeditor/fckeditor.js'></script>";
 
@@ -138,7 +138,7 @@
 				"msg_subject = '".$_POST['subject']."', msg_body = '".$_POST['body']."', ".
 				"msg_altbody = '".noHtml($_POST['altbody'])."' WHERE msg_cod = ".$_POST['event']."";
 
-		$exec= mysql_query($qry) or die(TRANS('ERR_EDIT'));
+		$exec= mysqli_query($conect,$qry) or die(TRANS('ERR_EDIT'));
 
 		print "<script>mensagem('".TRANS('OK_EDIT','',0)."!'); redirect('configmsgs.php');</script>";
 	}
