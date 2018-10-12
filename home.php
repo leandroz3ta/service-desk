@@ -1,5 +1,5 @@
 <?php 
-
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -42,7 +42,7 @@
 
 
 	$conec = new conexao;
-	$conec->conecta('MYSQL');
+	$conect=$conec->conecta('MYSQL');
 
 	$_SESSION['s_page_home'] = $_SERVER['PHP_SELF'];
 
@@ -68,15 +68,15 @@
 
 	$qryTotal = "select a.sistema area, a.sis_id area_cod from ocorrencias o left join sistemas a on o.sistema = a.sis_id".
 			" left join `status` s on s.stat_id = o.status where o.sistema in (".$uareas.") and s.stat_painel in (1,2) ";
-	$execTotal = mysql_query($qryTotal) or die (TRANS('MSG_ERR_TOTAL_OCCO'). $qryTotal);
-	$regTotal = mysql_num_rows($execTotal);
+	$execTotal = mysqli_query($conect, $qryTotal) or die (TRANS('MSG_ERR_TOTAL_OCCO'). $qryTotal);
+	$regTotal = mysqli_num_rows($execTotal);
 
 	//Todas as áreas que o usuário percente
 	$qryAreas = "select count(*) total, a.sistema area, a.sis_id area_cod from ocorrencias o left join sistemas a on o.sistema = a.sis_id".
 			" left join `status` s on s.stat_id = o.status where o.sistema in (".$uareas.") and s.stat_painel in (1,2) ".
 			"group by a.sistema";
-	$execAreas = mysql_query($qryAreas) or die(TRANS('MSG_ERR_RESCUE_ALL_OCCO'). $qryAreas);
-	$regAreas = mysql_num_rows($execAreas);
+	$execAreas = mysqli_query($conect,$qryAreas) or die(TRANS('MSG_ERR_RESCUE_ALL_OCCO'). $qryAreas);
+	$regAreas = mysqli_num_rows($execAreas);
 
 	
 	
@@ -91,7 +91,7 @@
 
 	$a = 0;
 	$b = 0;
-	while ($rowAreas = mysql_fetch_array($execAreas)) {
+	while ($rowAreas = mysqli_fetch_array($execAreas)) {
 
 		print "<TABLE border='0' cellpadding='5' cellspacing='0' align='center' width='100%'>";
 		print "<tr><td colspan='7'><IMG ID='imgocorrencias".$b."' SRC='./includes/icons/close.png' width='9' height='9' ".
@@ -102,10 +102,10 @@
 			//TOTAL DE NÍVEIS DE STATUS
 		$qryStatus = "select count(*) total, o.*, s.* from ocorrencias o left join `status` s on o.status = s.stat_id where ".
 				"o.sistema = ".$rowAreas['area_cod']." and s.stat_painel in (1,2) group by s.status";
-		$execStatus = mysql_query($qryStatus) or die (TRANS('MSG_ERR_QRY_STATUS'). $qryStatus);
+		$execStatus = mysqli_query($conect,$qryStatus) or die (TRANS('MSG_ERR_QRY_STATUS'). $qryStatus);
 		//$a = 0;
 		print "<TABLE border='0' cellpadding='5' cellspacing='0' align='center' width='100%'>";
-		While ($rowStatus = mysql_fetch_array($execStatus)) {
+		While ($rowStatus = mysqli_fetch_array($execStatus)) {
 			print "<tr><td colspan='7'><IMG ID='imgstatus".$a."' SRC='./includes/icons/open.png' width='9' height='9' ".
 				"STYLE=\"{cursor: pointer;}\" onClick=\"invertView('status".$a."')\">&nbsp;<b>".TRANS('OCO_FIELD_STATUS').": ".$rowStatus['status']." - ".
 				"".$rowStatus['total']." ocorrências</b><br>";
@@ -115,12 +115,12 @@
 
 			$qryDetail = $QRY["ocorrencias_full_ini"]." WHERE o.sistema = ".$rowAreas['area_cod']." and s.stat_painel in (1,2) and ".
 					" o.status = ".$rowStatus['stat_id']."";
-			$execDetail = mysql_query($qryDetail) or die (TRANS('MSG_ERR_RESCUE_DATA_OCCO') .$qryDetail);
+			$execDetail = mysqli_query($conect,$qryDetail) or die (TRANS('MSG_ERR_RESCUE_DATA_OCCO') .$qryDetail);
 
 			print "<tr class='header'><td class='line'>".TRANS('COL_NUMBER')."</td><td class='line'>".TRANS('COL_PROB')."</td><td class='line'>".TRANS('OCO_CONTACT')."<br>".TRANS('OCO_PHONE')."</td><td class='line'>".TRANS('OCO_LOCAL')."<br>".TRANS('OCO_DESC')."</td><td class='line'>".TRANS('FIELD_LAST_OPERATOR')."</td></tr>";
 
 			$j=2;
-			while ($rowDetail = mysql_fetch_array($execDetail)){
+			while ($rowDetail = mysqli_fetch_array($execDetail)){
 				if ($j % 2) {
 						$trClass = "lin_par";
 				}
@@ -132,27 +132,27 @@
 				print "<tr class=".$trClass." id='linha".$j."".$a."' onMouseOver=\"destaca('linha".$j."".$a."','".$_SESSION['s_colorDestaca']."');\" onMouseOut=\"libera('linha".$j."".$a."','".$_SESSION['s_colorLinPar']."','".$_SESSION['s_colorLinImpar']."');\"  onMouseDown=\"marca('linha".$j."".$a."','".$_SESSION['s_colorMarca']."');\">";
 
 				$qryImg = "select * from imagens where img_oco = ".$rowDetail['numero']."";
-				$execImg = mysql_query($qryImg) or die (TRANS('MSG_ERR_RESCUE_INFO_IMAGE'));
-				$rowTela = mysql_fetch_array($execImg);
-				$regImg = mysql_num_rows($execImg);
+				$execImg = mysqli_query($conect,$qryImg) or die (TRANS('MSG_ERR_RESCUE_INFO_IMAGE'));
+				$rowTela = mysqli_fetch_array($execImg);
+				$regImg = mysqli_num_rows($execImg);
 				if ($regImg!=0) {
 					//$linkImg = "<a onClick=\"javascript:popupWH('includes/functions/showImg.php?file=".$rowDetail['numero']."&cod=".$rowTela['img_cod']."',".$rowTela['img_largura'].",".$rowTela['img_altura'].")\"><img src='includes/icons/attach2.png'></a>";
 					$linkImg = "<a onClick=\"javascript:popup_wide('./ocomon/geral/listFiles.php?COD=".$rowDetail['numero']."')\"><img src='includes/icons/attach2.png'></a>";
 				} else $linkImg = "";
 
 				$sqlSubCall = "select * from ocodeps where dep_pai = ".$rowDetail['numero']." or dep_filho=".$rowDetail['numero']."";
-				$execSubCall = mysql_query($sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$sqlSubCall);
-				$regSub = mysql_num_rows($execSubCall);
+				$execSubCall = mysqli_query($conect,$sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$sqlSubCall);
+				$regSub = mysqli_num_rows($execSubCall);
 				if ($regSub > 0) {
 					#É CHAMADO PAI?
 					$_sqlSubCall = "select * from ocodeps where dep_pai = ".$rowDetail['numero']."";
-					$_execSubCall = mysql_query($_sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$_sqlSubCall);
-					$_regSub = mysql_num_rows($_execSubCall);
+					$_execSubCall = mysqli_query($conect,$_sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$_sqlSubCall);
+					$_regSub = mysqli_num_rows($_execSubCall);
 					$comDeps = false;
-					while ($rowSubPai = mysql_fetch_array($_execSubCall) ){
+					while ($rowSubPai = mysqli_fetch_array($_execSubCall) ){
 						$_sqlStatus = "select o.*, s.* from ocorrencias o, `status` s  where o.numero=".$rowSubPai['dep_filho']." and o.`status`=s.stat_id and s.stat_painel not in (3) ";
-						$_execStatus = mysql_query($_sqlStatus) or die (TRANS('MSG_ERR_RESCUE_INFO_STATUS_CALL_SON').'<br>'.$_sqlStatus);
-						$_regStatus = mysql_num_rows($_execStatus);
+						$_execStatus = mysqli_query($conect,$_sqlStatus) or die (TRANS('MSG_ERR_RESCUE_INFO_STATUS_CALL_SON').'<br>'.$_sqlStatus);
+						$_regStatus = mysqli_num_rows($_execStatus);
 						if ($_regStatus > 0) {
 							$comDeps = true;
 						}
