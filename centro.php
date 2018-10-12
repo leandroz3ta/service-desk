@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
 print "<html>";
 print "<head>";
 print "<META HTTP-EQUIV=Refresh CONTENT=\"240; URL=centro.php\">";
