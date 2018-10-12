@@ -60,8 +60,8 @@
 		$search = "";
 
 		$qry_config = "SELECT * FROM config ";
-        	$exec_config = mysql_query($qry_config) or die (TRANS('ERR_TABLE_CONFIG'));
-		$row_config = mysql_fetch_array($exec_config);
+        	$exec_config = mysqli_query($conect, $qry_config) or die (TRANS('ERR_TABLE_CONFIG'));
+		$row_config = mysqli_fetch_array($exec_config);
 
 		$WHERE = false;
 		$query = "SELECT * FROM problemas as p ".
@@ -104,8 +104,8 @@
 		//------------------------------------------------------------- FIM ALTERACAO --------------------------------------------------------------
 
 		$query .=" ORDER  BY s.sistema, p.problema";
-		$resultado = mysql_query($query) or die(TRANS('ERR_QUERY')."<br>".$query);
-		$registros = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect,$query) or die(TRANS('ERR_QUERY')."<br>".$query);
+		$registros = mysqli_num_rows($resultado);
 
 		if (isset($_GET['LIMIT']))
 			$PAGE->setLimit($_GET['LIMIT']);
@@ -124,10 +124,10 @@
 			if($OPERADOR_AREA)
 				$qryarea = "SELECT sis_id, sistema FROM sistemas WHERE sis_id = ".$_SESSION['s_area']." ORDER BY sistema"; else
 				$qryarea = "SELECT sis_id, sistema FROM sistemas ORDER BY sistema";
-			$execarea = mysql_query($qryarea);
+			$execarea = mysqli_query($conect,$qryarea);
 			print "<SELECT class='select' name='id_sistema' size='1'>";
 				print "<option value='-1'>".TRANS('OCO_SEL_AREA')."</option>";
-				while ($rowArea=mysql_fetch_array($execarea)){
+				while ($rowArea=mysqli_fetch_array($execarea)){
 					$isSelecionado = "";
 					if ($rowArea['sis_id'] == $_SESSION['id_sistema_filtro'])
 						$isSelecionado = " selected";
@@ -142,7 +142,7 @@
 			print "<script>foco('idSearch');</script>";
 		}
 
-		if (mysql_num_rows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			print "<tr><td align='center'>";
 			echo mensagem(TRANS('NO_RECORDS'));
@@ -164,7 +164,7 @@
 				"<td class='line'>".$row_config['conf_prob_tipo_3']."</TD><td class='line'>".TRANS('COL_EDIT','')."</TD><td class='line'>".TRANS('COL_DEL','')."</TD></tr>";
 
 			$j=2;
-			while ($row = mysql_fetch_array($PAGE->RESULT_SQL))
+			while ($row = mysqli_fetch_array($PAGE->RESULT_SQL))
 			{
 				if ($j % 2)
 				{
@@ -220,9 +220,9 @@
 					if($OPERADOR_AREA)
 						$sql="select * from sistemas where sis_status not in (0) and sis_atende=1 and sis_id = ".$_SESSION['s_area']." order by sistema"; else
 						$sql="select * from sistemas where sis_status not in (0) and sis_atende=1 order by sistema";
-					$commit = mysql_query($sql);
+					$commit = mysqli_query($conect,$sql);
 					$i=0;
-					while($row = mysql_fetch_array($commit)){
+					while($row = mysqli_fetch_array($commit)){
 						print "<option value=".$row['sis_id'].">".$row["sistema"]."</option>";
 						$i++;
 					} // while
@@ -238,8 +238,8 @@
 			print "<option value=-1>".TRANS('SEL_SLA')."</option>";
 
 				$sql="select * from sla_solucao order by slas_tempo";
-				$commit = mysql_query($sql);
-				while($row = mysql_fetch_array($commit)){
+				$commit = mysqli_query($conect,$sql);
+				while($row = mysqli_fetch_array($commit)){
 					print "<option value=".$row['slas_cod'].">".$row["slas_desc"]."</option>";
 				} // while
 		print "</select>";
@@ -253,9 +253,9 @@
 			print "<select class='select' name='tipo_1' id='idTipo_1'>";
 				print "<option value=-1>".TRANS('SEL_TYPE')."</option>";
 					$sql="select * from prob_tipo_1 ";
-					$commit = mysql_query($sql);
+					$commit = mysqli_query($conect,$sql);
 					$i=0;
-					while($row = mysql_fetch_array($commit)){
+					while($row = mysqli_fetch_array($commit)){
 						print "<option value=".$row['probt1_cod'].">".$row['probt1_desc']."</option>";
 						$i++;
 					} // while
@@ -272,9 +272,9 @@
 			print "<select class='select' name='tipo_2' id='idTipo_2'>";
 				print "<option value=-1>".TRANS('SEL_TYPE')."</option>";
 					$sql="select * from prob_tipo_2 ";
-					$commit = mysql_query($sql);
+					$commit = mysqli_query($conect,$sql);
 					$i=0;
-					while($row = mysql_fetch_array($commit)){
+					while($row = mysqli_fetch_array($commit)){
 						print "<option value=".$row['probt2_cod'].">".$row['probt2_desc']."</option>";
 						$i++;
 					} // while
@@ -291,9 +291,9 @@
 			print "<select class='select' name='tipo_3' id='idTipo_3'>";
 				print "<option value=-1>".TRANS('SEL_TYPE')."</option>";
 					$sql="select * from prob_tipo_3 ";
-					$commit = mysql_query($sql);
+					$commit = mysqli_query($conect,$sql);
 					$i=0;
-					while($row = mysql_fetch_array($commit)){
+					while($row = mysqli_fetch_array($commit)){
 						print "<option value=".$row['probt3_cod'].">".$row['probt3_desc']."</option>";
 						$i++;
 					} // while
