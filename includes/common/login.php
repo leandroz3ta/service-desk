@@ -26,7 +26,8 @@
 	GLOBAL $conec;
 	$conec = new conexao;
 	$conec->conecta('MYSQL');
-
+	
+	$conect=$conec->conecta('MYSQL');
 
 	if (AUTH_TYPE == "LDAP") {
 		$conec->conLDAP(LDAP_HOST, LDAP_DOMAIN, LDAP_DN, LDAP_PASSWORD);
@@ -41,8 +42,8 @@
 			$queryOK = "SELECT u.*, n.*,s.* FROM usuarios u left join sistemas as s on u.AREA = s.sis_id ".
 							"left join nivel as n on n.nivel_cod =u.nivel WHERE u.login = '".$_POST['login']."'";
 
-			$resultadoOK = mysql_query($queryOK) or die('IMPOSSÍVEL ACESSAR A BASE DE DADOS DE USUÁRIOS: LOGIN.PHP');
-			$row = mysql_fetch_array($resultadoOK);
+			$resultadoOK = mysqli_query($conect,$queryOK) or die('IMPOSSÍVEL ACESSAR A BASE DE DADOS DE USUÁRIOS: LOGIN.PHP');
+			$row = mysqli_fetch_array($resultadoOK);
 			$s_nivel = $row['nivel'];
 
 			if ($s_nivel<4){ //Verifica se não está desabilitado
@@ -57,9 +58,9 @@
 
 			/*VERIFICA EM QUAIS ÁREAS O USUÁRIO ESTÁ CADASTRADO*/
 			$qryUa = "SELECT * FROM usuarios_areas where uarea_uid=".$s_uid.""; //and uarea_sid=".$s_area."
-			$execUa = mysql_query($qryUa) or die('IMPOSSÍVEL ACESSAR A BASE DE USUÁRIOS 02: LOGIN.PHP');
+			$execUa = mysqli_query($conect,$qryUa) or die('IMPOSSÍVEL ACESSAR A BASE DE USUÁRIOS 02: LOGIN.PHP');
 			$uAreas = "".$s_area.",";
-			while ($rowUa = mysql_fetch_array($execUa)){
+			while ($rowUa = mysqli_fetch_array($execUa)){
 				$uAreas.=$rowUa['uarea_sid'].",";
 			}
 			$uAreas = substr($uAreas,0,-1);
@@ -67,9 +68,9 @@
 
 			/*CHECA QUAIS OS MÓDULOS PODEM SER ACESSADOS PELAS ÁREAS QUE O USUÁRIO PERTENCE*/
 			$qry = "SELECT * FROM permissoes where perm_area in (".$uAreas.")";
-			$exec = mysql_query($qry) or die('IMPOSSÍVEL ACESSAR A BASE DE PERMISSÕES: LOGIN.PHP');
+			$exec = mysqli_query($conect,$qry) or die('IMPOSSÍVEL ACESSAR A BASE DE PERMISSÕES: LOGIN.PHP');
 
-			while($row_perm = mysql_fetch_array($exec)){
+			while($row_perm = mysqli_fetch_array($conect,$exec)){
 				$s_permissoes[]=$row_perm['perm_modulo'];
 			}
 			$s_ocomon = 0;
@@ -80,13 +81,13 @@
 			}
 
 			$sqlPrefs = "SELECT * FROM uprefs WHERE upref_uid = ".$s_uid."";
-			$execPrefs = mysql_query($sqlPrefs);
-			$rowPref = mysql_fetch_array($execPrefs);			
+			$execPrefs = mysqli_query($conect,$sqlPrefs);
+			$rowPref = mysqli_fetch_array($execPrefs);			
 			
 			
 			$sqlFormatBar = "SELECT * FROM config";
-			$execFormatBar = mysql_query($sqlFormatBar) or die ('NÃO FOI POSSÍVEL ACESSAR A TABELA DE CONFIGURAÇÕES DO SISTEMA!');
-			$rowFormatBar = mysql_fetch_array($execFormatBar);
+			$execFormatBar = mysqli_query($conect,$sqlFormatBar) or die ('NÃO FOI POSSÍVEL ACESSAR A TABELA DE CONFIGURAÇÕES DO SISTEMA!');
+			$rowFormatBar = mysqli_fetch_array($execFormatBar);
 			if (strpos($rowFormatBar['conf_formatBar'],'%oco%')) {
 				$formatBarOco = 1;
 			} else {
@@ -138,14 +139,14 @@
 			$_SESSION['s_ocomon_site'] = $rowFormatBar['conf_ocomon_site'];
 
 			$sqlStyles = "SELECT * FROM temas t, uthemes u  WHERE u.uth_uid = ".$_SESSION['s_uid']." and t.tm_id = u.uth_thid";
-			$execStyles = mysql_query($sqlStyles) or die('ERRO NA TENTATIVA DE RECUPERAR AS INFORMAÇÕES DO TEMA!<BR>'.$sqlStyles);
-			$rowSty = mysql_fetch_array($execStyles);
-			$regs = mysql_num_rows($execStyles);
-			if ($regs==0){ //SE NÃO ENCONTROU TEMA ESPECÍFICO PARA O USUÁRIO
+			$execStyles = mysqli_query($conect,$sqlStyles) or die('ERRO NA TENTATIVA DE RECUPERAR AS INFORMAÇÕES DO TEMA!<BR>'.$sqlStyles);
+			$rowSty = mysqli_fetch_array($execStyles);
+			$regs = mysqli_num_rows($execStyles);
+			if (mysqli_num_rows($regs)==0){ //SE NÃO ENCONTROU TEMA ESPECÍFICO PARA O USUÁRIO
 				unset($rowSty);
 				$sqlStyles = "SELECT * FROM styles";
-				$execStyles = mysql_query($sqlStyles);
-				$rowSty = mysql_fetch_array($execStyles);
+				$execStyles = mysqli_query($conect,$sqlStyles);
+				$rowSty = mysqli_fetch_array($execStyles);
 			}
 
 			$_SESSION['s_colorDestaca'] = $rowSty['tm_color_destaca'];
@@ -164,7 +165,7 @@
 
 	} else {
 
-		if (senha_system($_POST['login'],$_POST['password'],'usuarios')=="ok")
+		if (senha_system($conect, $_POST['login'],$_POST['password'],'usuarios')=="ok")
 		{
 
 		        $s_usuario=$_POST['login'];
@@ -173,8 +174,8 @@
 			$queryOK = "SELECT u.*, n.*,s.* FROM usuarios u left join sistemas as s on u.AREA = s.sis_id ".
 							"left join nivel as n on n.nivel_cod =u.nivel WHERE u.login = '".$_POST['login']."'";
 
-			$resultadoOK = mysql_query($queryOK) or die('IMPOSSÍVEL ACESSAR A BASE DE DADOS DE USUÁRIOS: LOGIN.PHP');
-			$row = mysql_fetch_array($resultadoOK);
+			$resultadoOK = mysqli_query($conect,$queryOK) or die('IMPOSSÍVEL ACESSAR A BASE DE DADOS DE USUÁRIOS: LOGIN.PHP');
+			$row = mysqli_fetch_array($resultadoOK);
 			$s_nivel = $row['nivel'];
 
 			if ($s_nivel<4){ //Verifica se não está desabilitado
@@ -190,9 +191,9 @@
 
 			/*VERIFICA EM QUAIS ÁREAS O USUÁRIO ESTÁ CADASTRADO*/
 			$qryUa = "SELECT * FROM usuarios_areas where uarea_uid=".$s_uid.""; //and uarea_sid=".$s_area."
-			$execUa = mysql_query($qryUa) or die('IMPOSSÍVEL ACESSAR A BASE DE USUÁRIOS 02: LOGIN.PHP');
+			$execUa = mysqli_query($conect, $qryUa) or die('IMPOSSÍVEL ACESSAR A BASE DE USUÁRIOS 02: LOGIN.PHP');
 			$uAreas = "".$s_area.",";
-			while ($rowUa = mysql_fetch_array($execUa)){
+			while ($rowUa = mysqli_fetch_array($execUa)){
 				$uAreas.=$rowUa['uarea_sid'].",";
 			}
 			$uAreas = substr($uAreas,0,-1);
@@ -200,10 +201,10 @@
 
 			/*CHECA QUAIS OS MÓDULOS PODEM SER ACESSADOS PELAS ÁREAS QUE O USUÁRIO PERTENCE*/
 			$qry = "SELECT * FROM permissoes where perm_area in (".$uAreas.")";
-			$exec = mysql_query($qry) or die('IMPOSSÍVEL ACESSAR A BASE DE PERMISSÕES: LOGIN.PHP');
+			$exec = mysqli_query($conect, $qry) or die('IMPOSSÍVEL ACESSAR A BASE DE PERMISSÕES: LOGIN.PHP');
 
 
-			while($row_perm = mysql_fetch_array($exec)){
+			while($row_perm = mysqli_fetch_array($exec)){
 				$s_permissoes[]=$row_perm['perm_modulo'];
 			}
 			$s_ocomon = 0;
@@ -215,13 +216,13 @@
 
 			
 			$sqlPrefs = "SELECT * FROM uprefs WHERE upref_uid = ".$s_uid."";
-			$execPrefs = mysql_query($sqlPrefs);
-			$rowPref = mysql_fetch_array($execPrefs);
+			$execPrefs = mysqli_query($conect, $sqlPrefs);
+			$rowPref = mysqli_fetch_array($execPrefs);
 			
 			
 			$sqlFormatBar = "SELECT * FROM config"; //INFO FROM GENERAL CONF
-			$execFormatBar = mysql_query($sqlFormatBar) or die ('NÃO FOI POSSÍVEL ACESSAR A TABELA DE CONFIGURAÇÕES DO SISTEMA!');
-			$rowFormatBar = mysql_fetch_array($execFormatBar);
+			$execFormatBar = mysqli_query($conect,$sqlFormatBar) or die ('NÃO FOI POSSÍVEL ACESSAR A TABELA DE CONFIGURAÇÕES DO SISTEMA!');
+			$rowFormatBar = mysqli_fetch_array($execFormatBar);
 			if (strpos($rowFormatBar['conf_formatBar'],'%oco%')) {
 				$formatBarOco = 1;
 			} else {
@@ -271,14 +272,14 @@
 			$_SESSION['s_ocomon_site'] = $rowFormatBar['conf_ocomon_site'];
 
 			$sqlStyles = "SELECT * FROM temas t, uthemes u  WHERE u.uth_uid = ".$_SESSION['s_uid']." and t.tm_id = u.uth_thid";
-			$execStyles = mysql_query($sqlStyles) or die('ERRO NA TENTATIVA DE RECUPERAR AS INFORMAÇÕES DO TEMA!<BR>'.$sqlStyles);
-			$rowSty = mysql_fetch_array($execStyles);
-			$regs = mysql_num_rows($execStyles);
+			$execStyles = mysqli_query($conect, $sqlStyles) or die('ERRO NA TENTATIVA DE RECUPERAR AS INFORMAÇÕES DO TEMA!<BR>'.$sqlStyles);
+			$rowSty = mysqli_fetch_array($execStyles);
+			$regs = mysqli_num_rows($execStyles);
 			if ($regs==0){ //SE NÃO ENCONTROU TEMA ESPECÍFICO PARA O USUÁRIO
 				unset($rowSty);
 				$sqlStyles = "SELECT * FROM styles";
-				$execStyles = mysql_query($sqlStyles);
-				$rowSty = mysql_fetch_array($execStyles);
+				$execStyles = mysqli_query($conect,$sqlStyles);
+				$rowSty = mysqli_fetch_array($execStyles);
 			}
 
 
@@ -333,21 +334,21 @@
 
 
 				"\nORDER BY vencimento, modelo";
-				$execWarranty = mysql_query($qryWarranty) or die (dump($qryWarranty));
+				$execWarranty = mysqli_query($conect,$qryWarranty) or die (dump($qryWarranty));
 				//$achou = mysql_num_rows($execWarranty);
 
 
 
 				$event = 'mail-about-warranty';
 				$qrymsg = "SELECT * FROM msgconfig WHERE msg_event like ('".$event."')";
-				$execmsg = mysql_query($qrymsg) or die(TRANS('MSG_ERR_MSCONFIG'));
-				$rowmsg = mysql_fetch_array($execmsg);
+				$execmsg = mysqli_query($conect,$qrymsg) or die(TRANS('MSG_ERR_MSCONFIG'));
+				$rowmsg = mysqli_fetch_array($execmsg);
 
 				$sqlMailArea = "select * from sistemas where sis_id = ".$rowFormatBar['conf_wrty_area']."";
-				$execMailArea = mysql_query($sqlMailArea);
-				$rowMailArea = mysql_fetch_array($execMailArea);
+				$execMailArea = mysqli_query($conect,$sqlMailArea);
+				$rowMailArea = mysqli_fetch_array($execMailArea);
 
-				while ($rowWrt = mysql_fetch_array($execWarranty)){
+				while ($rowWrt = mysqli_fetch_array($execWarranty)){
 
 
 					$VARS = array();
@@ -365,8 +366,8 @@
 					$findMailSent = "SELECT * FROM email_warranty ".
 						"\n\tWHERE ew_piece_id = '".$rowWrt['estoq_cod']."' ".
 						" ";
-					$execFindMailSent = mysql_query($findMailSent) or die (dump($findMailSent));
-					$found = mysql_num_rows($execFindMailSent);
+					$execFindMailSent = mysqli_query($conect, $findMailSent) or die (dump($findMailSent));
+					$found = mysqli_num_rows($execFindMailSent);
 
 					if ($found) {
 						$updMailSent = "UPDATE email_warranty SET ".
@@ -374,13 +375,13 @@
 							"\n\tew_sent_first_alert=1, ".
 							"\n\tew_sent_last_alert=0".
 							" ";
-						$execUpdMailSent = mysql_query($updMailSent) or die (dump($updMailSent));
+						$execUpdMailSent = mysqli_query($conect,$updMailSent) or die (dump($updMailSent));
 					} else {
 						$insMailSent = "INSERT INTO email_warranty ".
 							"\n\t(ew_piece_id,ew_sent_first_alert,ew_sent_last_alert) ".
 							"\n\tvalues ('".$rowWrt['estoq_cod']."',1,0 ) ".
 							" ";
-						$execInsMailSent = mysql_query($insMailSent) or die (dump($insMailSent));
+						$execInsMailSent = mysqli_query($conect,$insMailSent) or die (dump($insMailSent));
 
 					}
 				}
