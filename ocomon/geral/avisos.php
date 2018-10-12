@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -21,7 +22,8 @@
 	include ("../../includes/include_geral.inc.php");
 	include ("../../includes/include_geral_II.inc.php");
 
-	//print "<script type='text/javascript' src='../../includes/fckeditor/fckeditor.js'></script>";
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
 
 	$_SESSION['s_page_ocomon'] = $_SERVER['PHP_SELF'];
 
@@ -58,8 +60,8 @@
 	}
 	$query.=" ORDER BY u.nome";
 
-	$resultado = mysql_query($query);
-	$registros = mysql_num_rows($resultado);
+	$resultado = mysqli_query($conect,$query);
+	$registros = mysqli_num_rows($resultado);
 
 	if ((!isset($_GET['action'])) && empty($_POST['submit'])) {
 
@@ -79,7 +81,7 @@
 			print "<TR class='header'><td class='line'>".TRANS('OCO_DATE')."</TD><td class='line'>".TRANS('OCO_NOTICE')."</TD><td class='line'>".TRANS('OCO_RESP')."</td><td class='line'>".TRANS('OCO_AREA')."</TD>";
 				print "<td class='line'>".TRANS('COL_PRIORITY')."</TD><td class='line'>".TRANS('COL_EDIT')."</TD><td class='line'>".TRANS('COL_DEL')."</TD></TR>";
 			$j=2;
-			while ($row = mysql_fetch_array($resultado)) {
+			while ($row = mysqli_fetch_array($resultado)) {
 				if ($j % 2) {
 					$trClass = "lin_par";
 				} else {
@@ -146,8 +148,8 @@
 				print "<Select class='select' name='area'>";
 						print "<OPTION value=-1>".TRANS('OPT_ALL')."</OPTION>";
 							$qry="select * from sistemas where sis_status not in (0) and sis_atende not in (0) order by sistema";
-							$exec=mysql_query($qry);
-						while($rowarea=mysql_fetch_array($exec)) {
+							$exec=mysqli_query($conect,$qry);
+						while($rowarea=mysqli_fetch_array($exec)) {
 							print "<option value=".$rowarea['sis_id']."";
 							if ($rowarea['sis_id'] == $_SESSION['s_area'])
 								print " selected";
@@ -165,7 +167,7 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="alter") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<BR><B>".TRANS('TLT_ALTER_NOTICE')."</B><br>";
 
@@ -215,10 +217,10 @@
 		print "<TD width='30%' align='left' bgcolor=".BODY_COLOR.">";
 
 			$query="select * from sistemas where sis_status not in (0) and sis_atende not in (0) order by sistema";
-			$result=mysql_query($query);
+			$result=mysqli_query($conect,$query);
 		print "<select class='select' name='area_esc' size=1>";
 			print "<option value=-1 selected".TRANS('OPT_ALL')."</option>";
-			while ($rowarea = mysql_fetch_array($result)) {
+			while ($rowarea = mysqli_fetch_array($result)) {
 				print "<option value=".$rowarea['sis_id']." ";
 				if ($rowarea['sis_id']==$row['sis_id'])
 					print " selected";
@@ -237,10 +239,10 @@
 	} else
 
 	if (isset($_GET['action']) &&$_GET['action'] == "excluir"){
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($conect,$resultado);
 
 		$query = "DELETE FROM avisos WHERE aviso_id=".$_GET['aviso_id']."";
-		$resultado = mysql_query($query) or die(TRANS('ERR_QUERY').$query);
+		$resultado = mysqli_query($query) or die(TRANS('ERR_QUERY').$query);
 
 		$texto = "".TRANS('MSG_DEL_NOTICE')."= ".$row['avisos']."";
 			geraLog(LOG_PATH.'ocomon.txt',$hoje,$_SESSION['s_usuario'],'avisos.php?action=excluir',$texto);
@@ -260,7 +262,7 @@
 			$query.= " '".noHtml($_POST['aviso2'])."',";
 		}
 		$query.=" '".date("Y-m-d H:i:s")."',".$_SESSION['s_uid'].",'".$_POST['status']."', ".$_POST['area'].")";
-		$resultado = mysql_query($query) or die (TRANS('ERR_QUERY') .$query);
+		$resultado = mysqli_query($conect,$query) or die (TRANS('ERR_QUERY') .$query);
 
 		print "<script>mensagem('".TRANS('OK_INSERT')."'); redirect('avisos.php'); </script>";
 
@@ -276,7 +278,7 @@
 			$query.= " '".noHtml($_POST['aviso2'])."',";
 		}
 		$query.=" status='".$_POST['status']."', area=".$_POST['area_esc']." WHERE aviso_id = ".$_POST['aviso_id']."";
-		$resultado = mysql_query($query) or die (TRANS('ERR_QUERY').$query);
+		$resultado = mysqli_query($conect,$query) or die (TRANS('ERR_QUERY').$query);
 
 		print "<script>mensagem('".TRANS('OK_EDIT')."'); redirect('avisos.php'); </script>";
 
