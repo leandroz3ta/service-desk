@@ -36,8 +36,8 @@
     	//print "<BR><B>".(!isset($TRANS['TTL_CONFIG_GERAL'])?'TTL_CONFIG_GERAL':$TRANS['TTL_CONFIG_GERAL'] ).":</b><BR>"; //<a><img align='top' src='../../includes/icons/help-16.png' width='16' height='16' onClick=\"return popupS('".HELP_PATH."helpconfiggeral.php')\"></a>
 	print "<BR><B>".TRANS('TTL_CONFIG_GERAL').":</b><BR>";
 		$query = "SELECT * FROM config ";
-        	$resultado = mysql_query($query) or die (TRANS('ERR_QUERY'));
-		$row = mysql_fetch_array($resultado);
+        	$resultado = mysqli_query($conect, $query) or die (TRANS('ERR_QUERY'));
+		$row = mysqli_fetch_array($resultado);
 
 
 	if ((empty($_GET['action'])) and empty($_POST['submit'])){
@@ -45,7 +45,7 @@
 		print "<br><TD align='left'>".
 				"<input type='button' class='button' id='idBtIncluir' value='".TRANS('BT_EDIT_CONFIG','',0)."' onClick=\"redirect('".$_SERVER['PHP_SELF']."?action=alter&cellStyle=true');\">".
 			"</TD><br><BR>";
-		if (mysql_numrows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('ALERT_CONFIG_EMPTY'));
 		}
@@ -53,7 +53,7 @@
 		{
 				$cor=TD_COLOR;
 				$cor1=TD_COLOR;
-				$linhas = mysql_numrows($resultado);
+				$linhas = mysqli_num_rows($resultado);
 				print "<td>";
 				print "<TABLE border='0' cellpadding='5' cellspacing='0'  width='50%'>";
 				print "<TR class='header'><td>".TRANS('OPT_DIRETIVA')."</TD><td>".TRANS('OPT_VALOR')."</TD></TD></tr>";
@@ -97,8 +97,8 @@
 				print "<tr><td colspan='2'><b>".TRANS('OPT_SCHEDULE')."</b></td></tr>";
 
 				$sqlStatus = "SELECT * FROM `status` WHERE stat_id=".$row['conf_schedule_status']."";
-				$execStatus = mysql_query($sqlStatus) OR die($sqlStatus);
-				$rowStatus = mysql_fetch_array($execStatus);
+				$execStatus = mysqli_query($conect, $sqlStatus) OR die($sqlStatus);
+				$rowStatus = mysqli_fetch_array($execStatus);
 
 				print "<tr><td>".TRANS('OPT_SCHEDULE_STATUS')."</td>";
 				print "<td>".$rowStatus['status']."</td>";
@@ -106,8 +106,8 @@
 
 				//print "<tr><td colspan='2'>&nbsp;</td></tr>";
 				$sqlStatus = "SELECT * FROM `status` WHERE stat_id=".$row['conf_schedule_status_2']."";
-				$execStatus = mysql_query($sqlStatus) OR die($sqlStatus);
-				$rowStatus = mysql_fetch_array($execStatus);
+				$execStatus = mysqli_query($conect, $sqlStatus) OR die($sqlStatus);
+				$rowStatus = mysqli_fetch_array($execStatus);
 
 				print "<tr><td>".TRANS('OPT_SCHEDULE_STATUS_2')."</td>";
 				print "<td>".$rowStatus['status']."</td>";
@@ -119,8 +119,8 @@
 
 				print "<tr><td>".TRANS('SEL_FOWARD_STATUS')."</td>";
 					$sqlStatus = "SELECT * FROM `status` WHERE stat_id=".$row['conf_foward_when_open']."";
-					$execStatus = mysql_query($sqlStatus) OR die($sqlStatus);
-					$rowStatus = mysql_fetch_array($execStatus);
+					$execStatus = mysqli_query($conect, $sqlStatus) OR die($sqlStatus);
+					$rowStatus = mysqli_fetch_array($execStatus);
 
 				print "<td>".$rowStatus['status']."</td>";
 				print "</tr>";
@@ -204,8 +204,8 @@
 
 
 				$sqlArea = "SELECT * FROM sistemas WHERE sis_id = '".$row['conf_wrty_area']."'";
-				$execArea = mysql_query($sqlArea) OR die($sqlArea);
-				$rowA = mysql_fetch_array($execArea);
+				$execArea = mysqli_query($conect, $sqlArea) OR die($sqlArea);
+				$rowA = mysqli_fetch_array($execArea);
 
 				print "<tr><td>".TRANS('OPT_SEL_AREA','ÁREA QUE RECEBE OS E-MAILS')."</td>";
 				print "<td>".$rowA['sistema']."</td>";
@@ -297,8 +297,8 @@
 		print "<tr><td>".TRANS('OPT_SCHEDULE_STATUS')."</td>";
 		print "<td><select name='schedule_status' id='idScheduleStatus' class='select'>";
 			$sqlStatus = "SELECT * FROM `status` ORDER BY status";
-			$execStatus = mysql_query($sqlStatus) OR die($sqlStatus);
-			while ($rowStatus = mysql_fetch_array($execStatus)) {
+			$execStatus = mysqli_query($conect, $sqlStatus) OR die($sqlStatus);
+			while ($rowStatus = mysqli_fetch_array($execStatus)) {
 				print "<option value='".$rowStatus['stat_id']."' ";
 					if ($rowStatus['stat_id'] == $row['conf_schedule_status'])
 						print " selected";
@@ -312,8 +312,8 @@
 		print "<tr><td>".TRANS('OPT_SCHEDULE_STATUS_2')."</td>";
 		print "<td><select name='schedule_status_2' id='idScheduleStatus2' class='select'>";
 			$sqlStatus = "SELECT * FROM `status` ORDER BY status";
-			$execStatus = mysql_query($sqlStatus) OR die($sqlStatus);
-			while ($rowStatus = mysql_fetch_array($execStatus)) {
+			$execStatus = mysqli_query($conect, $sqlStatus) OR die($sqlStatus);
+			while ($rowStatus = mysqli_fetch_array($execStatus)) {
 				print "<option value='".$rowStatus['stat_id']."' ";
 					if ($rowStatus['stat_id'] == $row['conf_schedule_status_2'])
 						print " selected";
@@ -331,8 +331,8 @@
 		print "<tr><td>".TRANS('SEL_FOWARD_STATUS')."</td>";
 		print "<td><select name='foward' id='idFoward' class='select'>";
 			$sqlStatus = "SELECT * FROM `status` ORDER BY status";
-			$execStatus = mysql_query($sqlStatus) OR die($sqlStatus);
-			while ($rowStatus = mysql_fetch_array($execStatus)) {
+			$execStatus = mysqli_query($conect, $sqlStatus) OR die($sqlStatus);
+			while ($rowStatus = mysqli_fetch_array($execStatus)) {
 				print "<option value='".$rowStatus['stat_id']."' ";
 					if ($rowStatus['stat_id'] == $row['conf_foward_when_open'])
 						print " selected";
@@ -435,8 +435,8 @@
 		print "<tr><td>".TRANS('OPT_SEL_AREA','ÁREA QUE RECEBE OS E-MAILS')."</td>";
 		print "<td><select name='areaRcptMail' id='idAreaRcptMail' class='select'>"; //<input type='text' name='lang' id='idLang' class='text' value='".$row['conf_language']."'></td>";
 			$sqlArea = "SELECT * FROM sistemas WHERE sis_status = 1";
-			$execArea = mysql_query($sqlArea) OR die($sqlArea);
-			while ($rowA = mysql_fetch_array($execArea)) {
+			$execArea = mysqli_query($conect, $sqlArea) OR die($sqlArea);
+			while ($rowA = mysqli_fetch_array($execArea)) {
 				print "<option value='".$rowA['sis_id']."' ";
 					if ($rowA['sis_id'] == $row['conf_wrty_area'])
 						print " selected";
@@ -501,7 +501,7 @@
 			$_SESSION['s_allow_change_theme'] = 0;
 
 			$sqlClean = "TRUNCATE TABLE uthemes ";
-			$execClean = mysql_query($sqlClean) or die (TRANS('ERR_QUERY'));
+			$execClean = mysqli_query($conect, $sqlClean) or die (TRANS('ERR_QUERY'));
 		}
 
 		if (isset($_POST['page'])) {
@@ -569,7 +569,7 @@
 
 		//print $qry;
 		//exit;
-		$exec= mysql_query($qry) or die(TRANS('ERR_EDIT').$qry);
+		$exec= mysqli_query($conect, $qry) or die(TRANS('ERR_EDIT').$qry);
 
 		$_SESSION['s_language'] = $_POST['lang'];
 		//print "<script>mensagem('Configuração alterada com sucesso!'); window.open('../../index.php?LOAD=ADMIN','_parent',''); </script>";
