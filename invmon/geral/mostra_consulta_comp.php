@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -21,6 +22,10 @@
 	include ("../../includes/include_geral.inc.php");
 	include ("../../includes/include_geral_II.inc.php");
 	include ('includes/header.php');
+	
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');		
+	
 	$cab = new headers;
 	$cab->set_title(TRANS('TTL_OCOMON'));
 
@@ -49,8 +54,8 @@
 
 
 	$qry = "SELECT conf_page_size AS page FROM config";
-	$qry_exec = mysql_query($qry) or die (TRANS('MSG_NECESS_UPDATE_TABLE_CONF'));
-	$rowConf = mysql_fetch_array($qry_exec);
+	$qry_exec = mysqli_query($conect, $qry) or die (TRANS('MSG_NECESS_UPDATE_TABLE_CONF'));
+	$rowConf = mysqli_fetch_array($qry_exec);
 	$PAGE_SIZE = $rowConf['page'];
 
 
@@ -464,11 +469,6 @@
 		if (($_REQUEST['comp_situac'] != -1) && ($_REQUEST['comp_situac']!='')) {
 			$comp_situac_flag = true;
 
-/*			if ($negar == "NEG_SITUACAO") {
-				$query.= $logico." (c.comp_situac <> ".$_REQUEST['comp_situac'].") ";
-
-			} else
-				$query.= $logico." (c.comp_situac ".$sinal." ".$_REQUEST['comp_situac'].") ";*/
 
 			if ($negado== "comp_situac") {
 				$query.= "$logico (c.comp_situac <> ".$_REQUEST['comp_situac'].") ";
@@ -482,15 +482,10 @@
 			$comp_data_flag = true;
 			$comp_data = $_REQUEST['comp_data'];
 
-/*			if (strpos($_REQUEST['comp_data'],"-")) {
-				$comp_data = substr(datam2($_REQUEST['comp_data']),0,10);
-			}*/
 			if (strpos($_REQUEST['comp_data']," ")) {
 				$tmpData = explode(" ", $_REQUEST['comp_data']);
 				$comp_data = $tmpData[0];
 			}
-
-			//$comp_data = substr(datam($comp_data),0,10);
 
 			if (isset($_REQUEST['fromDateRegister'])) {
 				$query.= "$logico (c.comp_data >='".$comp_data."')";
@@ -498,8 +493,7 @@
 				$query.= "$logico (c.comp_data like ('".$comp_data."%'))";
 			}
 		}
-        } //else
-        	//$comp_data = "";
+        } 
 
 	if (isset($_REQUEST['comp_data_compra'])) { //CADASTRO
 		if ( ($_REQUEST['comp_data_compra']!='')) {
@@ -547,7 +541,6 @@
 		}
         }
 
-        //$query.=")";
 
 		if (!isset($_REQUEST['ordena'])) {
 			$ordena = "etiqueta";
@@ -570,12 +563,9 @@
 
 		$traduzOrdena = strtr("$ordena", $traduz);
 
-		//dump($query);
-##################################################################################
 	$qtdTotal = $query;
-	$resultadoTotal = mysql_query($qtdTotal) or die (TRANS('MSG_ERR_IN_THE_QUERY').':<br>'.$qtdTotal);
-	$linhasTotal = mysql_num_rows($resultadoTotal); //Aqui armazedo a quantidade total de registros
-##################################################################################
+	$resultadoTotal = mysqli_query($conect, $qtdTotal) or die (TRANS('MSG_ERR_IN_THE_QUERY').':<br>'.$qtdTotal);
+	$linhasTotal = mysqli_num_rows($resultadoTotal); //Aqui armazedo a quantidade total de registros
 
 		if ( (!isset($_REQUEST['visualiza'])) || ($_REQUEST['visualiza']=='tela')) { //condição para montar na tela os botões de navegação
 
@@ -690,13 +680,11 @@
 		}
 
 
-	$resultado = mysql_query($query) or die (TRANS('MSG_ERR_IN_THE_QUERY').': <BR>'.$query);
-	$resultadoAux = mysql_query($query);
-        $linhas = mysql_num_rows($resultado);
+	$resultado = mysqli_query($conect, $query) or die (TRANS('MSG_ERR_IN_THE_QUERY').': <BR>'.$query);
+	$resultadoAux = mysqli_query($conect, $query);
+        $linhas = mysqli_num_rows($resultado);
 
-        $row = mysql_fetch_array($resultadoAux);
-
-	######################################################
+        $row = mysqli_fetch_array($resultadoAux);
 
 		//Titulo da consulta que retorna o critério de pesquisa.
 		//$texto ="com: ";
@@ -885,8 +873,8 @@
 			$CC =  $row['ccusto'];
 			if ($CC =="") $CC = -1;
 			$query2 = "select * from ".DB_CCUSTO.".".TB_CCUSTO." where ".CCUSTO_ID."= $CC "; //
-			$resultado2 = mysql_query($query2);
-			$rowCC= mysql_fetch_array($resultado2);
+			$resultado2 = mysqli_query($conect, $query2);
+			$rowCC= mysqli_fetch_array($resultado2);
 			$centroCusto = $rowCC[CCUSTO_DESC];
 			$custoNum = $rowCC[CCUSTO_COD];
 			$texto.="[<b>".TRANS('FIELD_CENTER_COST')."</b> = ".$centroCusto."]";
@@ -899,14 +887,11 @@
 			if (strlen($texto) > $tam) $texto.= ", ";
 
 			$sqlA ="select inst_nome as inst from instituicao where inst_cod in (".$comp_inst.")";
-			$resultadoA = mysql_query($sqlA);
-			//$rowA = mysql_fetch_array($resultadoA);
-  			//if (($resultadoA = mysql_query($sqlA)) && (mysql_num_rows($resultadoA) > 0) ) {
-				while ($rowA = mysql_fetch_array($resultadoA)) {
+			$resultadoA = mysqli_query($conect, $sqlA);
+				while ($rowA = mysqli_fetch_array($resultadoA)) {
 					$msgInst.= $rowA['inst'].', ';
 				}
 				$msgInst = substr($msgInst,0,-2);
-			//}
 
 			$texto.="[<b>".TRANS('FIELD_INSTITUTION')."</b> = ".$msgInst."]";
 			if (strlen($param) > $tamParam) $param.= "&";
@@ -917,20 +902,11 @@
 				$param.="comp_inst%5B%5D=".$p_temp[$i]."&";  //%5B%5D  Caracteres especiais do HTML para entender arrays!!
 			}
 			$param = substr($param,0,-1);
-			//$param.= "comp_inst in ($comp_inst)";
 		}
 
 		if ($comp_situac_flag) {
 			if (strlen($texto) > $tam) $texto.= ", ";
 			if (strlen($param) > $tamParam) $param.= "&";
-
-/*			if ($negar=="NEG_SITUACAO") {
-				$texto.="[<b>".$TRANS["cx_situacao"]."</b> <> ".$row['situac_nome']."]";
-				$param.= "comp_situac <> ".$_REQUEST['comp_situac']."";
-			} else {
-				$texto.="[<b>".$TRANS["cx_situacao"]."</b> = ".$row['situac_nome']."]";
-				$param.= "comp_situac=".$_REQUEST['comp_situac']."";
-			}*/
 
 			$texto.="[<b>".TRANS('COL_SITUAC')."</b> = ".$row['situac_nome']."]";
 			$param.= "comp_situac=".$_REQUEST['comp_situac']."";
@@ -987,16 +963,12 @@
  		$lim = (strlen($texto)-7);
 		$texto2 = (substr($texto,6,$lim));
 
-		#########################################################
 		geraLog(LOG_PATH.'invmon.txt',date("d-m-Y H:i:s"),$_SESSION['s_usuario'],$_SERVER['PHP_SELF'],$texto);
-		#########################################################
 
 	if ($linhas == 0)
 	{
-		//print $query."<br><br><a class='likebutton' onClick=\"javascript:history.back();\">Voltar</a>"; exit;
 
 		print "<script>mensagem('".TRANS('MSG_THIS_CONS_NOT_RESULT')."')</script>";
-		//dump($query);
 		print "<script>history.back()</script>";
 		exit;
 	} else
@@ -1009,7 +981,6 @@
 		} else
 
 		if (isset($_REQUEST['visualiza']) && $_REQUEST['visualiza'] =='termo') {
-			//print "<BODY bgcolor= 'white'>";
 			print "<p align='center'><img src='".LOGO_PATH."/unilasalle-peb.gif'></p>";
 			print "<br>";
 			print "<p class='centro'><B>".TRANS('TTL_CINFO')."</B></p>";
@@ -1177,7 +1148,6 @@
 				print "<input type='hidden' value='".$_REQUEST['comp_fornecedor']."' name='comp_fornecedor'>";
 			if (isset($_REQUEST['comp_nf']))
 				print "<input type='hidden' value='".$_REQUEST['comp_nf']."' name='comp_nf'>";
-			//print "<input type='hidden' value='".isset($_REQUEST['comp_inst'])."' name='comp_inst[]'>";
 			if (isset($_REQUEST['comp_inst']))
 				print "<input type='hidden' value='".$comp_inst."' name='comp_inst[]'>";
 			if (isset($_REQUEST['comp_tipo_equip']))
@@ -1200,8 +1170,6 @@
 			if (isset($comp_data_compra))
 				print "<input type='hidden' value='".$comp_data_compra."' name='comp_data_compra'>";
 
-			//print "<input type='hidden' value='".isset($_REQUEST['comp_data'])."' name='comp_data'>";
-			//print "<input type='hidden' value='".isset($_REQUEST['comp_data_compra'])."' name='comp_data_compra'>";
 			if (isset($_REQUEST['garantia']))
 				print "<input type='hidden' value='".$_REQUEST['garantia']."' name='garantia'>";
 			if (isset($_REQUEST['negado']))
@@ -1389,7 +1357,7 @@
 		print "<title>".TRANS('TXT_OCOMON_TERM_COMP_HW')."</title>";
 		print "<link rel='stylesheet' type='text/css' href='./css/estilos.css.php'>";
 
-		while ($row = mysql_fetch_array($resultado)) {
+		while ($row = mysqli_fetch_array($resultado)) {
 			$color =  'white';//BODY_COLOR;
 			print "<TR>";
 			print "<TD bgcolor='".$color."'>".$row['etiqueta']."</TD>";
@@ -1439,7 +1407,7 @@
 
 		$i=0;
 		$j=2;
-		while ($row = mysql_fetch_array($resultado)) {
+		while ($row = mysqli_fetch_array($resultado)) {
 			$color = 'white';//BODY_COLOR;
 
 			print "<TR>";
@@ -1484,7 +1452,7 @@
 		print "<hr width=80% align=center>";
 		$i=0;
 		$j=2;
-		while ($row = mysql_fetch_array($resultado)) {
+		while ($row = mysqli_fetch_array($resultado)) {
 			if ($j % 2)
 			{
 				$color =  'white';//BODY_COLOR;
@@ -1647,14 +1615,14 @@
 			$qryPieces.=" and eqp.eqp_equip_inv=".$row['etiqueta']." and eqp.eqp_equip_inst=".$row['cod_inst']."";
 			$qryPieces.= $QRY["componenteXequip_fim"];
 
-			$execQryPieces = mysql_query($qryPieces) or die (TRANS('ERR_QUERY')."<br>".$qryPieces);
+			$execQryPieces = mysqli_query($conect, $qryPieces) or die (TRANS('ERR_QUERY')."<br>".$qryPieces);
 
 			print "<TR><TD colspan='4'></TD></TR>";
 			print "<tr><TD colspan='4'><b>".TRANS('SUBTTL_DATA_COMPLE_PIECES').":</b></TD></tr>";
 			print "<TR><TD colspan=4></TD></TR>";
 
 
-			while ($rowPiece = mysql_fetch_array($execQryPieces)){
+			while ($rowPiece = mysqli_fetch_array($execQryPieces)){
 
 
 				print "<TR>";
@@ -1690,7 +1658,7 @@
                 print "<link rel='stylesheet' type='text/css' href='./css/estilos.css.php'>";
 		$i=0;
 		$j=2;
-		while ($row = mysql_fetch_array($resultado)) {
+		while ($row = mysqli_fetch_array($resultado)) {
 			if ($j % 2)
 			{
 				if (($row['situac_destaque']=='1')) { //Situação de destaque
@@ -1755,7 +1723,7 @@
 		$i=0;
 		$j=2;
 		$cor2="#A8A8A8";
-		while ($row = mysql_fetch_array($resultado)) {
+		while ($row = mysqli_fetch_array($resultado)) {
 			if ($j % 2)
 			{
 				$color = '#C8C8C8';//BODY_COLOR;
@@ -1772,9 +1740,9 @@
 			{
 				$CC =  $row['ccusto'];
 				$query2 = "select * from ".DB_CCUSTO.".".TB_CCUSTO." where ".CCUSTO_ID."= ".$CC."";
-				$resultado2 = mysql_query($query2);
+				$resultado2 = mysqli_query($conect, $query2);
 
-				$row2 = mysql_fetch_array($resultado2);
+				$row2 = mysqli_fetch_array($resultado2);
 				$centroCusto = $row2[CCUSTO_COD];
 				$custoDesc = $row2[CCUSTO_DESC];
 			} else
@@ -1821,7 +1789,7 @@
 
 		$i=0;
 		$j=2;
-		while ($row = mysql_fetch_array($resultado)) {
+		while ($row = mysqli_fetch_array($resultado)) {
 			if ($j % 2)
 			{
 				$color =  'white';
@@ -1835,8 +1803,8 @@
 			{
 				$CC =  $row['ccusto'];
 				$query2 = "select * from ".DB_CCUSTO.".".TB_CCUSTO." where ".CCUSTO_ID."= ".$CC."";
-				$resultado2 = mysql_query($query2);
-				$row3 = mysql_fetch_array($resultado2);
+				$resultado2 = mysqli_query($conect, $query2);
+				$row3 = mysqli_fetch_array($resultado2);
 				$resultado3 = $row3[CCUSTO_DESC];
 				$centroCusto = $row3[CCUSTO_COD];
 			}
@@ -1867,7 +1835,7 @@
 		$i=0;
 		$j=2;
 		$cont=0;
-  		while ($row = mysql_fetch_array($resultado)) {
+  		while ($row = mysqli_fetch_array($resultado)) {
 			$cont++;
 			if ($j % 2)
 			{
@@ -1898,11 +1866,9 @@
 				}
 			}
                 	$j++;
-			//print "<tr class=".$trClass." id='linhax".$j."' onMouseOver=\"destaca('linhax".$j."','".$_SESSION['s_colorDestaca']."');\" onMouseOut=\"libera('linhax".$j."','".$_SESSION['s_colorLinPar']."','".$_SESSION['s_colorLinImpar']."');\"  onMouseDown=\"marca('linhax".$j."','".$_SESSION['s_colorMarca']."');\">";
 			print "<tr class=".$trClass." id='linhax".$j."' onMouseOver=\"destaca('linhax".$j."','".$_SESSION['s_colorDestaca']."');\" onMouseOut=\"libera('linhax".$j."','".$_SESSION['s_colorLinPar']."','".$_SESSION['s_colorLinImpar']."');\"  onMouseDown=\"marca('linhax".$j."','".$_SESSION['s_colorMarca']."');\">";
 
 
-			//print "<td class='line'><a ".$alerta." onClick=\"montaPopup('mostra_consulta_inv.php?comp_inv=".$row['etiqueta']."&comp_inst=".$row['cod_inst']."')\" title='".TRANS('HNT_SHOW_DATEIL_EQUIP_CAD')."'>".$row['etiqueta']."</a></TD>";
 			print "<td class='line'><a ".$alerta." onClick=\"exibeEscondeImg('idTr".$j."'); exibeEscondeImg('idDivLinha".$j."'); ajaxFunction('idDivLinha".$j."', 'mostra_consulta_inv.php', 'idLoad', 'comp_inv=idEtiqueta".$j."', 'comp_inst=idUnidade".$j."' , 'INDIV=idINDIV');\" title='".TRANS('HNT_SHOW_DATEIL_EQUIP_CAD')."'>".$row['etiqueta']."</a></TD>";
 
 			print "<td class='line'><a ".$alerta." title='".TRANS('HNT_FILTER_EQUIP_UNIT')." ".$row['instituicao'].".' href=\"javascript:monta_link('?comp_inst%5B%5D=".$row['cod_inst']."&ordena=fab_nome,modelo,local,etiqueta&coluna=instituicao&ordenado=".$ordenado."','".$param."','comp_inst')\">".$row['instituicao']."</a></td>";
@@ -1956,7 +1922,6 @@
 			print "<input type='hidden' value='".$top."' name='top'>";
 			print "<input type='hidden' value='".$ordena."' name='ordena'>";
 			print "<input type='hidden' value='".$comp_inv."' name='comp_inv'>";
-			//print "<input type='hidden' value='".isset($_REQUEST['comp_sn'])."' name='comp_sn'>";
 			if (isset($comp_sn))
 				print "<input type='hidden' value='".$comp_sn."' name='comp_sn'>";
 			if (isset($_REQUEST['comp_marca']))
@@ -1992,7 +1957,6 @@
 				print "<input type='hidden' value='".$_REQUEST['comp_fornecedor']."' name='comp_fornecedor'>";
 			if (isset($_REQUEST['comp_nf']))
 				print "<input type='hidden' value='".$_REQUEST['comp_nf']."' name='comp_nf'>";
-			//print "<input type='hidden' value='".isset($_REQUEST['comp_inst'])."' name='comp_inst[]'>";
 			if (isset($_REQUEST['comp_inst']))
 				print "<input type='hidden' value='".$comp_inst."' name='comp_inst[]'>";
 			if (isset($_REQUEST['comp_tipo_equip']))
@@ -2010,15 +1974,11 @@
 			if (isset($_REQUEST['comp_situac']))
 				print "<input type='hidden' value='".$_REQUEST['comp_situac']."' name='comp_situac'>";
 
-			//if (isset($_REQUEST['comp_data']))
 			if (isset($comp_data))
 				print "<input type='hidden' value='".$comp_data."' name='comp_data'>";
-			//if (isset($_REQUEST['comp_data_compra']))
 			if (isset($comp_data_compra))
 				print "<input type='hidden' value='".$comp_data_compra."' name='comp_data_compra'>";
-
-			//print "<input type='hidden' value='".isset($_REQUEST['comp_data'])."' name='comp_data'>";
-			//print "<input type='hidden' value='".isset($_REQUEST['comp_data_compra'])."' name='comp_data_compra'>";
+			
 			if (isset($_REQUEST['garantia']))
 				print "<input type='hidden' value='".$_REQUEST['garantia']."' name='garantia'>";
 			if (isset($_REQUEST['negado']))
