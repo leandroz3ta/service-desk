@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -26,6 +27,9 @@
 	print "<link rel='stylesheet' href='../../includes/css/calendar.css.php' media='screen'></LINK>";
 	print "<html><head><script language=\"JavaScript\" src=\"../../includes/javascript/calendar.js\"></script></head>";
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');		
+	
 	$_SESSION['s_page_invmon'] = $_SERVER['PHP_SELF'];
 
 	print "<BODY bgcolor='".BODY_COLOR."' onLoad=\"";
@@ -129,13 +133,8 @@
 
 		$query .=" ORDER BY i.item_nome, e.estoq_desc";
 
-// 		print "CONEXÃO: ".SQL_USER."@".SQL_SERVER.".".SQL_DB;
-// 		dump($_POST, 'VARIÁVEIS DE POST');
-// 		dump($_GET,'VARIÁVEIS DE GET');
-// 		print $query."<br>";
-
-		$resultado = mysql_query($query) or die( TRANS('MSG_ERR_QRY_CONS')."<br>".$query);
-		$registros = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $query) or die( TRANS('MSG_ERR_QRY_CONS')."<br>".$query);
+		$registros = mysqli_num_rows($resultado);
 
 		if (isset($_GET['LIMIT']))
 			$PAGE->setLimit($_GET['LIMIT']);
@@ -157,7 +156,7 @@
 				"</TD>".
 
 			"</TR>";
-		if (mysql_num_rows($resultado) == 0){
+		if (mysqli_num_rows($resultado) == 0){
 
 			print "<tr><td align='center'>";
 			echo mensagem(TRANS('MSG_NOT_REG_CAD'));
@@ -169,7 +168,6 @@
 
 			print "<TD colspan='5' width='400' align='left'><B>".TRANS('FOUND')." <font color=red>".$PAGE->NUMBER_REGS."</font> ".TRANS('TXT_ITEM_SUPPLY').". ".TRANS('SHOWING_PAGE')." ".$PAGE->PAGE." (".$PAGE->NUMBER_REGS_PAGE." ".TRANS('RECORDS').")</B></TD>";
 
-			//print "<TD width='200' align='left' ><a href='itens.php?action=incluir&cellStyle=true'>".TRANS('TTL_INCLUDE_COMP')."</a></td>";
 			print "<TD align='left' colspan='2'>".
 					"<input type='button' class='button' id='idBtIncluir' value='".TRANS('TTL_INCLUDE_COMP_MODEL','',0)."' onClick=\"redirect('itens.php?action=incluir&cellStyle=true');\">".
 					"</td>";
@@ -180,7 +178,7 @@
 					"<td class='line'>".TRANS('COL_EDIT')."</TD>".
 					"<td class='line'>".TRANS('COL_DEL')."</TD>";
 			$j=2;
-			while ($row = mysql_fetch_array($PAGE->RESULT_SQL))
+			while ($row = mysqli_fetch_array($PAGE->RESULT_SQL))
 			{
 				if ($j % 2)
 				{
@@ -219,11 +217,11 @@
                 print "<TD  align='left' bgcolor='".BODY_COLOR."'>";
 
 			$select = "select * from itens order by item_nome";
-			$exec = mysql_query($select);
+			$exec = mysqli_query($conect, $select);
 
 		print "<select class='select' name='estoque_tipo' id='idTipo' onChange=\"ajaxFunction('idDivSelItemModel', 'showSelItemModels.php', 'idLoad', 'tipo=idTipo');\">"; //onChange=\"fillSelectFromArray(this.form.estoque_desc, ((this.selectedIndex == -1) ? null : team[this.selectedIndex-1]));\">";
 			print "<option value=-1>".TRANS('SEL_TYPE_ITEM')."</option>";
-			while($row = mysql_fetch_array($exec)){
+			while($row = mysqli_fetch_array($exec)){
 				print "<option value=".$row['item_cod'].">".$row['item_nome']."</option>";
 			} // while
 		print "</select>";
@@ -235,15 +233,6 @@
                 print "<TD width='20%' align='left' bgcolor='".TD_COLOR."'>".TRANS('COL_MODEL').":</TD>";
                 print "<TD  align='left' bgcolor='".BODY_COLOR."'>";
 			print "<div id='idDivSelItemModel'></div>";
-/*			print "<select class='select' name='estoque_desc' id='idDesc'>";
-			print "<option value='".null."' selected>".TRANS('SEL_MODEL')."</option>";
-				$select ="select * from itens, modelos_itens where mdit_tipo = item_cod order by ".
-					"item_nome, mdit_fabricante, mdit_desc, mdit_desc_capacidade";
-				$exec = mysql_query($select);
-				while($row = mysql_fetch_array($exec)){
-					print "<option value=".$row['mdit_cod'].">".$row['mdit_fabricante']." ".$row['mdit_desc']." ".$row['mdit_desc_capacidade']." ".$row['mdit_sufixo']."</option>";
-				} // while
-			print "</select>";*/
 		print "</TD>";
         	print "</TR>";
 
@@ -258,10 +247,10 @@
 			print "<select class='select' name='estoque_local' id='idLocal'>";
 			print "<option value=null selected>".TRANS('OCO_SEL_LOCAL')."</option>";
 			$select = "select * from localizacao order by local";
-			$exec = mysql_query($select);
-			while($row = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($row = mysqli_fetch_array($exec)){
 				print "<option value=".$row['loc_id'].">".$row['local']."</option>";
-			} // while
+			} 
 			print "</select>";
 		print "</TD>";
         	print "</TR>";
@@ -272,8 +261,8 @@
 			print "<select class='select' name='estoque_unidade' id='idUnidade'>";
 			print "<option value=null selected>".TRANS('OCO_SEL_UNIT')."</option>";
 			$select = "select * from instituicao order by inst_nome";
-			$exec = mysql_query($select);
-			while($row = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($row = mysqli_fetch_array($exec)){
 				print "<option value=".$row['inst_cod'].">".$row['inst_nome']."</option>";
 			} // while
 			print "</select>";
@@ -296,8 +285,8 @@
 			print "<select class='select' name='estoque_vendor' id='idVendor'>";
 			print "<option value=null selected>".TRANS('OCO_SEL_VENDOR')."</option>";
 			$select = "select * from fornecedores order by forn_nome";
-			$exec = mysql_query($select);
-			while($row = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($row = mysqli_fetch_array($exec)){
 				print "<option value=".$row['forn_cod'].">".$row['forn_nome']."</option>";
 			} // while
 			print "</select>";
@@ -325,8 +314,8 @@
 			print "<select class='select' name='estoque_warranty' id='idWarranty'>";
 			print "<option value=null selected>".TRANS('OCO_SEL_WARRANTY')."</option>";
 			$select = "select * from tempo_garantia order by tempo_meses";
-			$exec = mysql_query($select);
-			while($row = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($row = mysqli_fetch_array($exec)){
 				print "<option value=".$row['tempo_cod'].">".$row['tempo_meses']."</option>";
 			} // while
 			print "</select>";
@@ -339,8 +328,8 @@
 			print "<select class='select' name='estoque_ccusto' id='idCcusto'>";
 			print "<option value=null selected>".TRANS('OCO_SEL_CCUSTO')."</option>";
 			$select = "select * from CCUSTO order by descricao";
-			$exec = mysql_query($select);
-			while($row = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($row = mysqli_fetch_array($exec)){
 				print "<option value=".$row['codigo'].">".$row['descricao']."</option>";
 			} // while
 			print "</select>";
@@ -353,8 +342,8 @@
 			print "<select class='select' name='estoque_situac' id='idSituac'>";
 			print "<option value=null selected>".TRANS('OCO_SEL_SITUAC')."</option>";
 			$select = "select * from situacao order by situac_nome";
-			$exec = mysql_query($select);
-			while($row = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($row = mysqli_fetch_array($exec)){
 				print "<option value=".$row['situac_cod'].">".$row['situac_nome']."</option>";
 			} // while
 			print "</select>";
@@ -378,8 +367,8 @@
 			print "<select class='select' name='estoque_equip_unidade' id='idEquipUnidade'>";
 			print "<option value=-1 selected>".TRANS('OCO_SEL_UNIT')."</option>";
 			$select = "select * from instituicao order by inst_nome";
-			$exec = mysql_query($select);
-			while($rowS = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($rowS = mysqli_fetch_array($exec)){
 				print "<option value=".$rowS['inst_cod'].">".$rowS['inst_nome']."</option>";
 			} // while
 			print "</select>";
@@ -411,11 +400,11 @@
                 print "<TD  align='left' bgcolor='".BODY_COLOR."'>";
 
 			$select = "select * from itens order by item_nome";
-			$exec = mysql_query($select);
+			$exec = mysqli_query($conect, $select);
 
 		print "<select class='select' name='estoque_tipo' id='idTipoSearch'>";
 			print "<option value=-1>".TRANS('SEL_TYPE_ITEM')."</option>";
-			while($row = mysql_fetch_array($exec)){
+			while($row = mysqli_fetch_array($exec)){
 				print "<option value=".$row['item_cod'].">".$row['item_nome']."</option>";
 			} // while
 		print "</select>";
@@ -439,8 +428,8 @@
 			print "<select class='select' name='estoque_local' id='idLocal'>";
 			print "<option value=-1 selected>".TRANS('OCO_SEL_LOCAL')."</option>";
 			$select = "select * from localizacao order by local";
-			$exec = mysql_query($select);
-			while($row = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($row = mysqli_fetch_array($exec)){
 				print "<option value=".$row['loc_id'].">".$row['local']."</option>";
 			} // while
 			print "</select>";
@@ -453,8 +442,8 @@
 			print "<select class='select' name='estoque_unidade' id='idUnidade'>";
 			print "<option value=null selected>".TRANS('OCO_SEL_UNIT')."</option>";
 			$select = "select * from instituicao order by inst_nome";
-			$exec = mysql_query($select);
-			while($row = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($row = mysqli_fetch_array($exec)){
 				print "<option value=".$row['inst_cod'].">".$row['inst_nome']."</option>";
 			} // while
 			print "</select>";
@@ -485,7 +474,7 @@
 
 		//print "<script>ajaxFunction('idDivSelItemModel', 'showSelItemModels.php', 'idLoad', 'tipo=idTipo');</script>";
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		//dump ($row, "ROW - ALTER");
 		print "<BR><B>".TRANS('SUBTTL_EDIT_ITEM_SUPPLY')."</B><BR>";
@@ -495,8 +484,8 @@
                 print "<TD  align='left' bgcolor='".BODY_COLOR."'>";
 			print "<select class='select' name='estoque_tipo' id='idTipo' onChange=\"ajaxFunction('idDivSelItemModel', 'showSelItemModels.php', 'idLoad', 'tipo=idTipo', 'cod=idCodEstoque');\">";
 			$select = "select * from itens order by item_nome";
-			$exec = mysql_query($select);
-			while($tipos = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($tipos = mysqli_fetch_array($exec)){
 				print "<option value =".$tipos['item_cod']."";
 				if ($tipos['item_cod']==$row['estoq_tipo'])
 					print " selected";
@@ -512,20 +501,8 @@
                 print "<TD  align='left' bgcolor='".BODY_COLOR."'>";
 
 			print "<div id='idDivSelItemModel'></div>";
-// 			print "<select class=select name='estoque_desc' id='idDesc'>";
-// 			$select ="select * from modelos_itens order by mdit_tipo, mdit_fabricante, mdit_desc, mdit_desc_capacidade";
-// 			$exec = mysql_query($select);
-// 			while($desc = mysql_fetch_array($exec)){
-// 				print "<option value=".$desc['mdit_cod']."";
-// 				if ($desc['mdit_cod']==$row['estoq_desc'])
-// 					print " selected";
-// 				print ">".$desc['mdit_fabricante']." ".$desc['mdit_desc']." ".$desc['mdit_desc_capacidade']." ".$desc['mdit_sufixo']."</option>";
-// 			} // while
-// 			print "</select>";
 
-
-
-		print "</TD>";
+			print "</TD>";
 		print "</tr>";
 
 
@@ -543,8 +520,8 @@
 			//print "<option value=".$row['estoq_local']." selected>".$row['local']."</option>";
 			print "<option value=null>".TRANS('OCO_SEL_LOCAL')."</option>";
 			$select = "select * from localizacao order by local";
-			$exec = mysql_query($select);
-			while($locais = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($locais = mysqli_fetch_array($exec)){
 				print "<option value =".$locais['loc_id']."";
 				if ($locais['loc_id']==$row['loc_id'])
 					print " selected";
@@ -561,8 +538,8 @@
 			print "<select class='select' name='estoque_unidade' id='idUnidade'>";
 			print "<option value=null>".TRANS('OCO_SEL_UNIT')."</option>";
 			$select = "select * from instituicao order by inst_nome";
-			$exec = mysql_query($select);
-			while($rowS = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($rowS = mysqli_fetch_array($exec)){
 				print "<option value=".$rowS['inst_cod']."";
 				if ($rowS['inst_cod']==$row['estoq_tag_inst'])
 					print " selected";
@@ -589,8 +566,8 @@
 			print "<select class='select' name='estoque_vendor' id='idVendor'>";
 			print "<option value=null>".TRANS('OCO_SEL_VENDOR')."</option>";
 			$select = "select * from fornecedores order by forn_nome";
-			$exec = mysql_query($select);
-			while($rowS = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($rowS = mysqli_fetch_array($exec)){
 				print "<option value=".$rowS['forn_cod']."";
 				if ($rowS['forn_cod']==$row['forn_cod'])
 					print " selected";
@@ -628,8 +605,8 @@
 			print "<select class='select' name='estoque_warranty' id='idWarranty'>";
 			print "<option value=null>".TRANS('OCO_SEL_WARRANTY')."</option>";
 			$select = "select * from tempo_garantia order by tempo_meses";
-			$exec = mysql_query($select);
-			while($rowS = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($rowS = mysqli_fetch_array($exec)){
 				print "<option value=".$rowS['tempo_cod']."";
 				if ($rowS['tempo_cod']==$row['tempo_cod'])
 					print " selected";
@@ -646,8 +623,8 @@
 			print "<select class='select' name='estoque_ccusto' id='idCcusto'>";
 			print "<option value=null>".TRANS('OCO_SEL_CCUSTO')."</option>";
 			$select = "select * from CCUSTO order by descricao";
-			$exec = mysql_query($select);
-			while($rowS = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($rowS = mysqli_fetch_array($exec)){
 				print "<option value=".$rowS['codigo']."";
 				if ($rowS['codigo']==$row['codigo'])
 					print " selected";
@@ -664,8 +641,8 @@
 			print "<select class='select' name='estoque_situac' id='idSituac'>";
 			print "<option value=null>".TRANS('OCO_SEL_SITUAC')."</option>";
 			$select = "select * from situacao order by situac_nome";
-			$exec = mysql_query($select);
-			while($rowS = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($rowS = mysqli_fetch_array($exec)){
 				print "<option value=".$rowS['situac_cod']."";
 				if ($rowS['situac_cod']==$row['situac_cod'])
 					print " selected";
@@ -691,8 +668,8 @@
                 print "<TD  align='left' bgcolor='".BODY_COLOR."'>";
 			print "<select class='select' name='technician' id='idTechnician'>";
 			$select = "SELECT u.*, a.* from usuarios u, sistemas a where u.AREA = a.sis_id and a.sis_atende='1' and u.nivel not in (3,4,5) order by login";
-			$exec = mysql_query($select);
-			while($rowS = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($rowS = mysqli_fetch_array($exec)){
 				print "<option value=".$rowS['user_id']."";
 				if ($rowS['user_id']==$_SESSION['s_uid'])
 					print " selected";
@@ -714,8 +691,8 @@
 			print "<select class='select' name='estoque_equip_unidade' id='idEquipUnidade'>";
 			print "<option value=-1>".TRANS('OCO_SEL_UNIT')."</option>";
 			$select = "select * from instituicao order by inst_nome";
-			$exec = mysql_query($select);
-			while($rowS = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $select);
+			while($rowS = mysqli_fetch_array($exec)){
 				print "<option value=".$rowS['inst_cod']."";
 				if ($rowS['inst_cod']==$row['eqp_equip_inst'])
 					print " selected";
@@ -749,7 +726,7 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="details") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 		//dump($row,'ROW - DETAILS');
 
 		print "<BR><B>".TRANS('SUBTTL_DETAIL_ITEM_SUPPLY').":</B><BR>";
@@ -871,7 +848,7 @@
 	if (isset($_GET['action']) && $_GET['action'] == "excluir"){
 
 		$query = "DELETE FROM estoque WHERE estoq_cod='".$_GET['cod']."'";
-		$resultadoDel = mysql_query($query);
+		$resultadoDel = mysqli_query($conect, $query);
 		if ($resultadoDel == 0)
 		{
 			$aviso = TRANS('ERR_DEL');
@@ -894,17 +871,6 @@
 			$erro = true;
 		}
 
-// 		$query = "SELECT * FROM estoque WHERE  ".
-// 					" estoq_tag_inst = '".$_POST['estoque_unidade']."' and estoq_tag_inv='".$_POST['estoque_tag']."'   ";
-// 		$resultadoCad = mysql_query($query);
-// 		$linhas = mysql_numrows($resultadoCad);
-//
-// 		if ($linhas > 0)
-// 		{
-// 			$aviso = TRANS('MSG_RECORD_EXISTS');
-// 			$erro = true;
-// 		}
-
 		if (!$erro)
 		{
 
@@ -926,7 +892,7 @@
 
 			//print $query; exit;
 
-			$resultadoNew = mysql_query($query) or die (TRANS('ERR_INSERT').'<BR>'.$query);
+			$resultadoNew = mysqli_query($conect, $query) or die (TRANS('ERR_INSERT').'<BR>'.$query);
 			if ($resultadoNew == 0)
 			{
 				$aviso = TRANS('ERR_INSERT');
@@ -935,25 +901,25 @@
 			{
 				$aviso = TRANS('OK_INSERT');
 			}
-			$PIECE_ID = mysql_insert_id();
+			$PIECE_ID = mysqli_insert_id();
 
 			if (isset($_POST['estoque_equip_unidade']) && isset($_POST['estoque_equip_tag'])){
 				$qryInsertEquip = "INSERT INTO equipXpieces (eqp_piece_id, eqp_equip_inv, eqp_equip_inst) ".
 						"values ('".$PIECE_ID."', '".$_POST['estoque_equip_tag']."', '".$_POST['estoque_equip_unidade']."')";
-				$execInsertEquip = mysql_query ($qryInsertEquip) or die(TRANS('ERR_EDIT').'<br>'.$qryInsertEquip);
+				$execInsertEquip = mysqli_query ($conect, $qryInsertEquip) or die(TRANS('ERR_EDIT').'<br>'.$qryInsertEquip);
 
 				//ATUALIZA HISTÓRICO
 				$qryUpdHistorico = "INSERT INTO hist_pieces (hp_piece_id, hp_piece_local, hp_comp_inv, ".
 						"hp_comp_inst, hp_uid, hp_date)
 					values ('".$PIECE_ID."', '".$_POST['estoque_local']."', '".$_POST['estoque_equip_tag']."',".
 					" '".$_POST['estoque_equip_unidade']."', '".$_SESSION['s_uid']."', '".date("Y-m-d H:i:s")."')";
-				$execUpdHist = mysql_query($qryUpdHistorico) or die (TRANS('ERR_INSERT')."<BR>".$qryUpdHistorico);
+				$execUpdHist = mysqli_query($conect, $qryUpdHistorico) or die (TRANS('ERR_INSERT')."<BR>".$qryUpdHistorico);
 
 			} else {
 				//ATUALIZA HISTÓRICO
 				$qryUpdHistorico = "INSERT INTO hist_pieces (hp_piece_id, hp_piece_local, hp_uid, hp_date)
 					values ('".$PIECE_ID."', '".$_POST['estoque_local']."', '".$_SESSION['s_uid']."', '".date("Y-m-d H:i:s")."')";
-				$execUpdHist = mysql_query($qryUpdHistorico) or die (TRANS('ERR_INSERT')."<BR>".$qryUpdHistorico);
+				$execUpdHist = mysqli_query($conect, $qryUpdHistorico) or die (TRANS('ERR_INSERT')."<BR>".$qryUpdHistorico);
 			}
 
 		}
@@ -963,18 +929,13 @@
 	} else
 
 	if ($_POST['submit'] == TRANS('BT_ALTER')){
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		$query = "SELECT * FROM estoque WHERE  ".
 					" estoq_tag_inst = '".$_POST['estoque_unidade']."' and estoq_tag_inv='".$_POST['estoque_tag']."'   ";
-		$resultadoCad = mysql_query($query);
-		$linhas = mysql_numrows($resultadoCad);
+		$resultadoCad = mysqli_query($conect, $query);
+		$linhas = mysqli_num_rows($resultadoCad);
 
-// 		if ($linhas > 0)
-// 		{
-// 			$aviso = TRANS('MSG_RECORD_EXISTS');
-// 			$erro = true;
-// 		} else $erro = false;
 		$erro = false;
 		if (!$erro) {
 			if (($row['loc_id'] != $_POST['estoque_local']) || ($row['eqp_equip_inst'] != $_POST['estoque_equip_unidade'])  || ($row['eqp_equip_inv'] != $_POST['estoque_equip_tag'])){
@@ -1002,7 +963,7 @@
 						"WHERE estoq_cod=".$_POST['cod']."";
 			//print $query; exit;
 
-			$resultadoUpd = mysql_query($query) or die (TRANS('ERR_EDIT').'<BR>'.$query);
+			$resultadoUpd = mysqli_query($conect, $query) or die (TRANS('ERR_EDIT').'<BR>'.$query);
 			if ($resultadoUpd == 0)
 			{
 				$aviso = TRANS('ERR_EDIT');
@@ -1016,17 +977,17 @@
 
 			if (isset($_POST['estoque_equip_unidade']) && isset($_POST['estoque_equip_tag'])){
 				$sqlChecaEquip = "SELECT * FROM equipXpieces WHERE eqp_piece_id = ".$_POST['cod']." "; //".$row['estoq_cod']."
-				$execChecaEquip = mysql_query($sqlChecaEquip) or die(TRANS('ERR_EDIT').'<br>'.$sqlChecaEquip);
-				$achou = mysql_num_rows($execChecaEquip);
+				$execChecaEquip = mysqli_query($conect, $sqlChecaEquip) or die(TRANS('ERR_EDIT').'<br>'.$sqlChecaEquip);
+				$achou = mysqli_num_rows($execChecaEquip);
 				if ($achou) {//update
 					$qryUpdEquip = "UPDATE equipXpieces SET eqp_equip_inv = '".noHtml($_POST['estoque_equip_tag'])."', ".
 							"eqp_equip_inst = '".$_POST['estoque_equip_unidade']."' ".
 							"WHERE eqp_piece_id = ".$_POST['cod']."";
-					$execUpdEquip = mysql_query($qryUpdEquip) or die(TRANS('ERR_EDIT').'<br>'.$qryUpdEquip);
+					$execUpdEquip = mysqli_query($conect, $qryUpdEquip) or die(TRANS('ERR_EDIT').'<br>'.$qryUpdEquip);
 				} else { //insert
 					$qryInsertEquip = "INSERT INTO equipXpieces (eqp_piece_id, eqp_equip_inv, eqp_equip_inst) ".
 							"values ('".$_POST['cod']."', '".$_POST['estoque_equip_tag']."', '".$_POST['estoque_equip_unidade']."')";
-					$execInsertEquip = mysql_query ($qryInsertEquip) or die(TRANS('ERR_EDIT').'<br>'.$qryInsertEquip);
+					$execInsertEquip = mysqli_query ($conect, $qryInsertEquip) or die(TRANS('ERR_EDIT').'<br>'.$qryInsertEquip);
 				}
 
 				//ATUALIZA HISTÓRICO
@@ -1035,7 +996,7 @@
 							"hp_comp_inst, hp_uid, hp_date, hp_technician)
 						values ('".$_POST['cod']."', '".$_POST['estoque_local']."', '".$_POST['estoque_equip_tag']."',".
 						" '".$_POST['estoque_equip_unidade']."', '".$_SESSION['s_uid']."', '".date("Y-m-d H:i:s")."', '".$_POST['technician']."')";
-					$execUpdHist = mysql_query($qryUpdHistorico) or die (TRANS('ERR_INSERT')."<BR>".$qryUpdHistorico);
+					$execUpdHist = mysqli_query($conect, $qryUpdHistorico) or die (TRANS('ERR_INSERT')."<BR>".$qryUpdHistorico);
 				}
 
 			} else {
@@ -1043,7 +1004,7 @@
 					//ATUALIZA HISTÓRICO
 					$qryUpdHistorico = "INSERT INTO hist_pieces (hp_piece_id, hp_piece_local, hp_uid, hp_date, hp_technician)
 						values ('".$_POST['cod']."', '".$_POST['estoque_local']."', '".$_SESSION['s_uid']."', '".date("Y-m-d H:i:s")."', '".$_POST['technician']."')";
-					$execUpdHist = mysql_query($qryUpdHistorico) or die (TRANS('ERR_INSERT')."<BR>".$qryUpdHistorico);
+					$execUpdHist = mysqli_query($conect, $qryUpdHistorico) or die (TRANS('ERR_INSERT')."<BR>".$qryUpdHistorico);
 				}
 			}
 		}
@@ -1078,19 +1039,19 @@
 	$conta_sub = 0;
 
 	$sql="select * from itens order by item_nome";
-	$sql_result=mysql_query($sql);
-	echo mysql_error();
-	$num=mysql_numrows($sql_result);
-	while ($row_A=mysql_fetch_array($sql_result)){
+	$sql_result=mysqli_query($conect, $sql);
+	echo mysqli_error();
+	$num=mysqli_num_rows($sql_result);
+	while ($row_A=mysqli_fetch_array($sql_result)){
 		$conta=$conta+1;
 		$cod_item=$row_A["item_cod"];
 			echo "new Array(\n";
 			$sub_sql="select * from modelos_itens where mdit_tipo='".$cod_item."' order by mdit_tipo, mdit_fabricante, mdit_desc, mdit_desc_capacidade";
-			$sub_result=mysql_query($sub_sql);
-			$num_sub=mysql_numrows($sub_result);
+			$sub_result=mysqli_query($conect, $sub_sql);
+			$num_sub=mysqli_num_rows($sub_result);
 			if ($num_sub>=1){
 				echo "new Array(\"Todos\", -1),\n";
-				while ($rowx=mysql_fetch_array($sub_result)){
+				while ($rowx=mysqli_fetch_array($sub_result)){
 					$codigo_sub=$rowx["mdit_cod"];
 					$sub_nome=$rowx["mdit_fabricante"]." ".$rowx["mdit_desc"]." ".$rowx["mdit_desc_capacidade"]." ".$rowx["mdit_sufixo"];
 					$conta_sub=$conta_sub+1;
