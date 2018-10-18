@@ -1,12 +1,12 @@
 ## task
 > path files
 * /
-    - [ ] [centro.php](./centro.php)
+    - [x] [centro.php](./centro.php) -- atualizado para html:5
     - [ ] [home.php](./home.php)
     - [ ] [index.php](./index.php)
     - [ ] [menu.php](./menu.php)
-    - [ ] [PATHS.php](./PATHS.php)
-    - [ ] [sobre.php](./sobre.php)
+    - [x] [PATHS.php](./PATHS.php) -- Sem ação
+    - [x] [sobre.php](./sobre.php) -- Atualizado para html:5
     * admin
         * geral
             - [ ] [aparencia.php](./admin/geral/aparencia.php)
