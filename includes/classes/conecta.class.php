@@ -45,8 +45,6 @@ class conexao {
 
 
 
-
-
 	function conecta($BANCO){
 		if (strtoupper($BANCO) =='MYSQL') {
 		/*if ($this->con) {
