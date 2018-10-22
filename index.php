@@ -30,14 +30,14 @@ is_file( "./includes/config.inc.php" )
 	if (!isset($_SESSION['s_logado']))  $_SESSION['s_logado']= "";
 	if (!isset($_SESSION['s_nivel']))  $_SESSION['s_nivel']= "";
 
-	include ("PATHS.php");
+	include ("PATHS.php"); 
 	//include ("".$includesPath."var_sessao.php");
 	include ("includes/functions/funcoes.inc");
 	include ("includes/javascript/funcoes.js");
 	include ("includes/queries/queries.php");
 	include ($includesPath."config.inc.php");
 	//require_once ("includes/languages/".LANGUAGE."");
-	include ($includesPath."versao.php");
+	include ("".$includesPath."versao.php");
 
 	include("includes/classes/conecta.class.php");
 
@@ -70,8 +70,9 @@ is_file( "./includes/config.inc.php" )
 	}
 	$marca = "HOME";
 ?>
+print "<head>";
 
-<!DOCTYPE html>
+print "<title>Service Desk - ".VERSAO."</title>";
 <html lang="pt-BR">
 <head>
 	<meta charset="utf-8">

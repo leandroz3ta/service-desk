@@ -1,619 +1,619 @@
 
 .
-³   centro.php
-³   home.php
-³   index.php
-³   menu.php
-³   PATHS.php
-³   sobre.php
-ÃÄÄÄadmin
-³   ÀÄÄÄgeral
-³       ³   aparencia.php
-³       ³   calendar.html
-³       ³   cat_prob1.php
-³       ³   cat_prob2.php
-³       ³   cat_prob3.php
-³       ³   ccustos.php
-³       ³   configGeral.php
-³       ³   configmail.php
-³       ³   configmsgs.php
-³       ³   configuserscreen.php
-³       ³   dominios.php
-³       ³   feriados.php
-³       ³   locais.php
-³       ³   mail_distribution_lists.php
-³       ³   mail_history.php
-³       ³   mail_templates.php
-³       ³   permissoes.php
-³       ³   predios.php
-³       ³   prioridades.php
-³       ³   prioridades_atendimento.php
-³       ³   problemas.php
-³       ³   problemas_2.php
-³       ³   reitorias.php
-³       ³   saveTheme.php
-³       ³   screenprofiles.php
-³       ³   screen_profile_details.php
-³       ³   scripts.php
-³       ³   script_modelo.php
-³       ³   sistemas.php
-³       ³   sistemas_conf_abertura.php
-³       ³   situacoes.php
-³       ³   status.php
-³       ³   tipo_componentes.php
-³       ³   tipo_equipamentos.php
-³       ³   tipo_solucoes.php
-³       ³   unidades.php
-³       ³   update_old_tickets_prior.php
-³       ³   usuarios.php
-³       ³   
-³       ÀÄÄÄincludes
-³               header.php
-³               
-ÃÄÄÄincludes
-³   ³   config.inc.php
-³   ³   include_geral.inc.php
-³   ³   include_geral_II.inc.php
-³   ³   language.php
-³   ³   logado.php
-³   ³   versao.php
-³   ³   
-³   ÃÄÄÄclasses
-³   ³       auth.class.php
-³   ³       conecta.class.php
-³   ³       dateOpers.class.php
-³   ³       geralog.class.php
-³   ³       headers.class.php
-³   ³       lock.class.php
-³   ³       paging.class.php
-³   ³       
-³   ÃÄÄÄcommon
-³   ³       login.php
-³   ³       logout.php
-³   ³       
-³   ÃÄÄÄcss
-³   ³       estilos.css.php
-³   ³           
-³   ÃÄÄÄfckeditor
-³   ³   ³   fckeditor_php4.php
-³   ³   ³   fckeditor_php5.php
-³   ³   ³   
-³   ³   ÀÄÄÄeditor
-³   ³       ³   
-³   ³       ÃÄÄÄdialog
-³   ³       ³   ³   
-³   ³       ³   ³           
-³   ³       ³   ³           
-³   ³       ³   ÃÄÄÄfck_spellerpages
-³   ³       ³       ÀÄÄÄspellerpages
-³   ³       ³           ³   
-³   ³       ³           ÀÄÄÄserver-scripts
-³   ³       ³                   spellchecker.php
-³   ³       ³                  
-³   ³       ³       
-³   ³       ÃÄÄÄfilemanager
-³   ³       ³   ÃÄÄÄbrowser
-³   ³       ³   ³   ÃÄÄÄdefault
-³   ³       ³   ³   ³   ³   
-³   ³       ³   ³   ³   ÃÄÄÄconnectors
-³   ³       ³   ³   ³       ³   
-³   ³       ³   ³   ³       ÀÄÄÄphp
-³   ³       ³   ³   ³               basexml.php
-³   ³       ³   ³   ³               commands.php
-³   ³       ³   ³   ³               config.php
-³   ³       ³   ³   ³               connector.php
-³   ³       ³   ³   ³               io.php
-³   ³       ³   ³   ³              util.php
-³   ³       ³   ³   ³              
-³   ³       ³   ³   ÀÄÄÄmcpuk
-³   ³       ³   ³       ³   
-³   ³       ³   ³       ÀÄÄÄconnectors
-³   ³       ³   ³           ÀÄÄÄphp
-³   ³       ³   ³               ³   config.php
-³   ³       ³   ³               ³   connector.php
-³   ³       ³   ³               ³   test.html.suspended
-³   ³       ³   ³               ³   testme.php.suspended
-³   ³       ³   ³               ³   
-³   ³       ³   ³               ÃÄÄÄAuth
-³   ³       ³   ³               ³       Default.php
-³   ³       ³   ³               ³       
-³   ³       ³   ³               ÃÄÄÄCommands
-³   ³       ³   ³               ³   ³   CreateFolder.php
-³   ³       ³   ³               ³   ³   DeleteFile.php
-³   ³       ³   ³               ³   ³   DeleteFolder.php
-³   ³       ³   ³               ³   ³   FileUpload.php
-³   ³       ³   ³               ³   ³   GetFolders.php
-³   ³       ³   ³               ³   ³   GetFoldersAndFiles.php
-³   ³       ³   ³               ³   ³   GetUploadProgress.php
-³   ³       ³   ³               ³   ³   RenameFile.php
-³   ³       ³   ³               ³   ³   RenameFolder.php
-³   ³       ³   ³               ³   ³   Thumbnail.php
-³   ³       ³   ³               ³   ³   
-³   ³       ³   ³               ³   ÀÄÄÄhelpers
-³   ³       ³   ³               ³           header.cgi
-³   ³       ³   ³               ³           iconlookup.php
-³   ³       ³   ³               ³           progress.cgi
-³   ³       ³   ³               ³           upload.cgi
-³   ³       ³   ³               ³           
-³   ³       ³   ³               ÃÄÄÄdtd
-³   ³       ³   ³                      iso-lat1.ent
-³   ³       ³   ³                      
-³   ³       ³   ³               
-³   ³       ³   ÃÄÄÄconnectors
-³   ³       ³   ³   ³   test.html
-³   ³       ³   ³   ³   uploadtest.html
-³   ³       ³   ³   ³   
-³   ³       ³   ³   ÃÄÄÄasp
-³   ³       ³   ³   ³       basexml.asp
-³   ³       ³   ³   ³       class_upload.asp
-³   ³       ³   ³   ³       commands.asp
-³   ³       ³   ³   ³       config.asp
-³   ³       ³   ³   ³       connector.asp
-³   ³       ³   ³   ³       io.asp
-³   ³       ³   ³   ³       upload.asp
-³   ³       ³   ³   ³       util.asp
-³   ³       ³   ³   ³       
-³   ³       ³   ³   ÃÄÄÄaspx
-³   ³       ³   ³   ³       config.ascx
-³   ³       ³   ³   ³       connector.aspx
-³   ³       ³   ³   ³       upload.aspx
-³   ³       ³   ³   ³       
-³   ³       ³   ³   ÃÄÄÄcfm
-³   ³       ³   ³   ³       cf5_connector.cfm
-³   ³       ³   ³   ³       cf5_upload.cfm
-³   ³       ³   ³   ³       cf_basexml.cfm
-³   ³       ³   ³   ³       cf_commands.cfm
-³   ³       ³   ³   ³       cf_connector.cfm
-³   ³       ³   ³   ³       cf_io.cfm
-³   ³       ³   ³   ³       cf_upload.cfm
-³   ³       ³   ³   ³       cf_util.cfm
-³   ³       ³   ³   ³       config.cfm
-³   ³       ³   ³   ³       connector.cfm
-³   ³       ³   ³   ³       image.cfc
-³   ³       ³   ³   ³       ImageObject.cfc
-³   ³       ³   ³   ³       upload.cfm
-³   ³       ³   ³   ³       
-³   ³       ³   ³   ÃÄÄÄlasso
-³   ³       ³   ³   ³       config.lasso
-³   ³       ³   ³   ³       connector.lasso
-³   ³       ³   ³   ³       upload.lasso
-³   ³       ³   ³   ³       
-³   ³       ³   ³   ÃÄÄÄperl
-³   ³       ³   ³   ³       basexml.pl
-³   ³       ³   ³   ³       commands.pl
-³   ³       ³   ³   ³       config.pl
-³   ³       ³   ³   ³       connector.cgi
-³   ³       ³   ³   ³       io.pl
-³   ³       ³   ³   ³       upload.cgi
-³   ³       ³   ³   ³       upload_fck.pl
-³   ³       ³   ³   ³       util.pl
-³   ³       ³   ³   ³       
-³   ³       ³   ³   ÃÄÄÄphp
-³   ³       ³   ³   ³       basexml.php
-³   ³       ³   ³   ³       commands.php
-³   ³       ³   ³   ³       config.php
-³   ³       ³   ³   ³       connector.php
-³   ³       ³   ³   ³       io.php
-³   ³       ³   ³   ³       phpcompat.php
-³   ³       ³   ³   ³       upload.php
-³   ³       ³   ³   ³       util.php
-³   ³       ³   ³   ³       
-³   ³       ³   ³   ÀÄÄÄpy
-³   ³       ³   ³           config.py
-³   ³       ³   ³           connector.py
-³   ³       ³   ³           fckcommands.py
-³   ³       ³   ³           fckconnector.py
-³   ³       ³   ³           fckoutput.py
-³   ³       ³   ³           fckutil.py
-³   ³       ³   ³           htaccess.txt
-³   ³       ³   ³           upload.py
-³   ³       ³   ³           wsgi.py
-³   ³       ³   ³           zope.py
-³   ³       ³   ³           
-³   ³       ³   ÀÄÄÄupload
-³   ³       ³       ³   test.html
-³   ³       ³       ³   
-³   ³       ³       ÃÄÄÄasp
-³   ³       ³       ³       class_upload.asp
-³   ³       ³       ³       config.asp
-³   ³       ³       ³       io.asp
-³   ³       ³       ³       upload.asp
-³   ³       ³       ³       
-³   ³       ³       ÀÄÄÄphp
-³   ³       ³               config.php
-³   ³       ³               upload.php
-³   ³       ³               util.php
-³   ³       ³               
-³   ³       ³               
-³   ³       ³       
-³   ³       ÀÄÄÄskins
-³   ³           ³   
-³   ³           ÀÄÄÄdefault
-³   ³                 fck_editor.css.php
-³   ³                
-³   ³                    
-³   ³               
-³   ÃÄÄÄfunctions
-³   ³       browser_detection.php
-³   ³       download.php
-³   ³       funcoes.inc
-³   ³       showImg.php
-³   ³       
-³   ÃÄÄÄhelp
-³   ³       helpconfig.php
-³   ³       helpconfiggeral.php
-³   ³       helpconfigmail.php
-³   ³       helpconfigmsg.php
-³   ³       helpNotReady.php
-³   ³       helpOabertura.php
-³   ³       help_depends.php
-³   ³       legenda_geral.html
-³   ³      sla_popup.php
-³   ³           
-³   ÃÄÄÄjpgraph
-³   ³   ³   testa_gd.php
-³   ³   ³   
-³   ³   ÀÄÄÄsrc
-³   ³           Changelog
-³   ³           imgdata_balls.inc
-³   ³           imgdata_bevels.inc
-³   ³           imgdata_diamonds.inc
-³   ³           imgdata_pushpins.inc
-³   ³           imgdata_squares.inc
-³   ³           imgdata_stars.inc
-³   ³           jpgraph.php
-³   ³           jpgraph_bar.php
-³   ³           jpgraph_canvas.php
-³   ³           jpgraph_canvtools.php
-³   ³           jpgraph_error.php
-³   ³           jpgraph_flags.php
-³   ³           jpgraph_gantt.php
-³   ³           jpgraph_gb2312.php
-³   ³           jpgraph_gradient.php
-³   ³           jpgraph_imgtrans.php
-³   ³           jpgraph_line.php
-³   ³           jpgraph_log.php
-³   ³           jpgraph_pie.php
-³   ³           jpgraph_pie3d.php
-³   ³           jpgraph_plotmark.inc
-³   ³           jpgraph_polar.php
-³   ³           jpgraph_radar.php
-³   ³           jpgraph_regstat.php
-³   ³           jpgraph_scatter.php
-³   ³           jpgraph_stock.php
-³   ³           
-³   ÃÄÄÄlanguages
-³   ³       en.php
-³   ³       es_CO.php
-³   ³       pt_BR.php
-³   ³       
-³   ³       
-³   ³       
-³   ÃÄÄÄmenu
-³   ³   ³   example-treemenu.php
-³   ³   ³   menu.php
-³   ³   ³   menu2.php
-³   ³   ³   temp.php
-³   ³   ³   
-³   ³   ÀÄÄÄphplm320
-³   ³       ³   ACKNOWLEDGEMENTS
-³   ³       ³   CHANGELOG
-³   ³       ³   CHANGE_TEMPLATE_CLASS_NAME.sh
-³   ³       ³   copying
-³   ³       ³   demo.php
-³   ³       ³   demo.php.html
-³   ³       ³   demo.phps
-³   ³       ³   example-db-hormenu.php
-³   ³       ³   example-db-treemenu.notshown.php
-³   ³       ³   example-db-treemenu.php
-³   ³       ³   example-dbtofile.php
-³   ³       ³   example-filetodb.php
-³   ³       ³   example-frame-body.php
-³   ³       ³   example-frame-treemenu.php
-³   ³       ³   example-frame.html
-³   ³       ³   example-hormenu-old.php
-³   ³       ³   example-hormenu.php
-³   ³       ³   example-hormenu_and_treemenu.php
-³   ³       ³   example-hormenu_and_vermenu.php
-³   ³       ³   example-horplainmenu.php
-³   ³       ³   example-layersmenus_and_treemenus.php
-³   ³       ³   example-phptreemenu.php
-³   ³       ³   example-see-through.php
-³   ³       ³   example-treemenu.php
-³   ³       ³   example-two_treemenus.php
-³   ³       ³   example-vermenu.php
-³   ³       ³   example-verplainmenu.php
-³   ³       ³   invmon-menu.php
-³   ³       ³   
-³   ³       ÃÄÄÄdumps
-³   ³       ³       mysql.demo_data.dump
-³   ³       ³       mysql.start.dump
-³   ³       ³       pgsql.demo_data.dump
-³   ³       ³       pgsql.start.dump
-³   ³       ³       phplayersmenu
-³   ³       ³       sqlite.demo_data.dump
-³   ³       ³       sqlite.demo_data.dump.php5
-³   ³       ³       sqlite.start.dump
-³   ³       ³       sqlite.start.dump.php5
-³   ³       ³       
-³   ³       ³       
-³   ³       ÃÄÄÄlib
-³   ³       ³       layersmenu-browser_detection.php
-³   ³       ³       layersmenu-common.inc.php
-³   ³       ³       layersmenu-process.inc.php
-³   ³       ³       layersmenu.inc.php
-³   ³       ³       PHPLIB.php
-³   ³       ³       phptreemenu.inc.php
-³   ³       ³       plainmenu.inc.php
-³   ³       ³       treemenu.inc.php
-³   ³       ³           
-³   ³       ³           
-³   ³       ÀÄÄÄtemplates
-³   ³               layersmenu-horizontal_menu-full.ihtml
-³   ³               layersmenu-horizontal_menu-keramik-full.ihtml
-³   ³               layersmenu-horizontal_menu-keramik.ihtml
-³   ³               layersmenu-horizontal_menu-old.ihtml
-³   ³               layersmenu-horizontal_menu.ihtml
-³   ³               layersmenu-horizontal_plain_menu-red.ihtml
-³   ³               layersmenu-horizontal_plain_menu.ihtml
-³   ³               layersmenu-plain_menu-green.ihtml
-³   ³               layersmenu-plain_menu.ihtml
-³   ³               layersmenu-sub_menu-galaxy.ihtml
-³   ³               layersmenu-sub_menu-keramik.ihtml
-³   ³               layersmenu-sub_menu-old.ihtml
-³   ³               layersmenu-sub_menu.ihtml
-³   ³               layersmenu-vertical_menu-galaxy.ihtml
-³   ³               layersmenu-vertical_menu-old.ihtml
-³   ³               layersmenu-vertical_menu.ihtml
-³   ³               
-³   ÃÄÄÄphpmailer
-³   ³   ³   class.phpmailer.php
-³   ³   ³   class.pop3.php
-³   ³   ³   class.smtp.php
-³   ³   ³   
-³   ³   ³       
-³   ³   ÃÄÄÄexamples
-³   ³   ³       pop3_before_smtp_test.php
-³   ³   ³       test_gmail.php
-³   ³   ³       test_mail.php
-³   ³   ³       test_sendmail.php
-³   ³   ³       test_smtp.php
-³   ³   ³           
-³   ³   ÃÄÄÄlanguage
-³   ³   ³       phpmailer.lang-br.php
-³   ³   ³       phpmailer.lang-ca.php
-³   ³   ³       phpmailer.lang-cz.php
-³   ³   ³       phpmailer.lang-de.php
-³   ³   ³       phpmailer.lang-dk.php
-³   ³   ³       phpmailer.lang-en.php
-³   ³   ³       phpmailer.lang-es.php
-³   ³   ³       phpmailer.lang-et.php
-³   ³   ³       phpmailer.lang-fi.php
-³   ³   ³       phpmailer.lang-fo.php
-³   ³   ³       phpmailer.lang-fr.php
-³   ³   ³       phpmailer.lang-hu.php
-³   ³   ³       phpmailer.lang-it.php
-³   ³   ³       phpmailer.lang-ja.php
-³   ³   ³       phpmailer.lang-nl.php
-³   ³   ³       phpmailer.lang-no.php
-³   ³   ³       phpmailer.lang-pl.php
-³   ³   ³       phpmailer.lang-ro.php
-³   ³   ³       phpmailer.lang-ru.php
-³   ³   ³       phpmailer.lang-se.php
-³   ³   ³       phpmailer.lang-tr.php
-³   ³   ³       
-³   ³   ³           
-³   ³   ÀÄÄÄtest
-³   ³           phpmailer_test.php
-³   ³           phpunit.php
-³   ³           
-³   ÀÄÄÄqueries
-³           queries.php
-³           
-ÃÄÄÄinvmon
-³   ÀÄÄÄgeral
-³       ³   abertura.php
-³       ³   altera_dados_computador.php
-³       ³   altera_dados_documento.php
-³       ³   altera_dados_marca_comp.php
-³       ³   altera_dados_modelo.php
-³       ³   altera_dados_ocorrencia.php
-³       ³   altera_dados_resolucao.php
-³       ³   altera_senha.php
-³       ³   categorias.php
-³       ³   comp_soft.php
-³       ³   consulta_comp.php
-³       ³   consulta_comp_teste.php
-³       ³   consulta_garantia.php
-³       ³   consulta_garantia_piece.php
-³       ³   consulta_hist_inv.php
-³       ³   consulta_hist_local.php
-³       ³   consulta_inv.php
-³       ³   consulta_piece.php
-³       ³   docs_assoc_model.php
-³       ³   documentos.php
-³       ³   estat_compporhd.php
-³       ³   estat_compporlocal.php
-³       ³   estat_comppormemoria.php
-³       ³   estat_compporprocessador.php
-³       ³   estat_equippordia.php
-³       ³   estat_equippordominio.php
-³       ³   estat_equipporlocal.php
-³       ³   estat_equipporreitoria.php
-³       ³   estat_equipporreitoria_agrup.php
-³       ³   estat_equipporsituacao.php
-³       ³   estat_geral.php
-³       ³   estat_instituicao.php
-³       ³   estat_modelo_memoria.php
-³       ³   estat_situacao_geral.php
-³       ³   estat_topten_modelo.php
-³       ³   estat_vencimentos.php
-³       ³   estat_vencimentos_anual.php
-³       ³   estat_vencimentos_full.php
-³       ³   estoque.php
-³       ³   exclui_dados_documento.php
-³       ³   exclui_dados_equipamento.php
-³       ³   exclui_dados_marca_comp.php
-³       ³   exclui_dados_modelo.php
-³       ³   exclui_dados_resolucao.php
-³       ³   exclui_equipamento.php
-³       ³   fabricantes.php
-³       ³   fornecedores.php
-³       ³   garantias.php
-³       ³   graphteste.php
-³       ³   graph_equipporreitoria.php
-³       ³   graph_geral_barras.php
-³       ³   graph_geral_pizza.php
-³       ³   hw_alteracoes.php
-³       ³   hw_historico.php
-³       ³   incluir_categoria.php
-³       ³   incluir_computador.php
-³       ³   incluir_hws.php
-³       ³   incluir_marca_comp.php
-³       ³   incluir_material.php
-³       ³   incluir_modelo.php
-³       ³   incluir_modelo_equip.php
-³       ³   incluir_molde.php
-³       ³   incluir_monitor.php
-³       ³   itens.php
-³       ³   itens_official.php
-³       ³   javascript.php
-³       ³   licencas.php
-³       ³   marcas_comp.php
-³       ³   materiais.php
-³       ³   mensagem.php
-³       ³   modelos.php
-³       ³   model_config.php
-³       ³   monitores.php
-³       ³   mostra_consulta_comp.php
-³       ³   mostra_consulta_hist_local.php
-³       ³   mostra_consulta_inv.php
-³       ³   mostra_historico.php
-³       ³   mostra_modelos_cadastrados.php
-³       ³   ocorrencias.php
-³       ³   pieces_x_technician.php
-³       ³   piece_hist.php
-³       ³   relatorios.php
-³       ³   relatorio_geral.php
-³       ³   relatorio_total.php
-³       ³   resolucao.php
-³       ³   script_modelo.php
-³       ³   script_modelo_2.php
-³       ³   showSelItemModels.php
-³       ³   softwares.php
-³       ³   sw_padrao.php
-³       ³   tela_logon.inc
-³       ³   tempo_garantia.php
-³       ³   testa_grafico.php
-³       ³   
-³       ÀÄÄÄincludes
-³               header.php
-³               
-ÀÄÄÄocomon
-    ÀÄÄÄgeral
-        ³   abertura.php
-        ³   abertura_user.php
-        ³   alterar.php
-        ³   alterar_ocorrencia.php
-        ³   altera_dados_ocorrencia.php
-        ³   atender.php
-        ³   avisos.php
-        ³   chamados_x_etiqueta.php
-        ³   confirma.php
-        ³   consultar.php
-        ³   consulta_solucoes.php
-        ³   emprestimos.php
-        ³   encaminhar.php
-        ³   encerramento.php
-        ³   excluir_ocorrencia.php
-        ³   form_send_mail.php
-        ³   graph_geral_pizza.php
-        ³   incluir.php
-        ³   incluir_2.php
-        ³   insert_comment.php
-        ³   lista.php
-        ³   listFiles.php
-        ³   logado.php
-        ³   mensagem.php
-        ³   mostra_chamados.php
-        ³   mostra_consulta.php
-        ³   mostra_hist_status.php
-        ³   mostra_relatorio_data_abertura.php
-        ³   mostra_relatorio_data_encerramento.php
-        ³   mostra_relatorio_individual.php
-        ³   mostra_relatorio_intranet.php
-        ³   mostra_relatorio_local.php
-        ³   mostra_relatorio_ocorrencia.php
-        ³   mostra_relatorio_operador.php
-        ³   mostra_relatorio_periodo_equipamento.php
-        ³   mostra_relatorio_periodo_local.php
-        ³   mostra_relatorio_periodo_numero.php
-        ³   mostra_relatorio_periodo_operador.php
-        ³   mostra_relatorio_periodo_problema.php
-        ³   mostra_relatorio_periodo_sistema.php
-        ³   mostra_relatorio_periodo_status.php
-        ³   mostra_relatorio_problema.php
-        ³   mostra_relatorio_sistema.php
-        ³   mostra_relatorio_status.php
-        ³   mostra_resultado_consulta.php
-        ³   mostra_resultado_relatorio.php
-        ³   mostra_resultado_relatorio_total.php
-        ³   mostra_resultado_solucoes.php
-        ³   mostra_sla_definido.php
-        ³   newUser.php
-        ³   ocorrencias.php
-        ³   relatorios.php
-        ³   relatorio_chamados_area.php
-        ³   relatorio_chamados_categorias.php
-        ³   relatorio_data_abertura.php
-        ³   relatorio_data_encerramento.php
-        ³   relatorio_geral.php
-        ³   relatorio_geral_sicpa.php
-        ³   relatorio_gerencial.php
-        ³   relatorio_individual.php
-        ³   relatorio_intranet.php
-        ³   relatorio_local.php
-        ³   relatorio_ocorrencias.php
-        ³   relatorio_operador.php
-        ³   relatorio_operadores_areas.php
-        ³   relatorio_periodo_equipamento.php
-        ³   relatorio_periodo_local.php
-        ³   relatorio_periodo_numero.php
-        ³   relatorio_periodo_operador.php
-        ³   relatorio_periodo_problema.php
-        ³   relatorio_periodo_sistema.php
-        ³   relatorio_periodo_status.php
-        ³   relatorio_problema.php
-        ³   relatorio_problemas_areas.php
-        ³   relatorio_setores_areas.php
-        ³   relatorio_sistema.php
-        ³   relatorio_slas.php
-        ³   relatorio_slas_2.php
-        ³   relatorio_slas_2_default.php
-        ³   relatorio_slas_3.php
-        ³   relatorio_slas_usuario_final.php
-        ³   relatorio_status.php
-        ³   relatorio_total.php
-        ³   relatorio_usuarios_areas.php
-        ³   relatorio_usuario_final.php
-        ³   reopen.php
-        ³   resultado_relatorio_total.php
-        ³   script_modelo.php
-        ³   setores_meses.php
-        ³   showEquipments.php
-        ³   showInformacaoProb.php
-        ³   showOperators.php
-        ³   showProbs.php
-        ³   showSelLocais.php
-        ³   showSelProbs.php
-        ³   sla_standalone.php
-        ³   solucoes.php
-        ³   tempo_doc.php
-        ³   updateCollapseSession.php
-        ³   user_lang.php
-        ³   user_theme.php
-        ³   validacookie.php
-        ³   
-        ÀÄÄÄincludes
+â”‚   centro.php
+â”‚   home.php
+â”‚   index.php
+â”‚   menu.php
+â”‚   PATHS.php
+â”‚   sobre.php
+â”œâ”€â”€â”€admin
+â”‚   â””â”€â”€â”€geral
+â”‚       â”‚   aparencia.php
+â”‚       â”‚   calendar.html
+â”‚       â”‚   cat_prob1.php
+â”‚       â”‚   cat_prob2.php
+â”‚       â”‚   cat_prob3.php
+â”‚       â”‚   ccustos.php
+â”‚       â”‚   configGeral.php
+â”‚       â”‚   configmail.php
+â”‚       â”‚   configmsgs.php
+â”‚       â”‚   configuserscreen.php
+â”‚       â”‚   dominios.php
+â”‚       â”‚   feriados.php
+â”‚       â”‚   locais.php
+â”‚       â”‚   mail_distribution_lists.php
+â”‚       â”‚   mail_history.php
+â”‚       â”‚   mail_templates.php
+â”‚       â”‚   permissoes.php
+â”‚       â”‚   predios.php
+â”‚       â”‚   prioridades.php
+â”‚       â”‚   prioridades_atendimento.php
+â”‚       â”‚   problemas.php
+â”‚       â”‚   problemas_2.php
+â”‚       â”‚   reitorias.php
+â”‚       â”‚   saveTheme.php
+â”‚       â”‚   screenprofiles.php
+â”‚       â”‚   screen_profile_details.php
+â”‚       â”‚   scripts.php
+â”‚       â”‚   script_modelo.php
+â”‚       â”‚   sistemas.php
+â”‚       â”‚   sistemas_conf_abertura.php
+â”‚       â”‚   situacoes.php
+â”‚       â”‚   status.php
+â”‚       â”‚   tipo_componentes.php
+â”‚       â”‚   tipo_equipamentos.php
+â”‚       â”‚   tipo_solucoes.php
+â”‚       â”‚   unidades.php
+â”‚       â”‚   update_old_tickets_prior.php
+â”‚       â”‚   usuarios.php
+â”‚       â”‚   
+â”‚       â””â”€â”€â”€includes
+â”‚               header.php
+â”‚               
+â”œâ”€â”€â”€includes
+â”‚   â”‚   config.inc.php
+â”‚   â”‚   include_geral.inc.php
+â”‚   â”‚   include_geral_II.inc.php
+â”‚   â”‚   language.php
+â”‚   â”‚   logado.php
+â”‚   â”‚   versao.php
+â”‚   â”‚   
+â”‚   â”œâ”€â”€â”€classes
+â”‚   â”‚       auth.class.php
+â”‚   â”‚       conecta.class.php
+â”‚   â”‚       dateOpers.class.php
+â”‚   â”‚       geralog.class.php
+â”‚   â”‚       headers.class.php
+â”‚   â”‚       lock.class.php
+â”‚   â”‚       paging.class.php
+â”‚   â”‚       
+â”‚   â”œâ”€â”€â”€common
+â”‚   â”‚       login.php
+â”‚   â”‚       logout.php
+â”‚   â”‚       
+â”‚   â”œâ”€â”€â”€css
+â”‚   â”‚       estilos.css.php
+â”‚   â”‚           
+â”‚   â”œâ”€â”€â”€fckeditor
+â”‚   â”‚   â”‚   fckeditor_php4.php
+â”‚   â”‚   â”‚   fckeditor_php5.php
+â”‚   â”‚   â”‚   
+â”‚   â”‚   â””â”€â”€â”€editor
+â”‚   â”‚       â”‚   
+â”‚   â”‚       â”œâ”€â”€â”€dialog
+â”‚   â”‚       â”‚   â”‚   
+â”‚   â”‚       â”‚   â”‚           
+â”‚   â”‚       â”‚   â”‚           
+â”‚   â”‚       â”‚   â”œâ”€â”€â”€fck_spellerpages
+â”‚   â”‚       â”‚       â””â”€â”€â”€spellerpages
+â”‚   â”‚       â”‚           â”‚   
+â”‚   â”‚       â”‚           â””â”€â”€â”€server-scripts
+â”‚   â”‚       â”‚                   spellchecker.php
+â”‚   â”‚       â”‚                  
+â”‚   â”‚       â”‚       
+â”‚   â”‚       â”œâ”€â”€â”€filemanager
+â”‚   â”‚       â”‚   â”œâ”€â”€â”€browser
+â”‚   â”‚       â”‚   â”‚   â”œâ”€â”€â”€default
+â”‚   â”‚       â”‚   â”‚   â”‚   â”‚   
+â”‚   â”‚       â”‚   â”‚   â”‚   â”œâ”€â”€â”€connectors
+â”‚   â”‚       â”‚   â”‚   â”‚       â”‚   
+â”‚   â”‚       â”‚   â”‚   â”‚       â””â”€â”€â”€php
+â”‚   â”‚       â”‚   â”‚   â”‚               basexml.php
+â”‚   â”‚       â”‚   â”‚   â”‚               commands.php
+â”‚   â”‚       â”‚   â”‚   â”‚               config.php
+â”‚   â”‚       â”‚   â”‚   â”‚               connector.php
+â”‚   â”‚       â”‚   â”‚   â”‚               io.php
+â”‚   â”‚       â”‚   â”‚   â”‚              util.php
+â”‚   â”‚       â”‚   â”‚   â”‚              
+â”‚   â”‚       â”‚   â”‚   â””â”€â”€â”€mcpuk
+â”‚   â”‚       â”‚   â”‚       â”‚   
+â”‚   â”‚       â”‚   â”‚       â””â”€â”€â”€connectors
+â”‚   â”‚       â”‚   â”‚           â””â”€â”€â”€php
+â”‚   â”‚       â”‚   â”‚               â”‚   config.php
+â”‚   â”‚       â”‚   â”‚               â”‚   connector.php
+â”‚   â”‚       â”‚   â”‚               â”‚   test.html.suspended
+â”‚   â”‚       â”‚   â”‚               â”‚   testme.php.suspended
+â”‚   â”‚       â”‚   â”‚               â”‚   
+â”‚   â”‚       â”‚   â”‚               â”œâ”€â”€â”€Auth
+â”‚   â”‚       â”‚   â”‚               â”‚       Default.php
+â”‚   â”‚       â”‚   â”‚               â”‚       
+â”‚   â”‚       â”‚   â”‚               â”œâ”€â”€â”€Commands
+â”‚   â”‚       â”‚   â”‚               â”‚   â”‚   CreateFolder.php
+â”‚   â”‚       â”‚   â”‚               â”‚   â”‚   DeleteFile.php
+â”‚   â”‚       â”‚   â”‚               â”‚   â”‚   DeleteFolder.php
+â”‚   â”‚       â”‚   â”‚               â”‚   â”‚   FileUpload.php
+â”‚   â”‚       â”‚   â”‚               â”‚   â”‚   GetFolders.php
+â”‚   â”‚       â”‚   â”‚               â”‚   â”‚   GetFoldersAndFiles.php
+â”‚   â”‚       â”‚   â”‚               â”‚   â”‚   GetUploadProgress.php
+â”‚   â”‚       â”‚   â”‚               â”‚   â”‚   RenameFile.php
+â”‚   â”‚       â”‚   â”‚               â”‚   â”‚   RenameFolder.php
+â”‚   â”‚       â”‚   â”‚               â”‚   â”‚   Thumbnail.php
+â”‚   â”‚       â”‚   â”‚               â”‚   â”‚   
+â”‚   â”‚       â”‚   â”‚               â”‚   â””â”€â”€â”€helpers
+â”‚   â”‚       â”‚   â”‚               â”‚           header.cgi
+â”‚   â”‚       â”‚   â”‚               â”‚           iconlookup.php
+â”‚   â”‚       â”‚   â”‚               â”‚           progress.cgi
+â”‚   â”‚       â”‚   â”‚               â”‚           upload.cgi
+â”‚   â”‚       â”‚   â”‚               â”‚           
+â”‚   â”‚       â”‚   â”‚               â”œâ”€â”€â”€dtd
+â”‚   â”‚       â”‚   â”‚                      iso-lat1.ent
+â”‚   â”‚       â”‚   â”‚                      
+â”‚   â”‚       â”‚   â”‚               
+â”‚   â”‚       â”‚   â”œâ”€â”€â”€connectors
+â”‚   â”‚       â”‚   â”‚   â”‚   test.html
+â”‚   â”‚       â”‚   â”‚   â”‚   uploadtest.html
+â”‚   â”‚       â”‚   â”‚   â”‚   
+â”‚   â”‚       â”‚   â”‚   â”œâ”€â”€â”€asp
+â”‚   â”‚       â”‚   â”‚   â”‚       basexml.asp
+â”‚   â”‚       â”‚   â”‚   â”‚       class_upload.asp
+â”‚   â”‚       â”‚   â”‚   â”‚       commands.asp
+â”‚   â”‚       â”‚   â”‚   â”‚       config.asp
+â”‚   â”‚       â”‚   â”‚   â”‚       connector.asp
+â”‚   â”‚       â”‚   â”‚   â”‚       io.asp
+â”‚   â”‚       â”‚   â”‚   â”‚       upload.asp
+â”‚   â”‚       â”‚   â”‚   â”‚       util.asp
+â”‚   â”‚       â”‚   â”‚   â”‚       
+â”‚   â”‚       â”‚   â”‚   â”œâ”€â”€â”€aspx
+â”‚   â”‚       â”‚   â”‚   â”‚       config.ascx
+â”‚   â”‚       â”‚   â”‚   â”‚       connector.aspx
+â”‚   â”‚       â”‚   â”‚   â”‚       upload.aspx
+â”‚   â”‚       â”‚   â”‚   â”‚       
+â”‚   â”‚       â”‚   â”‚   â”œâ”€â”€â”€cfm
+â”‚   â”‚       â”‚   â”‚   â”‚       cf5_connector.cfm
+â”‚   â”‚       â”‚   â”‚   â”‚       cf5_upload.cfm
+â”‚   â”‚       â”‚   â”‚   â”‚       cf_basexml.cfm
+â”‚   â”‚       â”‚   â”‚   â”‚       cf_commands.cfm
+â”‚   â”‚       â”‚   â”‚   â”‚       cf_connector.cfm
+â”‚   â”‚       â”‚   â”‚   â”‚       cf_io.cfm
+â”‚   â”‚       â”‚   â”‚   â”‚       cf_upload.cfm
+â”‚   â”‚       â”‚   â”‚   â”‚       cf_util.cfm
+â”‚   â”‚       â”‚   â”‚   â”‚       config.cfm
+â”‚   â”‚       â”‚   â”‚   â”‚       connector.cfm
+â”‚   â”‚       â”‚   â”‚   â”‚       image.cfc
+â”‚   â”‚       â”‚   â”‚   â”‚       ImageObject.cfc
+â”‚   â”‚       â”‚   â”‚   â”‚       upload.cfm
+â”‚   â”‚       â”‚   â”‚   â”‚       
+â”‚   â”‚       â”‚   â”‚   â”œâ”€â”€â”€lasso
+â”‚   â”‚       â”‚   â”‚   â”‚       config.lasso
+â”‚   â”‚       â”‚   â”‚   â”‚       connector.lasso
+â”‚   â”‚       â”‚   â”‚   â”‚       upload.lasso
+â”‚   â”‚       â”‚   â”‚   â”‚       
+â”‚   â”‚       â”‚   â”‚   â”œâ”€â”€â”€perl
+â”‚   â”‚       â”‚   â”‚   â”‚       basexml.pl
+â”‚   â”‚       â”‚   â”‚   â”‚       commands.pl
+â”‚   â”‚       â”‚   â”‚   â”‚       config.pl
+â”‚   â”‚       â”‚   â”‚   â”‚       connector.cgi
+â”‚   â”‚       â”‚   â”‚   â”‚       io.pl
+â”‚   â”‚       â”‚   â”‚   â”‚       upload.cgi
+â”‚   â”‚       â”‚   â”‚   â”‚       upload_fck.pl
+â”‚   â”‚       â”‚   â”‚   â”‚       util.pl
+â”‚   â”‚       â”‚   â”‚   â”‚       
+â”‚   â”‚       â”‚   â”‚   â”œâ”€â”€â”€php
+â”‚   â”‚       â”‚   â”‚   â”‚       basexml.php
+â”‚   â”‚       â”‚   â”‚   â”‚       commands.php
+â”‚   â”‚       â”‚   â”‚   â”‚       config.php
+â”‚   â”‚       â”‚   â”‚   â”‚       connector.php
+â”‚   â”‚       â”‚   â”‚   â”‚       io.php
+â”‚   â”‚       â”‚   â”‚   â”‚       phpcompat.php
+â”‚   â”‚       â”‚   â”‚   â”‚       upload.php
+â”‚   â”‚       â”‚   â”‚   â”‚       util.php
+â”‚   â”‚       â”‚   â”‚   â”‚       
+â”‚   â”‚       â”‚   â”‚   â””â”€â”€â”€py
+â”‚   â”‚       â”‚   â”‚           config.py
+â”‚   â”‚       â”‚   â”‚           connector.py
+â”‚   â”‚       â”‚   â”‚           fckcommands.py
+â”‚   â”‚       â”‚   â”‚           fckconnector.py
+â”‚   â”‚       â”‚   â”‚           fckoutput.py
+â”‚   â”‚       â”‚   â”‚           fckutil.py
+â”‚   â”‚       â”‚   â”‚           htaccess.txt
+â”‚   â”‚       â”‚   â”‚           upload.py
+â”‚   â”‚       â”‚   â”‚           wsgi.py
+â”‚   â”‚       â”‚   â”‚           zope.py
+â”‚   â”‚       â”‚   â”‚           
+â”‚   â”‚       â”‚   â””â”€â”€â”€upload
+â”‚   â”‚       â”‚       â”‚   test.html
+â”‚   â”‚       â”‚       â”‚   
+â”‚   â”‚       â”‚       â”œâ”€â”€â”€asp
+â”‚   â”‚       â”‚       â”‚       class_upload.asp
+â”‚   â”‚       â”‚       â”‚       config.asp
+â”‚   â”‚       â”‚       â”‚       io.asp
+â”‚   â”‚       â”‚       â”‚       upload.asp
+â”‚   â”‚       â”‚       â”‚       
+â”‚   â”‚       â”‚       â””â”€â”€â”€php
+â”‚   â”‚       â”‚               config.php
+â”‚   â”‚       â”‚               upload.php
+â”‚   â”‚       â”‚               util.php
+â”‚   â”‚       â”‚               
+â”‚   â”‚       â”‚               
+â”‚   â”‚       â”‚       
+â”‚   â”‚       â””â”€â”€â”€skins
+â”‚   â”‚           â”‚   
+â”‚   â”‚           â””â”€â”€â”€default
+â”‚   â”‚                 fck_editor.css.php
+â”‚   â”‚                
+â”‚   â”‚                    
+â”‚   â”‚               
+â”‚   â”œâ”€â”€â”€functions
+â”‚   â”‚       browser_detection.php
+â”‚   â”‚       download.php
+â”‚   â”‚       funcoes.inc
+â”‚   â”‚       showImg.php
+â”‚   â”‚       
+â”‚   â”œâ”€â”€â”€help
+â”‚   â”‚       helpconfig.php
+â”‚   â”‚       helpconfiggeral.php
+â”‚   â”‚       helpconfigmail.php
+â”‚   â”‚       helpconfigmsg.php
+â”‚   â”‚       helpNotReady.php
+â”‚   â”‚       helpOabertura.php
+â”‚   â”‚       help_depends.php
+â”‚   â”‚       legenda_geral.html
+â”‚   â”‚      sla_popup.php
+â”‚   â”‚           
+â”‚   â”œâ”€â”€â”€jpgraph
+â”‚   â”‚   â”‚   testa_gd.php
+â”‚   â”‚   â”‚   
+â”‚   â”‚   â””â”€â”€â”€src
+â”‚   â”‚           Changelog
+â”‚   â”‚           imgdata_balls.inc
+â”‚   â”‚           imgdata_bevels.inc
+â”‚   â”‚           imgdata_diamonds.inc
+â”‚   â”‚           imgdata_pushpins.inc
+â”‚   â”‚           imgdata_squares.inc
+â”‚   â”‚           imgdata_stars.inc
+â”‚   â”‚           jpgraph.php
+â”‚   â”‚           jpgraph_bar.php
+â”‚   â”‚           jpgraph_canvas.php
+â”‚   â”‚           jpgraph_canvtools.php
+â”‚   â”‚           jpgraph_error.php
+â”‚   â”‚           jpgraph_flags.php
+â”‚   â”‚           jpgraph_gantt.php
+â”‚   â”‚           jpgraph_gb2312.php
+â”‚   â”‚           jpgraph_gradient.php
+â”‚   â”‚           jpgraph_imgtrans.php
+â”‚   â”‚           jpgraph_line.php
+â”‚   â”‚           jpgraph_log.php
+â”‚   â”‚           jpgraph_pie.php
+â”‚   â”‚           jpgraph_pie3d.php
+â”‚   â”‚           jpgraph_plotmark.inc
+â”‚   â”‚           jpgraph_polar.php
+â”‚   â”‚           jpgraph_radar.php
+â”‚   â”‚           jpgraph_regstat.php
+â”‚   â”‚           jpgraph_scatter.php
+â”‚   â”‚           jpgraph_stock.php
+â”‚   â”‚           
+â”‚   â”œâ”€â”€â”€languages
+â”‚   â”‚       en.php
+â”‚   â”‚       es_CO.php
+â”‚   â”‚       pt_BR.php
+â”‚   â”‚       
+â”‚   â”‚       
+â”‚   â”‚       
+â”‚   â”œâ”€â”€â”€menu
+â”‚   â”‚   â”‚   example-treemenu.php
+â”‚   â”‚   â”‚   menu.php
+â”‚   â”‚   â”‚   menu2.php
+â”‚   â”‚   â”‚   temp.php
+â”‚   â”‚   â”‚   
+â”‚   â”‚   â””â”€â”€â”€phplm320
+â”‚   â”‚       â”‚   ACKNOWLEDGEMENTS
+â”‚   â”‚       â”‚   CHANGELOG
+â”‚   â”‚       â”‚   CHANGE_TEMPLATE_CLASS_NAME.sh
+â”‚   â”‚       â”‚   copying
+â”‚   â”‚       â”‚   demo.php
+â”‚   â”‚       â”‚   demo.php.html
+â”‚   â”‚       â”‚   demo.phps
+â”‚   â”‚       â”‚   example-db-hormenu.php
+â”‚   â”‚       â”‚   example-db-treemenu.notshown.php
+â”‚   â”‚       â”‚   example-db-treemenu.php
+â”‚   â”‚       â”‚   example-dbtofile.php
+â”‚   â”‚       â”‚   example-filetodb.php
+â”‚   â”‚       â”‚   example-frame-body.php
+â”‚   â”‚       â”‚   example-frame-treemenu.php
+â”‚   â”‚       â”‚   example-frame.html
+â”‚   â”‚       â”‚   example-hormenu-old.php
+â”‚   â”‚       â”‚   example-hormenu.php
+â”‚   â”‚       â”‚   example-hormenu_and_treemenu.php
+â”‚   â”‚       â”‚   example-hormenu_and_vermenu.php
+â”‚   â”‚       â”‚   example-horplainmenu.php
+â”‚   â”‚       â”‚   example-layersmenus_and_treemenus.php
+â”‚   â”‚       â”‚   example-phptreemenu.php
+â”‚   â”‚       â”‚   example-see-through.php
+â”‚   â”‚       â”‚   example-treemenu.php
+â”‚   â”‚       â”‚   example-two_treemenus.php
+â”‚   â”‚       â”‚   example-vermenu.php
+â”‚   â”‚       â”‚   example-verplainmenu.php
+â”‚   â”‚       â”‚   invmon-menu.php
+â”‚   â”‚       â”‚   
+â”‚   â”‚       â”œâ”€â”€â”€dumps
+â”‚   â”‚       â”‚       mysql.demo_data.dump
+â”‚   â”‚       â”‚       mysql.start.dump
+â”‚   â”‚       â”‚       pgsql.demo_data.dump
+â”‚   â”‚       â”‚       pgsql.start.dump
+â”‚   â”‚       â”‚       phplayersmenu
+â”‚   â”‚       â”‚       sqlite.demo_data.dump
+â”‚   â”‚       â”‚       sqlite.demo_data.dump.php5
+â”‚   â”‚       â”‚       sqlite.start.dump
+â”‚   â”‚       â”‚       sqlite.start.dump.php5
+â”‚   â”‚       â”‚       
+â”‚   â”‚       â”‚       
+â”‚   â”‚       â”œâ”€â”€â”€lib
+â”‚   â”‚       â”‚       layersmenu-browser_detection.php
+â”‚   â”‚       â”‚       layersmenu-common.inc.php
+â”‚   â”‚       â”‚       layersmenu-process.inc.php
+â”‚   â”‚       â”‚       layersmenu.inc.php
+â”‚   â”‚       â”‚       PHPLIB.php
+â”‚   â”‚       â”‚       phptreemenu.inc.php
+â”‚   â”‚       â”‚       plainmenu.inc.php
+â”‚   â”‚       â”‚       treemenu.inc.php
+â”‚   â”‚       â”‚           
+â”‚   â”‚       â”‚           
+â”‚   â”‚       â””â”€â”€â”€templates
+â”‚   â”‚               layersmenu-horizontal_menu-full.ihtml
+â”‚   â”‚               layersmenu-horizontal_menu-keramik-full.ihtml
+â”‚   â”‚               layersmenu-horizontal_menu-keramik.ihtml
+â”‚   â”‚               layersmenu-horizontal_menu-old.ihtml
+â”‚   â”‚               layersmenu-horizontal_menu.ihtml
+â”‚   â”‚               layersmenu-horizontal_plain_menu-red.ihtml
+â”‚   â”‚               layersmenu-horizontal_plain_menu.ihtml
+â”‚   â”‚               layersmenu-plain_menu-green.ihtml
+â”‚   â”‚               layersmenu-plain_menu.ihtml
+â”‚   â”‚               layersmenu-sub_menu-galaxy.ihtml
+â”‚   â”‚               layersmenu-sub_menu-keramik.ihtml
+â”‚   â”‚               layersmenu-sub_menu-old.ihtml
+â”‚   â”‚               layersmenu-sub_menu.ihtml
+â”‚   â”‚               layersmenu-vertical_menu-galaxy.ihtml
+â”‚   â”‚               layersmenu-vertical_menu-old.ihtml
+â”‚   â”‚               layersmenu-vertical_menu.ihtml
+â”‚   â”‚               
+â”‚   â”œâ”€â”€â”€phpmailer
+â”‚   â”‚   â”‚   class.phpmailer.php
+â”‚   â”‚   â”‚   class.pop3.php
+â”‚   â”‚   â”‚   class.smtp.php
+â”‚   â”‚   â”‚   
+â”‚   â”‚   â”‚       
+â”‚   â”‚   â”œâ”€â”€â”€examples
+â”‚   â”‚   â”‚       pop3_before_smtp_test.php
+â”‚   â”‚   â”‚       test_gmail.php
+â”‚   â”‚   â”‚       test_mail.php
+â”‚   â”‚   â”‚       test_sendmail.php
+â”‚   â”‚   â”‚       test_smtp.php
+â”‚   â”‚   â”‚           
+â”‚   â”‚   â”œâ”€â”€â”€language
+â”‚   â”‚   â”‚       phpmailer.lang-br.php
+â”‚   â”‚   â”‚       phpmailer.lang-ca.php
+â”‚   â”‚   â”‚       phpmailer.lang-cz.php
+â”‚   â”‚   â”‚       phpmailer.lang-de.php
+â”‚   â”‚   â”‚       phpmailer.lang-dk.php
+â”‚   â”‚   â”‚       phpmailer.lang-en.php
+â”‚   â”‚   â”‚       phpmailer.lang-es.php
+â”‚   â”‚   â”‚       phpmailer.lang-et.php
+â”‚   â”‚   â”‚       phpmailer.lang-fi.php
+â”‚   â”‚   â”‚       phpmailer.lang-fo.php
+â”‚   â”‚   â”‚       phpmailer.lang-fr.php
+â”‚   â”‚   â”‚       phpmailer.lang-hu.php
+â”‚   â”‚   â”‚       phpmailer.lang-it.php
+â”‚   â”‚   â”‚       phpmailer.lang-ja.php
+â”‚   â”‚   â”‚       phpmailer.lang-nl.php
+â”‚   â”‚   â”‚       phpmailer.lang-no.php
+â”‚   â”‚   â”‚       phpmailer.lang-pl.php
+â”‚   â”‚   â”‚       phpmailer.lang-ro.php
+â”‚   â”‚   â”‚       phpmailer.lang-ru.php
+â”‚   â”‚   â”‚       phpmailer.lang-se.php
+â”‚   â”‚   â”‚       phpmailer.lang-tr.php
+â”‚   â”‚   â”‚       
+â”‚   â”‚   â”‚           
+â”‚   â”‚   â””â”€â”€â”€test
+â”‚   â”‚           phpmailer_test.php
+â”‚   â”‚           phpunit.php
+â”‚   â”‚           
+â”‚   â””â”€â”€â”€queries
+â”‚           queries.php
+â”‚           
+â”œâ”€â”€â”€invmon
+â”‚   â””â”€â”€â”€geral
+â”‚       â”‚   abertura.php
+â”‚       â”‚   altera_dados_computador.php
+â”‚       â”‚   altera_dados_documento.php
+â”‚       â”‚   altera_dados_marca_comp.php
+â”‚       â”‚   altera_dados_modelo.php
+â”‚       â”‚   altera_dados_ocorrencia.php
+â”‚       â”‚   altera_dados_resolucao.php
+â”‚       â”‚   altera_senha.php
+â”‚       â”‚   categorias.php
+â”‚       â”‚   comp_soft.php
+â”‚       â”‚   consulta_comp.php
+â”‚       â”‚   consulta_comp_teste.php
+â”‚       â”‚   consulta_garantia.php
+â”‚       â”‚   consulta_garantia_piece.php
+â”‚       â”‚   consulta_hist_inv.php
+â”‚       â”‚   consulta_hist_local.php
+â”‚       â”‚   consulta_inv.php
+â”‚       â”‚   consulta_piece.php
+â”‚       â”‚   docs_assoc_model.php
+â”‚       â”‚   documentos.php
+â”‚       â”‚   estat_compporhd.php
+â”‚       â”‚   estat_compporlocal.php
+â”‚       â”‚   estat_comppormemoria.php
+â”‚       â”‚   estat_compporprocessador.php
+â”‚       â”‚   estat_equippordia.php
+â”‚       â”‚   estat_equippordominio.php
+â”‚       â”‚   estat_equipporlocal.php
+â”‚       â”‚   estat_equipporreitoria.php
+â”‚       â”‚   estat_equipporreitoria_agrup.php
+â”‚       â”‚   estat_equipporsituacao.php
+â”‚       â”‚   estat_geral.php
+â”‚       â”‚   estat_instituicao.php
+â”‚       â”‚   estat_modelo_memoria.php
+â”‚       â”‚   estat_situacao_geral.php
+â”‚       â”‚   estat_topten_modelo.php
+â”‚       â”‚   estat_vencimentos.php
+â”‚       â”‚   estat_vencimentos_anual.php
+â”‚       â”‚   estat_vencimentos_full.php
+â”‚       â”‚   estoque.php
+â”‚       â”‚   exclui_dados_documento.php
+â”‚       â”‚   exclui_dados_equipamento.php
+â”‚       â”‚   exclui_dados_marca_comp.php
+â”‚       â”‚   exclui_dados_modelo.php
+â”‚       â”‚   exclui_dados_resolucao.php
+â”‚       â”‚   exclui_equipamento.php
+â”‚       â”‚   fabricantes.php
+â”‚       â”‚   fornecedores.php
+â”‚       â”‚   garantias.php
+â”‚       â”‚   graphteste.php
+â”‚       â”‚   graph_equipporreitoria.php
+â”‚       â”‚   graph_geral_barras.php
+â”‚       â”‚   graph_geral_pizza.php
+â”‚       â”‚   hw_alteracoes.php
+â”‚       â”‚   hw_historico.php
+â”‚       â”‚   incluir_categoria.php
+â”‚       â”‚   incluir_computador.php
+â”‚       â”‚   incluir_hws.php
+â”‚       â”‚   incluir_marca_comp.php
+â”‚       â”‚   incluir_material.php
+â”‚       â”‚   incluir_modelo.php
+â”‚       â”‚   incluir_modelo_equip.php
+â”‚       â”‚   incluir_molde.php
+â”‚       â”‚   incluir_monitor.php
+â”‚       â”‚   itens.php
+â”‚       â”‚   itens_official.php
+â”‚       â”‚   javascript.php
+â”‚       â”‚   licencas.php
+â”‚       â”‚   marcas_comp.php
+â”‚       â”‚   materiais.php
+â”‚       â”‚   mensagem.php
+â”‚       â”‚   modelos.php
+â”‚       â”‚   model_config.php
+â”‚       â”‚   monitores.php
+â”‚       â”‚   mostra_consulta_comp.php
+â”‚       â”‚   mostra_consulta_hist_local.php
+â”‚       â”‚   mostra_consulta_inv.php
+â”‚       â”‚   mostra_historico.php
+â”‚       â”‚   mostra_modelos_cadastrados.php
+â”‚       â”‚   ocorrencias.php
+â”‚       â”‚   pieces_x_technician.php
+â”‚       â”‚   piece_hist.php
+â”‚       â”‚   relatorios.php
+â”‚       â”‚   relatorio_geral.php
+â”‚       â”‚   relatorio_total.php
+â”‚       â”‚   resolucao.php
+â”‚       â”‚   script_modelo.php
+â”‚       â”‚   script_modelo_2.php
+â”‚       â”‚   showSelItemModels.php
+â”‚       â”‚   softwares.php
+â”‚       â”‚   sw_padrao.php
+â”‚       â”‚   tela_logon.inc
+â”‚       â”‚   tempo_garantia.php
+â”‚       â”‚   testa_grafico.php
+â”‚       â”‚   
+â”‚       â””â”€â”€â”€includes
+â”‚               header.php
+â”‚               
+â””â”€â”€â”€ocomon
+    â””â”€â”€â”€geral
+        â”‚   abertura.php
+        â”‚   abertura_user.php
+        â”‚   alterar.php
+        â”‚   alterar_ocorrencia.php
+        â”‚   altera_dados_ocorrencia.php
+        â”‚   atender.php
+        â”‚   avisos.php
+        â”‚   chamados_x_etiqueta.php
+        â”‚   confirma.php
+        â”‚   consultar.php
+        â”‚   consulta_solucoes.php
+        â”‚   emprestimos.php
+        â”‚   encaminhar.php
+        â”‚   encerramento.php
+        â”‚   excluir_ocorrencia.php
+        â”‚   form_send_mail.php
+        â”‚   graph_geral_pizza.php
+        â”‚   incluir.php
+        â”‚   incluir_2.php
+        â”‚   insert_comment.php
+        â”‚   lista.php
+        â”‚   listFiles.php
+        â”‚   logado.php
+        â”‚   mensagem.php
+        â”‚   mostra_chamados.php
+        â”‚   mostra_consulta.php
+        â”‚   mostra_hist_status.php
+        â”‚   mostra_relatorio_data_abertura.php
+        â”‚   mostra_relatorio_data_encerramento.php
+        â”‚   mostra_relatorio_individual.php
+        â”‚   mostra_relatorio_intranet.php
+        â”‚   mostra_relatorio_local.php
+        â”‚   mostra_relatorio_ocorrencia.php
+        â”‚   mostra_relatorio_operador.php
+        â”‚   mostra_relatorio_periodo_equipamento.php
+        â”‚   mostra_relatorio_periodo_local.php
+        â”‚   mostra_relatorio_periodo_numero.php
+        â”‚   mostra_relatorio_periodo_operador.php
+        â”‚   mostra_relatorio_periodo_problema.php
+        â”‚   mostra_relatorio_periodo_sistema.php
+        â”‚   mostra_relatorio_periodo_status.php
+        â”‚   mostra_relatorio_problema.php
+        â”‚   mostra_relatorio_sistema.php
+        â”‚   mostra_relatorio_status.php
+        â”‚   mostra_resultado_consulta.php
+        â”‚   mostra_resultado_relatorio.php
+        â”‚   mostra_resultado_relatorio_total.php
+        â”‚   mostra_resultado_solucoes.php
+        â”‚   mostra_sla_definido.php
+        â”‚   newUser.php
+        â”‚   ocorrencias.php
+        â”‚   relatorios.php
+        â”‚   relatorio_chamados_area.php
+        â”‚   relatorio_chamados_categorias.php
+        â”‚   relatorio_data_abertura.php
+        â”‚   relatorio_data_encerramento.php
+        â”‚   relatorio_geral.php
+        â”‚   relatorio_geral_sicpa.php
+        â”‚   relatorio_gerencial.php
+        â”‚   relatorio_individual.php
+        â”‚   relatorio_intranet.php
+        â”‚   relatorio_local.php
+        â”‚   relatorio_ocorrencias.php
+        â”‚   relatorio_operador.php
+        â”‚   relatorio_operadores_areas.php
+        â”‚   relatorio_periodo_equipamento.php
+        â”‚   relatorio_periodo_local.php
+        â”‚   relatorio_periodo_numero.php
+        â”‚   relatorio_periodo_operador.php
+        â”‚   relatorio_periodo_problema.php
+        â”‚   relatorio_periodo_sistema.php
+        â”‚   relatorio_periodo_status.php
+        â”‚   relatorio_problema.php
+        â”‚   relatorio_problemas_areas.php
+        â”‚   relatorio_setores_areas.php
+        â”‚   relatorio_sistema.php
+        â”‚   relatorio_slas.php
+        â”‚   relatorio_slas_2.php
+        â”‚   relatorio_slas_2_default.php
+        â”‚   relatorio_slas_3.php
+        â”‚   relatorio_slas_usuario_final.php
+        â”‚   relatorio_status.php
+        â”‚   relatorio_total.php
+        â”‚   relatorio_usuarios_areas.php
+        â”‚   relatorio_usuario_final.php
+        â”‚   reopen.php
+        â”‚   resultado_relatorio_total.php
+        â”‚   script_modelo.php
+        â”‚   setores_meses.php
+        â”‚   showEquipments.php
+        â”‚   showInformacaoProb.php
+        â”‚   showOperators.php
+        â”‚   showProbs.php
+        â”‚   showSelLocais.php
+        â”‚   showSelProbs.php
+        â”‚   sla_standalone.php
+        â”‚   solucoes.php
+        â”‚   tempo_doc.php
+        â”‚   updateCollapseSession.php
+        â”‚   user_lang.php
+        â”‚   user_theme.php
+        â”‚   validacookie.php
+        â”‚   
+        â””â”€â”€â”€includes
                 header.php
                 

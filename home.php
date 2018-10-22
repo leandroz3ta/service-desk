@@ -1,6 +1,6 @@
 <?php 
 header('Content-Type: text/html; charset=iso-8859-1');
- /*                        Copyright 2005 Flávio Ribeiro
+ /*                        Copyright 2005 Flï¿½vio Ribeiro
 
          This file is part of OCOMON.
 
@@ -46,21 +46,25 @@ header('Content-Type: text/html; charset=iso-8859-1');
 
 	$_SESSION['s_page_home'] = $_SERVER['PHP_SELF'];
 
-	print "<html>";
-	print "<head>";
-	print "<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'>";
-	print "<link rel='stylesheet' type='text/css' href='includes/css/bootstrap/bootstrap.css'>";
-	print "<script src='includes/javascript/libs/jquery-1-11-0.js' type='text/javascript'></script>";
-	print "<script src='includes/javascript/libs/modernizr.js'></script>";
-	print "<script src='includes/javascript/bootstrap.js' type='text/javascript'></script>";
-	print "<title>OCOMON ".VERSAO."</title>";
-	print "<link rel=stylesheet type='text/css' href='includes/css/estilos.css.php'>";
-	print "</head>";
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>OCOMON <?php echo VERSAO; ?></title>
+
+	<link rel='stylesheet' type='text/css' href='includes/css/bootstrap/bootstrap.css'>
+	<link rel=stylesheet type='text/css' href='includes/css/estilos.css.php'>
+</head>
+<body>
+<?
 
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],3);
 
-	//Todas as áreas que o usuário percente
+	//Todas as ï¿½reas que o usuï¿½rio percente
 	$uareas = $_SESSION['s_area'];
 	if ($_SESSION['s_uareas']) {
 		$uareas.=",".$_SESSION['s_uareas'];
@@ -71,7 +75,7 @@ header('Content-Type: text/html; charset=iso-8859-1');
 	$execTotal = mysqli_query($conect, $qryTotal) or die (TRANS('MSG_ERR_TOTAL_OCCO'). $qryTotal);
 	$regTotal = mysqli_num_rows($execTotal);
 
-	//Todas as áreas que o usuário percente
+	//Todas as ï¿½reas que o usuï¿½rio percente
 	$qryAreas = "select count(*) total, a.sistema area, a.sis_id area_cod from ocorrencias o left join sistemas a on o.sistema = a.sis_id".
 			" left join `status` s on s.stat_id = o.status where o.sistema in (".$uareas.") and s.stat_painel in (1,2) ".
 			"group by a.sistema";
@@ -99,7 +103,7 @@ header('Content-Type: text/html; charset=iso-8859-1');
 					" ".TRANS('HOME_OPENED_CALLS_TO_AREA').": <font color='green'>".$rowAreas['area']."</font></b></td></tr>";
 
 		print "<tr><td style='{padding-left:5px;}'><div id='ocorrencias".$b."'>"; //style='display:none;'
-			//TOTAL DE NÍVEIS DE STATUS
+			//TOTAL DE Nï¿½VEIS DE STATUS
 		$qryStatus = "select count(*) total, o.*, s.* from ocorrencias o left join `status` s on o.status = s.stat_id where ".
 				"o.sistema = ".$rowAreas['area_cod']." and s.stat_painel in (1,2) group by s.status";
 		$execStatus = mysqli_query($conect,$qryStatus) or die (TRANS('MSG_ERR_QRY_STATUS'). $qryStatus);
@@ -108,7 +112,7 @@ header('Content-Type: text/html; charset=iso-8859-1');
 		While ($rowStatus = mysqli_fetch_array($execStatus)) {
 			print "<tr><td colspan='7'><IMG ID='imgstatus".$a."' SRC='./includes/icons/open.png' width='9' height='9' ".
 				"STYLE=\"{cursor: pointer;}\" onClick=\"invertView('status".$a."')\">&nbsp;<b>".TRANS('OCO_FIELD_STATUS').": ".$rowStatus['status']." - ".
-				"".$rowStatus['total']." ocorrências</b><br>";
+				"".$rowStatus['total']." ocorrï¿½ncias</b><br>";
 			print "<div id='status".$a."' style='display:none;' >"; //style='display:none;'
 
 			print "<TABLE border='0' style='{padding-left:10px;}' cellpadding='5' cellspacing='0' align='left' width='100%'>";
@@ -144,7 +148,7 @@ header('Content-Type: text/html; charset=iso-8859-1');
 				$execSubCall = mysqli_query($conect,$sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$sqlSubCall);
 				$regSub = mysqli_num_rows($execSubCall);
 				if ($regSub > 0) {
-					#É CHAMADO PAI?
+					#ï¿½ CHAMADO PAI?
 					$_sqlSubCall = "select * from ocodeps where dep_pai = ".$rowDetail['numero']."";
 					$_execSubCall = mysqli_query($conect,$_sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$_sqlSubCall);
 					$_regSub = mysqli_num_rows($_execSubCall);
