@@ -17,4 +17,6 @@ Licença GPL
 
 ## Task
 > Alteração da forma de acesso ao dados
-  - Replace *mysql* por **mysqli** [Task list](./task.md) 
+### Replace *mysql* por mysqli
+ [Task list](./task.md)
+
