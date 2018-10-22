@@ -1,4 +1,6 @@
-<?php  /*                        Copyright 2005 Fl�vio Ribeiro
+<?php  
+header('Content-Type: text/html; charset=iso-8859-1');
+/*                        Copyright 2005 Fl�vio Ribeiro
 
          This file is part of OCOMON.
 
@@ -20,10 +22,8 @@
 	include ("../../includes/include_geral.inc.php");
 	include ("../../includes/include_geral_II.inc.php");
 
-// 	if ($_SESSION['s_allow_change_theme'] == 0){
-// 		print "<script>mensagem('".TRANS('MSG_SORRY')."\\n".TRANS('MSG_ALTER_LANG_DISABLE_ADMIN')."'); history.back();</script>";
-// 		exit;
-// 	}
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
 
 	print "<HTML>";
 	print "<head>";
@@ -35,9 +35,9 @@
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],4);
 
 	$sqlUserLang = "SELECT * FROM uprefs WHERE upref_uid = ".$_SESSION['s_uid']."";
-	$execUserLang = mysql_query($sqlUserLang) or die (TRANS('MSG_ERR_RESCUE_INFO_THEME_USER'));
-	$rowUL = mysql_fetch_array($execUserLang);
-	$hasUL = mysql_num_rows($execUserLang);
+	$execUserLang = mysqli_query($conect,$sqlUserLang) or die (TRANS('MSG_ERR_RESCUE_INFO_THEME_USER'));
+	$rowUL = mysqli_fetch_array($execUserLang);
+	$hasUL = mysqli_num_rows($execUserLang);
 
 
 	print "<BR><B>".TRANS('TTL_THEME').": &nbsp;</b><BR>";
@@ -64,15 +64,12 @@
 		//print "</tr><tr><td colspan='2'>&nbsp;</td></tr>";
 		print "<tr>";
 		print "<tr>";
-		//print "<input type='hidden' name='marca' value='".$rowTema['tm_color_marca']."'>";
-		//print "<input type='hidden' name='destaca' value='".$rowTema['tm_color_destaca']."'>";
 		print "<td align='center'><input type='submit' name='submit' class='button' value='".TRANS('BT_LOAD','',0)."'></td>".
 				"<td align='center'><input type='button' name='cancelar' class='button' value='".TRANS('BT_CANCEL')."' onClick=\"javascript:history.back();\"></td>";
 		print "</tr>";
 
 	} else
 	if (isset($_POST['submit']) ) {
-		//dump($_REQUEST); exit;
 
 		if (!empty($hasUL)){
 		//update
@@ -85,7 +82,6 @@
 		$execQry = mysql_query($qry) or die ($qry);
 
 		$_SESSION['s_language'] = $_POST['lang'];
-		//print "<script>mensagem('Tema carregado com sucesso! Tecle F5 para atualizar a p�gina!'); window.opener.location.reload(); window.self.close(); </script>";
 		print "<script>mensagem('".TRANS('MSG_LANG_LOAD_SUCESS','sucesso',0)."'); window.open('../../index.php','_parent','');  </script>"; //?LOAD=ADMIN
 
 	}

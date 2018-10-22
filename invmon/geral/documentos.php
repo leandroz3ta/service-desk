@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -24,6 +25,9 @@
 	include ("../../includes/classes/paging.class.php");
 	include ('includes/header.php');
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');		
+	
 	$_SESSION['s_page_invmon'] = $_SERVER['PHP_SELF'];
 
 	print "<HTML>";
@@ -57,8 +61,8 @@
 		}
 		$query.= "\nORDER BY ".$ordena."";
 
-		$resultado = mysql_query($query) or die(TRANS('ERR_QUERY'));
-		$registros = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $query) or die(TRANS('ERR_QUERY'));
+		$registros = mysqli_num_rows($resultado);
 
 
 		if (isset($_GET['LIMIT']))
@@ -91,7 +95,7 @@
 					"<TD class='line'>".TRANS('OCO_FIELD_ALTER')."</TD><td class='line'>".TRANS('OCO_FIELD_EXCLUDE')."</TD>".
 				"</TR>";
 			$j=2;
-			while ($row = mysql_fetch_array($PAGE->RESULT_SQL))
+			while ($row = mysqli_fetch_array($PAGE->RESULT_SQL))
 			{
 				if ($j % 2)
 				{
@@ -106,8 +110,8 @@
 				print "<td class='line'>".$row['mat_nome']."</td>";
 
 				$sqlModelo = "SELECT * FROM marcas_comp WHERE marc_cod = ".$row['mat_modelo_equip']."";
-				$execSql = mysql_query($sqlModelo) or die (TRANS('MSG_NOT_ACCESS_MODEL_DATA'));
-				$rowModelo = mysql_fetch_array($execSql);
+				$execSql = mysqli_query($conect, $sqlModelo) or die (TRANS('MSG_NOT_ACCESS_MODEL_DATA'));
+				$rowModelo = mysqli_fetch_array($execSql);
 
 
 				print "<td class='line'>".NVL($rowModelo['marc_nome'])."</td>";
@@ -149,8 +153,8 @@
 			print "<select class='select' name='modelo' id='idModelo'>";
 				print "<option value=-1 selected>".TRANS('SEL_MODEL')."</option>";
 				$select = "select * from marcas_comp order by marc_nome";
-				$exec = mysql_query($select);
-				while($row = mysql_fetch_array($exec)){
+				$exec = mysqli_query($conect, $select);
+				while($row = mysqli_fetch_array($exec)){
 					print "<option value=".$row['marc_cod'].">".$row['marc_nome']."</option>";
 				} // while
 			print "</select>";
@@ -173,7 +177,7 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="alter") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<BR><B>".TRANS('SUBTTL_EDIT_SOFT')."</B><BR>";
 
@@ -196,12 +200,12 @@
 			"<TD width='80%' align='left' bgcolor='".BODY_COLOR."'><select class='select' name='modelo' id='idModelo'>";
 
 			$sql = "select * from materiais where mat_cod=".$row["mat_cod"]."";
-			$commit = mysql_query($sql);
-			$rowR = mysql_fetch_array($commit);
+			$commit = mysqli_query($conect, $sql);
+			$rowR = mysqli_fetch_array($commit);
 				print "<option value=-1 >".TRANS('SEL_MODEL')."</option>";
 					$sql="select * from marcas_comp order by marc_nome";
-					$commit = mysql_query($sql);
-					while($rowB = mysql_fetch_array($commit)){
+					$commit = mysqli_query($conect, $sql);
+					while($rowB = mysqli_fetch_array($commit)){
 						print "<option value=".$rowB["marc_cod"]."";
                         			if ($rowB['marc_cod'] == $row['mat_modelo_equip'] ) {
                             				print " selected";
@@ -233,7 +237,7 @@
 	if (isset($_GET['action']) && $_GET['action'] == "excluir"){
 
 		$query2 = "DELETE FROM materiais WHERE mat_cod='".$_GET['cod']."'";
-		$resultado2 = mysql_query($query2);
+		$resultado2 = mysqli_query($conect, $query2);
 
 		if ($resultado2 == 0)
 		{
@@ -252,8 +256,8 @@
 		$erro=false;
 
 		$qryl = "SELECT * FROM materiais WHERE mat_nome = '".$_POST['documento']."'";
-		$resultado = mysql_query($qryl);
-		$linhas = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $qryl);
+		$linhas = mysqli_num_rows($resultado);
 
 		if ($linhas > 0)
 		{
@@ -264,8 +268,8 @@
 			$query = "INSERT INTO materiais (mat_nome, mat_qtd, mat_caixa, mat_modelo_equip, mat_obs, mat_data) values ".
 						"('".noHtml($_POST['documento'])."', '".noHtml($_POST['qtd'])."', '".noHtml($_POST['caixa'])."', ".
 						"'".noHtml($_POST['modelo'])."', '".noHtml($_POST['comentario'])."', '".date("Y-m-d h:i:s")."')";
-			$resultado = mysql_query($query) or die(TRANS('ERR_INSERT').'<br>'.$query);
-			$modelCod = mysql_insert_id();
+			$resultado = mysqli_query($conect, $query) or die(TRANS('ERR_INSERT').'<br>'.$query);
+			$modelCod = mysqli_insert_id();
 
 
 			$aviso = TRANS('OK_INSERT');
@@ -279,7 +283,7 @@
 		$query2 = "UPDATE materiais SET mat_nome='".noHtml($_POST['documento'])."', mat_qtd=".$_POST['qtd'].", ".
 		"mat_caixa='".noHtml($_POST['caixa'])."', mat_modelo_equip = '".$_POST['modelo']."', mat_obs = '".noHtml($_POST['comentario'])."'".
 		"  WHERE mat_cod='".$_POST['cod']."'";
-		$resultado2 = mysql_query($query2) or die(TRANS('MSG_ERR_ALTER_INFO_REG').'<br>'.$query2);
+		$resultado2 = mysqli_query($conect, $query2) or die(TRANS('MSG_ERR_ALTER_INFO_REG').'<br>'.$query2);
 
 
 

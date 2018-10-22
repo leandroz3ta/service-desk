@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -20,6 +21,10 @@
 
 	include ("../../includes/include_geral.inc.php");
 	include ("../../includes/include_geral_II.inc.php");
+	
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');	
+	
 	print "<link rel='stylesheet' href='../../includes/css/calendar.css.php' media='screen'></LINK>";
 	$_SESSION['s_page_ocomon'] = $_SERVER['PHP_SELF'];
 
@@ -47,9 +52,9 @@
 					print "<Select name='area' class='select' size=1 id='idArea' onChange=\"ajaxFunction('divOperator', 'showOperators.php', 'idLoad', 'area_cod=idArea');\">";
 		print "							<OPTION value=-1 selected>".TRANS('OPT_ALL_2')."</OPTION>";
 										$query="select * from sistemas where sis_status not in (0) and sis_atende = 1 order by sistema";
-										$resultado=mysql_query($query);
-										$linhas = mysql_num_rows($resultado);
-										while($row=mysql_fetch_array($resultado))
+										$resultado=mysqli_query($conect,$query);
+										$linhas = mysqli_num_rows($resultado);
+										while($row=mysqli_fetch_array($resultado))
 										{
 											print "<option value=".$row['sis_id']."";
 											if ($row['sis_id']==$_SESSION['s_area']) print " selected";
@@ -76,9 +81,9 @@
 		print "					<td><Select name='local' class='select' size='1'>";
 		print "							<OPTION value=-1 selected>".TRANS('OPT_ALL_2')."</OPTION>";
 										$query="select * from localizacao where loc_status not in (0) order by local";
-										$resultado=mysql_query($query);
-										$linhas = mysql_num_rows($resultado);
-										while($row=mysql_fetch_array($resultado))
+										$resultado=mysqli_query($conect,$query);
+										$linhas = mysqli_num_rows($resultado);
+										while($row=mysqli_fetch_array($resultado))
 										{
 											print "<option value=".$row['loc_id'].">".$row['local']."</option>";
 										} // while
@@ -211,8 +216,8 @@
 				//$dias_va  //Alterado de data_abertura para data_fechamento -- ordena mudou de fechamento para abertura
 				$query .= " AND o.data_fechamento >= '".$d_ini_completa."' and o.data_fechamento <= '".$d_fim_completa."' and ".
 						"o.data_atendimento is not null order by o.data_abertura";
-				$resultado = mysql_query($query);       // print "<b>Query--></b> $query<br><br>";
-				$linhas = mysql_num_rows($resultado);  //print "Linhas: $linhas";
+				$resultado = mysqli_query($conect,$query);       // print "<b>Query--></b> $query<br><br>";
+				$linhas = mysqli_num_rows($resultado);  //print "Linhas: $linhas";
 
 				//print $query."<br>";
 
@@ -227,22 +232,22 @@
 						case -1:
 							$criterio = "<br>";
 							$sql_area = "select * from sistemas where sis_id = '".$_POST['area']."'";
-							$exec_area = mysql_query($sql_area);
-							$row_area = mysql_fetch_array($exec_area);
+							$exec_area = mysqli_query($conect,$sql_area);
+							$row_area = mysqli_fetch_array($exec_area);
 							if (!empty($row_area['sistema'])) {
 								$criterio.="ÁREA: ".$row_area['sistema']."";
 							}
 
 						if (!empty($_POST['foward']) and ($_POST['foward'] !=-1)){
 				                        $sqlOp = "Select * from usuarios where user_id = ".$_POST['foward']."";
-							$execOp= mysql_query($sqlOp);
-							$rowOp = mysql_fetch_array($execOp);
+							$execOp= mysqli_query($conect,$sqlOp);
+							$rowOp = mysqli_fetch_array($execOp);
 							$criterio.= "- Operador: ".$rowOp['nome'];
 						}
 						if (!empty($_POST['local']) and ($_POST['local'] !=-1)){
 							$sqlLoc = "Select * from localizacao where loc_id = ".$_POST['local']."";
-							$execLoc = mysql_query($sqlLoc);
-							$rowLoc = mysql_fetch_array($execLoc);
+							$execLoc = mysqli_query($conect,$sqlLoc);
+							$rowLoc = mysqli_fetch_array($execLoc);
 							$criterio.="- Local: ".$rowLoc['local']."";
 						}
 							//echo "<br><br>";
@@ -304,7 +309,7 @@
 						$dtR = new dateOpers; //resposta
 						$dtM = new dateOpers; //tempo entre resposta e solução
 						$cont = 0;
-						while ($row = mysql_fetch_array($resultado)) {
+						while ($row = mysqli_fetch_array($resultado)) {
 							// if (array_key_exists($row['cod_area'],$H_horarios)){  //verifica se o código da área possui carga horária definida no arquivo config.inc.php
 								// $area = $row['cod_area']; //Recebe o valor da área de atendimento do chamado
 							// } else $area = 1; //Carga horária default definida no arquivo config.inc.php
@@ -346,7 +351,7 @@
 											" and O.data_fechamento >= '".$d_ini_completa."' and O.data_fechamento <='".$d_fim_completa."' ".
 										"GROUP BY A.sis_id,CAT.stc_desc ".
 										"ORDER BY CAT.stc_cod";
-							$exec_sql_status = mysql_query($sql_status);
+							$exec_sql_status = mysqli_query($conect,$sql_status);
 							//print $sql_status."<br>";
 							//PARA CHECAR O SLA DO PROBLEMA -  TEMPO DE SOLUÇÃO
 							$t_segundos_total = $dtS->diff["sValido"];
@@ -461,7 +466,7 @@
 							$dependUser = 0;
 							$dependTerc = 0;
 							$dependNone = 0;
-							while ($row_status = mysql_fetch_array($exec_sql_status)){
+							while ($row_status = mysqli_fetch_array($exec_sql_status)){
 								//print $row_status['dependencia'].": ".$row_status['tempo']." | ";
 								if ($row_status['cod_dependencia'] == 1) {//dependente ao usuário
 									$dependUser+= $row_status['segundos'];
@@ -663,9 +668,9 @@
 							"O.data_fechamento <= '".$d_fim_completa."' ".
 						"GROUP BY A.sis_id,T.ts_status ".
 						"ORDER BY segundos desc, A.sistema,T.ts_status";
-			$exec_total_sec = mysql_query($sql_total_sec);
+			$exec_total_sec = mysqli_query($conect,$sql_total_sec);
 			$total_sec = 0;
-			while ($row_total_sec = mysql_fetch_array($exec_total_sec)){
+			while ($row_total_sec = mysqli_fetch_array($exec_total_sec)){
 				$total_sec+=$row_total_sec['segundos'];
 			}
 				//$total_sol_valido;
@@ -678,12 +683,12 @@
 								"O.data_fechamento <= '".$d_fim_completa."' ".
 							"GROUP BY A.sis_id,T.ts_status ".
 							"ORDER BY segundos desc, A.sistema,T.ts_status";
-			$exec_cada_status = mysql_query($sql_cada_status);
+			$exec_cada_status = mysqli_query($conect,$sql_cada_status);
 			print "<tr><td colspan='4' align='center'><b>".TRANS('FIELD_BOARD_CALLS_TIMES_STATUS')."</b></td></tr>";
 			print "<tr bgcolor='#C7D0D9'><td >".strtoupper(TRANS('MNL_STATUS'))."</td><td colspan='2'>".TRANS('FIELD_TIME')."</td><td >".TRANS('FIELD_PERCENTAGE')."</td></tr>";
 
 			//print $sql_cada_status."<br>";
-			while ($row_cada_status = mysql_fetch_array($exec_cada_status)) {
+			while ($row_cada_status = mysqli_fetch_array($exec_cada_status)) {
 				print "<tr><td >".$row_cada_status['status']."</td><td colspan='2'>".$row_cada_status['tempo']."</td><td >".$row_cada_status['porcento']."</td></tr>";
 			}
 				print "  <tr><td colspan=4><hr></td></tr>";
@@ -696,9 +701,9 @@
 								">='".$d_ini_completa."' and 	O.data_fechamento <='".$d_fim_completa."' ".
 							"GROUP BY A.sis_id,CAT.stc_desc ".
 							"ORDER BY segundos desc, A.sistema,T.ts_status	";
-			$exec_total_sec2 = mysql_query($sql_total_sec2);
+			$exec_total_sec2 = mysqli_query($conect,$sql_total_sec2);
 			$total_sec2 = 0;
-			while ($row_total_sec2 = mysql_fetch_array($exec_total_sec2)){
+			while ($row_total_sec2 = mysqli_fetch_array($exec_total_sec2)){
 				$total_sec2+=$row_total_sec2['segundos'];
 			}
 
@@ -713,11 +718,11 @@
 								" >='".$d_ini_completa."' and 	O.data_fechamento <='".$d_fim_completa."' ".
 							"GROUP BY A.sis_id,CAT.stc_desc ".
 							"ORDER BY segundos desc, A.sistema,T.ts_status	";
-			$exec_vinc = mysql_query($sql_vinc_status);
+			$exec_vinc = mysqli_query($conect,$sql_vinc_status);
 
 			print "<tr><td colspan='4' align='center'><b>".TRANS('FIELD_BOARD_CALLS_TIMES_DEPEND')."</b></td></tr>";
 			print "<tr bgcolor='#C7D0D9'><td >".strtoupper(TRANS('MNL_DEPEND'))."</td><td colspan='2'>".TRANS('FIELD_TIME')."</td><td >".TRANS('FIELD_PERCENTAGE')."</td></tr>";
-			while ($row_vinc = mysql_fetch_array($exec_vinc)) {
+			while ($row_vinc = mysqli_fetch_array($exec_vinc)) {
 				print "<tr><td >".$row_vinc['dependencia']."</td><td colspan='2'>".$row_vinc['tempo']."</td><td >".$row_vinc['porcento']."</td></tr>";
 			}
 			print "<tr><td colspan='4'><hr></td></tr>";

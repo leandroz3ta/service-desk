@@ -20,14 +20,17 @@
 
 	include ("../../includes/include_geral.inc.php");
 	include ("../../includes/include_geral_II.inc.php");
-
+	
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');	
+	
 	$auth = new auth;
 	$auth->testa_user_hidden($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],4);
 
 				if (isset($_GET['unidade']) && isset($_GET['etiqueta'])) {
 					$qryDesc = "SELECT * FROM equipamentos where comp_inst = '".$_GET['unidade']."' AND comp_inv ='".$_GET['etiqueta']."' ";
-					$execDesc = mysql_query($qryDesc); //or die($qryDesc);
-					$rowDesc = mysql_fetch_array($execDesc);
+					$execDesc = mysqli_query($conect, $qryDesc); //or die($qryDesc);
+					$rowDesc = mysqli_fetch_array($execDesc);
 
 				}
 
@@ -41,9 +44,9 @@
 							LEFT JOIN predios as pred on pred.pred_cod = l.loc_predio
 							WHERE loc_status not in (0)
 							ORDER  BY LOCAL ";
-					$resultado = mysql_query($query);
-					$linhas = mysql_numrows($resultado);
-					while ($rowi = mysql_fetch_array($resultado))
+					$resultado = mysqli_query($conect, $query);
+					$linhas = mysqli_num_rows($resultado);
+					while ($rowi = mysqli_fetch_array($resultado))
 					{
 						print "<option value='".$rowi['loc_id']."'";
 							//if ($rowi['loc_id'] == $invLoc) print " selected";

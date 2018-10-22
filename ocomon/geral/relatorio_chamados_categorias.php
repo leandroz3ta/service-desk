@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -26,10 +27,13 @@
 
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],2);
+	
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');	
 
 	$qry_config = "SELECT * FROM config ";
-	$exec_config = mysql_query($qry_config) or die (TRANS('ERR_QUERY'));
-	$row_config = mysql_fetch_array($exec_config);
+	$exec_config = mysqli_query($conect, $qry_config) or die (TRANS('ERR_QUERY'));
+	$row_config = mysqli_fetch_array($exec_config);
 	$criterio = "";
 
 	if (!isset($_POST['ok']) && !isset($_GET['action'])  ) { //&& $_POST['ok'] != 'Pesquisar')
@@ -47,9 +51,9 @@
 		print "					<td class='line'><Select name='area' class='select'>";
 		print "							<OPTION value=-1 selected>".TRANS('OPT_ALL')."</OPTION>";
 										$query="select * from sistemas where sis_status not in (0) order by sistema";
-										$resultado=mysql_query($query);
-										$linhas = mysql_num_rows($resultado);
-										while($row=mysql_fetch_array($resultado))
+										$resultado=mysqli_query($conect, $query);
+										$linhas = mysqli_num_rows($resultado);
+										while($row=mysqli_fetch_array($resultado))
 										{
 											print "<option value=".$row['sis_id']."";
 											if ($row['sis_id']==$_SESSION['s_area']) print " selected";
@@ -64,9 +68,9 @@
 		print "					<td class='line'><Select name='cat1' class='select'>";
 		print "							<OPTION value=-1 selected>".TRANS('OPT_ALL')."</OPTION>";
 										$query="select * from prob_tipo_1 order by probt1_desc";
-										$resultado=mysql_query($query);
-										$linhas = mysql_num_rows($resultado);
-										while($row=mysql_fetch_array($resultado))
+										$resultado=mysqli_query($conect, $query);
+										$linhas = mysqli_num_rows($resultado);
+										while($row=mysqli_fetch_array($resultado))
 										{
 											print "<option value=".$row['probt1_cod'].">".$row['probt1_desc']."</option>";
 										} // while
@@ -80,9 +84,9 @@
 		print "					<td class='line'><Select name='cat2' class='select'>";
 		print "							<OPTION value=-1 selected>".TRANS('OPT_ALL')."</OPTION>";
 										$query="select * from prob_tipo_2 order by probt2_desc";
-										$resultado=mysql_query($query);
-										$linhas = mysql_num_rows($resultado);
-										while($row=mysql_fetch_array($resultado))
+										$resultado=mysqli_query($conect, $query);
+										$linhas = mysqli_num_rows($resultado);
+										while($row=mysqli_fetch_array($resultado))
 										{
 											print "<option value=".$row['probt2_cod'].">".$row['probt2_desc']."</option>";
 										} // while
@@ -96,9 +100,9 @@
 		print "					<td class='line'><Select name='cat3' class='select'>";
 		print "							<OPTION value=-1 selected>".TRANS('OPT_ALL')."</OPTION>";
 										$query="select * from prob_tipo_3 order by probt3_desc";
-										$resultado=mysql_query($query);
-										$linhas = mysql_num_rows($resultado);
-										while($row=mysql_fetch_array($resultado))
+										$resultado=mysqli_query($conect, $query);
+										$linhas = mysqli_num_rows($resultado);
+										while($row=mysqli_fetch_array($resultado))
 										{
 											print "<option value=".$row['probt3_cod'].">".$row['probt3_desc']."</option>";
 										} // while
@@ -156,8 +160,8 @@
 		{
 			$query .= " and o.sistema = '".$_POST['area']."'";
 			$qry_criterio = "SELECT sistema FROM sistemas WHERE sis_id = ".$_POST['area']." ";
-			$exec_criterio = mysql_query($qry_criterio);
-			$row_criterio = mysql_fetch_array($exec_criterio);
+			$exec_criterio = mysqli_query($conect, $qry_criterio);
+			$row_criterio = mysqli_fetch_array($exec_criterio);
 			$criterio .= " Área= ".$row_criterio['sistema'].",";
 		}
 
@@ -166,8 +170,8 @@
 			$query .= " and pt1.probt1_cod = '".$_POST['cat1']."' ";
 
 			$qry_criterio = "SELECT probt1_desc FROM prob_tipo_1 WHERE probt1_cod = ".$_POST['cat1']." ";
-			$exec_criterio = mysql_query($qry_criterio);
-			$row_criterio = mysql_fetch_array($exec_criterio);
+			$exec_criterio = mysqli_query($conect, $qry_criterio);
+			$row_criterio = mysqli_fetch_array($exec_criterio);
 			$criterio .= " ".$row_config['conf_prob_tipo_1']."= ".$row_criterio['probt1_desc'].",";
 
 		}
@@ -176,8 +180,8 @@
 		{
 			$query .= " and pt2.probt2_cod = '".$_POST['cat2']."' ";
 			$qry_criterio = "SELECT probt2_desc FROM prob_tipo_2 WHERE probt2_cod = ".$_POST['cat2']." ";
-			$exec_criterio = mysql_query($qry_criterio);
-			$row_criterio = mysql_fetch_array($exec_criterio);
+			$exec_criterio = mysqli_query($conect, $qry_criterio);
+			$row_criterio = mysqli_fetch_array($exec_criterio);
 			$criterio .= " ".$row_config['conf_prob_tipo_2']."= ".$row_criterio['probt2_desc'].",";
 
 		}
@@ -186,8 +190,8 @@
 		{
 			$query .= " and pt3.probt3_cod = '".$_POST['cat3']."' ";
 			$qry_criterio = "SELECT probt3_desc FROM prob_tipo_3 WHERE probt3_cod = ".$_POST['cat3']." ";
-			$exec_criterio = mysql_query($qry_criterio);
-			$row_criterio = mysql_fetch_array($exec_criterio);
+			$exec_criterio = mysqli_query($conect, $qry_criterio);
+			$row_criterio = mysqli_fetch_array($exec_criterio);
 			$criterio .= " ".$row_config['conf_prob_tipo_3']."= ".$row_criterio['probt3_desc'].",";
 
 		}
@@ -220,8 +224,8 @@
 					" ";
 
 			//print $query; exit;
-			$resultado = mysql_query($query);
-			$linhas = mysql_num_rows($resultado);
+			$resultado = mysqli_query($conect, $query);
+			$linhas = mysqli_num_rows($resultado);
 
 			if ($linhas==0) {
 
@@ -246,7 +250,7 @@
 							"<td bgcolor='".$background."'><B>".$row_config['conf_prob_tipo_3']."</td>".
 						"</tr>";
 					$total = 0;
-					while ($row = mysql_fetch_array($resultado)) {
+					while ($row = mysqli_fetch_array($resultado)) {
 
 						print "<tr>";
 						print "<td class='line'><a onClick=\"javascript: popup_alerta('".$_SERVER['PHP_SELF']."?action=list&area=".$row['sis_id']."&p1=".$row['probt1_cod']."&p2=".$row['probt2_cod']."&p3=".$row['probt3_cod']."&date1=".$d_ini_completa."&date2=".$d_fim_completa."')\">".$row['quantidade']."</a></td>".
@@ -322,8 +326,8 @@
 					"and o.operador = u.user_id and o.local = l.loc_id ".
 					"order by area ".
 					"";
-		$execCat = mysql_query($qryCat) or die(mysql_error());
-		$linhas = mysql_num_rows($execCat);
+		$execCat = mysqli_query($conect, $qryCat) or die(mysqli_error());
+		$linhas = mysqli_num_rows($execCat);
 
 		print "<table border='0' cellspacing='1' summary=''";
 		print "<TR>";
@@ -343,7 +347,7 @@
 				"<TD class='line'>".TRANS('FIELD_DATE_CLOSING')."</TD>";
 		$i=0;
 		$j=2;
-		while ($rowlist = mysql_fetch_array($execCat))
+		while ($rowlist = mysqli_fetch_array($execCat))
 		{
 			if ($j % 2)
 			{

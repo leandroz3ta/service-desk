@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -42,14 +43,14 @@ is_file( "./includes/config.inc.php" )
 
 	$conec = new conexao;
 	$conec->conecta('MYSQL') ;
-
+	$conect = $conec->conecta('MYSQL') ;
 	if (is_file("./includes/icons/favicon.ico")) {
 		print "<link rel='shortcut icon' href='./includes/icons/favicon.ico'>";
 	}
 
 	$qryLang = "SELECT * FROM config";
-	$execLang = mysql_query($qryLang);
-	$rowLang = mysql_fetch_array($execLang);
+	$execLang = mysqli_query($conect, $qryLang);
+	$rowLang = mysqli_fetch_array($execLang);
 	if (!isset($_SESSION['s_language'])) $_SESSION['s_language']= $rowLang['conf_language'];
 
 
@@ -135,18 +136,18 @@ is_file( "./includes/config.inc.php" )
 
 
 			$qryconf = $QRY["useropencall"];
-			$execconf = mysql_query($qryconf) or die('Não foi possível ler as informações de configuração do sistema!');
-			$rowconf = mysql_fetch_array($execconf);
+			$execconf = mysqli_query($conect, $qryconf) or die('Não foi possível ler as informações de configuração do sistema!');
+			$rowconf = mysqli_fetch_array($execconf);
 
 			$qryStyle = "SELECT * FROM temas t, uthemes u  WHERE u.uth_uid = ".$_SESSION['s_uid']." and t.tm_id = u.uth_thid";
-			$execStyle = mysql_query($qryStyle) or die('ERRO NA TENTATIVA DE RECUPERAR AS INFORMAÇÕES DE ESTILOS!<BR>'.$qryStyle);
-			$rowStyle = mysql_fetch_array($execStyle);
-			$regs = mysql_num_rows($execStyle);
+			$execStyle = mysqli_query($conect, $qryStyle) or die('ERRO NA TENTATIVA DE RECUPERAR AS INFORMAÇÕES DE ESTILOS!<BR>'.$qryStyle);
+			$rowStyle = mysqli_fetch_array($execStyle);
+			$regs = mysqli_num_rows($execStyle);
 			if ($regs==0){ //SE NÃO ENCONTROU TEMA ESPECÍFICO PARA O USUÁRIO
 				unset ($rowStyle);
 				$qryStyle = "SELECT * FROM styles";
-				$execStyle = mysql_query($qryStyle);
-				$rowStyle = mysql_fetch_array($execStyle);
+				$execStyle = mysqli_query($conect, $qryStyle);
+				$rowStyle = mysqli_fetch_array($execStyle);
 			}
 ?>
 				<li id='HOME'>

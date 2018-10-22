@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -20,6 +21,10 @@
 
 	include ("../../includes/include_geral.inc.php");
 	include ("../../includes/include_geral_II.inc.php");
+	
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');	
+	
 	print "<link rel='stylesheet' href='../../includes/css/calendar.css.php' media='screen'></LINK>";
 
 	$_SESSION['s_page_ocomon'] = $_SERVER['PHP_SELF'];
@@ -46,9 +51,9 @@
 		print "					<td class='line'><Select name='area' class='select' size=1 onChange=\"fillSelectFromArray(this.form.operador, ((this.selectedIndex == -1) ? null : team[this.selectedIndex-1]));\">";
 		print "							<OPTION value=-1 selected".TRANS('OPT_ALL')."</OPTION>";
 										$query="select * from sistemas where sis_status not in (0) order by sistema";
-										$resultado=mysql_query($query);
-										$linhas = mysql_num_rows($resultado);
-										while($row=mysql_fetch_array($resultado))
+										$resultado=mysqli_query($conect, $query);
+										$linhas = mysqli_num_rows($resultado);
+										while($row=mysqli_fetch_array($resultado))
 										{
 											print "<option value=".$row['sis_id']."";
 											if ($row['sis_id']==$_SESSION['s_area']) print " selected";
@@ -64,9 +69,9 @@
 		print "			  		<td class='line'><SELECT  class='select' NAME='problema'>";
 		print "						<OPTION value=-1 selected>".TRANS('OPT_ALL_2')."</OPTION>";
 										$query = "select * from problemas order by problema";
-										$resultado=mysql_query($query);
-										$linhas=mysql_num_rows($resultado);
-										while($row=mysql_fetch_array($resultado))
+										$resultado=mysqli_query($conect, $query);
+										$linhas=mysqli_num_rows($resultado);
+										while($row=mysqli_fetch_array($resultado))
 										{
 											$prob_id=$row['prob_id'];
 											$prob_name=$row['problema'];
@@ -81,9 +86,9 @@
 		print "						<td class='line'><Select class='select'  name='instituicao' size=1>";
 		print "								<OPTION value=-1 selected".TRANS('OPT_ALL_2')."</OPTION>";
 										$query="select * from instituicao";
-										$resultado=mysql_query($query);
-										$linhas = mysql_num_rows($resultado);
-										while($row=mysql_fetch_array($resultado))
+										$resultado=mysqli_query($conect, $query);
+										$linhas = mysqli_num_rows($resultado);
+										while($row=mysqli_fetch_array($resultado))
 										{
 											$insti_id=$row['inst_cod'];
 											$insti_name=$row['inst_nome'];
@@ -97,8 +102,8 @@
 		print "					<td class='line'><select  class='select' name='local' size=1> ";
 		print "							<option value=-1  selected".TRANS('OPT_ALL_2')."</option>";
 										$query="select * from localizacao order by local";
-										$resultado=mysql_query($query);
-										while($row=mysql_fetch_array($resultado))
+										$resultado=mysqli_query($conect, $query);
+										while($row=mysqli_fetch_array($resultado))
 										{
 										$local_id=$row['loc_id'];
 											$local_name=$row['local'];
@@ -112,8 +117,8 @@
 		print "					<td class='line'><select  class='select' name='operador' size=1>";
 		print "							<option value=-1 selected".TRANS('OPT_ALL_2')."</option>";
 										$query="select * from usuarios order by nome";
-										$resultado=mysql_query($query);
-										while($row=mysql_fetch_array($resultado))
+										$resultado=mysqli_query($conect, $query);
+										while($row=mysqli_fetch_array($resultado))
 										{
 											//$operador=$row['login'];
 											print "<option value=$row[user_id]>$row[nome]</option>";
@@ -145,8 +150,8 @@
 		print "					<td class='line'><select  class='select' name='status_oco'>";
 		print "							<option value=-1 selected".TRANS('OPT_ALL_2')."</option>";
 										$query="select * from status order by status";
-										$resultado=mysql_query($query);
-										while($row=mysql_fetch_array($resultado))
+										$resultado=mysqli_query($conect, $query);
+										while($row=mysqli_fetch_array($resultado))
 										{
 											$status_id=$row['stat_id'];
 											$status_name=$row['status'];
@@ -289,8 +294,8 @@
 
 			//print $query_ini;
 
-			$resultado = mysql_query($query_ini) or die(''.TRANS('ERR_QUERY').'<br>'.$query_ini);    //   print "<b>Query--></b> $query<br><br>";
-			$linhas = mysql_num_rows($resultado);
+			$resultado = mysqli_query($conect, $query_ini) or die(''.TRANS('ERR_QUERY').'<br>'.$query_ini);    //   print "<b>Query--></b> $query<br><br>";
+			$linhas = mysqli_num_rows($resultado);
 
 // 		} else { //(($d_ini < $d_fim) or ($d_ini == $d_fim))
 // 			print "<script>window.alert('".TRANS('MSG_COMPARE_DATE')."'); history.back();</script>";
@@ -329,7 +334,7 @@
 				print "</tr>";
 				$i=0;
 		       		$j=2;
-		       		while ($row = mysql_fetch_array($resultado)) {
+		       		while ($row = mysqli_fetch_array($resultado)) {
 					if ($j % 2) {
 						$color =  BODY_COLOR;
 					} else {

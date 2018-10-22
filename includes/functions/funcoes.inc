@@ -164,8 +164,8 @@
 	function conecta($host, $bd, $user, $senha, $sistema)
 	{
 		// $host = servidor do mysql, $bd = nome do banco de dados, $user = usuário do mysql, $senha = senha dp mysql, $sistema = sistema que esta sendo usado
-		$conexao=mysql_connect($host,$user,$senha) or die(mysql_error());
-		$db=mysql_select_db($bd,$conexao);
+		$conexao=mysqli_connect($host,$user,$senha) or die(mysql_error());
+		$db=mysqli_select_db($bd,$conexao);
 		if ($conexao == 0)
 		{
 			$retorno = "ERRO DE CONEXÃO - Servidor ".$host." - Sistema ".$sistema."<br>";
@@ -186,19 +186,20 @@
 		mysql_close($conexao);
 	}
 
-	function senha_system($user,$password,$tabela)
+	function senha_system($conect,$user,$password,$tabela)
 	{
+
 		// $user = usuário para login, $senha = senha do usuário, $tabela = nome da tabela de usuários
 		$login = md5($password);
 		$query = "SELECT * from ".$tabela." where (login = '".$user."' and password = '".$login."')";
 
-		$resultado = mysql_query($query) or die(mysql_error());
-		if ($resultado == 0)
+		$resultado = mysqli_query($conect,$query) or die(mysqli_error());
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			$retorno = "ERRO DE LOGIN - Tabela ".$tabela."<br>";
 		}
 		else
-		if (mysql_numrows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			$retorno = "ERRO DE LOGIN - Usuário ".$user."<br>";
 		}

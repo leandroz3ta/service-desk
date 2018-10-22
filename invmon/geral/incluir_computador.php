@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -22,6 +23,9 @@
 	include ("../../includes/include_geral_II.inc.php");
 	include ('includes/header.php');
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');	
+	
 	$_SESSION['s_page_invmon'] = $_SERVER['PHP_SELF'];
 
 	$auth = new auth;
@@ -92,9 +96,9 @@
 			"(mold.mold_tipo_equip = equip.tipo_cod) and ".
 			"(mold.mold_marca = '".$_GET['LOAD']."') and (mold.mold_marca = model.marc_cod)";
 
-		$resultadoA = mysql_query($queryA) or die (TRANS('MSG_ERR_LOAD_MODEL').'<BR>');
-		$linhasA = mysql_num_rows($resultadoA);
-		$row = mysql_fetch_array($resultadoA);
+		$resultadoA = mysqli_query($conect, $queryA) or die (TRANS('MSG_ERR_LOAD_MODEL').'<BR>');
+		$linhasA = mysqli_num_rows($resultadoA);
+		$row = mysqli_fetch_array($resultadoA);
 
 /*		if (mysql_num_rows($resultadoA)>0)
 		{
@@ -128,8 +132,8 @@
 					print "<option value=-1 selected>".TRANS('SEL_TYPE_EQUIP')."</option>";
 
 			$query = "SELECT * from tipo_equip order by tipo_nome";
-			$resultado = mysql_query($query);
-			while ($rowTipo = mysql_fetch_array($resultado))
+			$resultado = mysqli_query($conect, $query);
+			while ($rowTipo = mysqli_fetch_array($resultado))
 			{
 				print "<option value='".$rowTipo['tipo_cod']."' ";
 				if (isset($queryA) && $rowTipo['tipo_cod'] == $row['equipamento_cod'])
@@ -147,8 +151,8 @@
 
 				print "<option value=-1>".TRANS('SEL_MANUFACTURE').": </option>";
 				$query = "SELECT * from fabricantes  order by fab_nome";
-				$resultado = mysql_query($query);
-				while ($rowFab = mysql_fetch_array($resultado))
+				$resultado = mysqli_query($conect, $query);
+				while ($rowFab = mysqli_fetch_array($resultado))
 				{
 					print "<option value='".$rowFab['fab_cod']."' ";
 						if (isset($queryA) && $rowFab['fab_cod'] == $row['fab_cod'])
@@ -180,8 +184,8 @@
 					print "<option value=-1 selected>".TRANS('SEL_MODEL')."</option>";
 
 				$query = "SELECT * from marcas_comp order by marc_nome";
-				$resultado = mysql_query($query);
-				while ($rowMarcas= mysql_fetch_array($resultado))
+				$resultado = mysqli_query($conect, $query);
+				while ($rowMarcas= mysqli_fetch_array($resultado))
 				{
 					print "<option value='".$rowMarcas['marc_cod']."'";
 						if ((isset($_POST['comp_marca']) && ($rowMarcas['marc_cod'] == $_POST['comp_marca'])) ||
@@ -203,8 +207,8 @@
 			print "<option value=-1 selected>".TRANS('OCO_SEL_LOCAL')."</option>";
 
 			$query = "SELECT * from localizacao  order by local";
-			$resultado = mysql_query($query);
-			while ($rowLocal = mysql_fetch_array($resultado))
+			$resultado = mysqli_query($conect, $query);
+			while ($rowLocal = mysqli_fetch_array($resultado))
 			{
 				print "<option value='".$rowLocal['loc_id']."'>".$rowLocal['local']."</option>";
 			}
@@ -228,8 +232,8 @@
 			print "<SELECT class='select' name='comp_situac' size='1' id='idSituac'>";
 			print "<option value=-1 selected>".TRANS('SEL_SITUAC')."</option>";
 				$query = "SELECT * from situacao order by situac_nome";
-				$resultado = mysql_query($query);
-				while ($rowSituac = mysql_fetch_array($resultado))
+				$resultado = mysqli_query($conect, $query);
+				while ($rowSituac = mysqli_fetch_array($resultado))
 				{
 					print "<option value='".$rowSituac['situac_cod']."'>".$rowSituac['situac_nome']."</option>";
 				}
@@ -258,9 +262,9 @@
 					print "<option value=null selected>".TRANS('SEL_MODEL')."</option>";
 
 				$query = "select * from modelos_itens where mdit_tipo = 10 order by mdit_fabricante, mdit_desc";
-				$commit = mysql_query($query);
+				$commit = mysqli_query($conect, $query);
 				$sufixo = "";
-				while($rowA = mysql_fetch_array($commit)){
+				while($rowA = mysqli_fetch_array($commit)){
 					print "<option value='".$rowA['mdit_cod']."' ";
 					if (isset($queryA) && $row['cod_mb'] == $rowA['mdit_cod'])
 						print " selected";
@@ -282,8 +286,8 @@
 					print "<option value=null selected>".TRANS('SEL_MODEL')."</option>";
 
 				$query = "select * from modelos_itens where mdit_tipo = 11 order by mdit_fabricante, mdit_desc, mdit_desc_capacidade";
-				$commit = mysql_query($query);
-				while($rowA = mysql_fetch_array($commit)){
+				$commit = mysqli_query($conect, $query);
+				while($rowA = mysqli_fetch_array($commit)){
 					print "<option value='".$rowA['mdit_cod']."' ";
 					if (isset($queryA) && $rowA['mdit_cod'] == $row['cod_processador'])
 						print " selected";
@@ -301,8 +305,8 @@
 					print "<option value=null selected>".TRANS('SEL_MODEL')."</option>";
 
 				$query = "select * from modelos_itens where mdit_tipo = 7 order by mdit_fabricante, mdit_desc, mdit_desc_capacidade";
-				$commit = mysql_query($query);
-				while($rowA = mysql_fetch_array($commit)){
+				$commit = mysqli_query($conect, $query);
+				while($rowA = mysqli_fetch_array($commit)){
 					print "<option value='".$rowA['mdit_cod']."' ";
 					if (isset($queryA) && $rowA['mdit_cod'] == $row['cod_memoria'])
 						print " selected";
@@ -322,8 +326,8 @@
 					print "<option value=null selected>".TRANS('SEL_MODEL')."</option>";
 
 				$query = "select * from modelos_itens where mdit_tipo = 2 order by mdit_fabricante, mdit_desc";
-				$commit = mysql_query($query);
-				while($rowA = mysql_fetch_array($commit)){
+				$commit = mysqli_query($conect, $query);
+				while($rowA = mysqli_fetch_array($commit)){
 					print "<option value='".$rowA['mdit_cod']."' ";
 					if (isset($queryA) && $rowA['mdit_cod'] == $row['cod_video'])
 						print " selected";
@@ -340,8 +344,8 @@
 					print "<option value=null selected>".TRANS('SEL_MODEL')."</option>";
 
 				$query = "select * from modelos_itens where mdit_tipo = 4 order by mdit_fabricante, mdit_desc";
-				$commit = mysql_query($query);
-				while($rowA = mysql_fetch_array($commit)){
+				$commit = mysqli_query($conect, $query);
+				while($rowA = mysqli_fetch_array($commit)){
 					print "<option value='".$rowA['mdit_cod']."' ";
 					if (isset($queryA) && $rowA['mdit_cod'] == $row['cod_som'])
 						print " selected";
@@ -360,8 +364,8 @@
 					print "<option value=null selected>".TRANS('SEL_MODEL')."</option>";
 
 				$query = "select * from modelos_itens where mdit_tipo = 3 order by mdit_fabricante, mdit_desc";
-				$commit = mysql_query($query);
-				while($rowA = mysql_fetch_array($commit)){
+				$commit = mysqli_query($conect, $query);
+				while($rowA = mysqli_fetch_array($commit)){
 					print "<option value='".$rowA['mdit_cod']."' ";
 					if (isset($queryA) && $rowA['mdit_cod'] == $row['cod_rede'])
 						print " selected";
@@ -378,8 +382,8 @@
 					print "<option value=null selected>".TRANS('SEL_MODEL')."</option>";
 
 				$query = "select * from modelos_itens where mdit_tipo = 6 order by mdit_fabricante, mdit_desc";
-				$commit = mysql_query($query);
-				while($rowA = mysql_fetch_array($commit)){
+				$commit = mysqli_query($conect, $query);
+				while($rowA = mysqli_fetch_array($commit)){
 					print "<option value='".$rowA['mdit_cod']."' ";
 					if (isset($queryA) && $rowA['mdit_cod'] == $row['cod_modem'])
 						print " selected";
@@ -398,8 +402,8 @@
 					print "<option value=null selected>".TRANS('SEL_MODEL')."</option>";
 
 				$query = "select * from modelos_itens where mdit_tipo = 1 order by mdit_fabricante, mdit_desc_capacidade";
-				$commit = mysql_query($query);
-				while($rowA = mysql_fetch_array($commit)){
+				$commit = mysqli_query($conect, $query);
+				while($rowA = mysqli_fetch_array($commit)){
 					print "<option value='".$rowA['mdit_cod']."' ";
 					if (isset($queryA) && $rowA['mdit_cod'] == $row['cod_hd'])
 						print " selected";
@@ -416,8 +420,8 @@
 					print "<option value=null selected>".TRANS('SEL_MODEL')."</option>";
 
 				$query = "select * from modelos_itens where mdit_tipo = 9 order by mdit_fabricante, mdit_desc";
-				$commit = mysql_query($query);
-				while($rowA = mysql_fetch_array($commit)){
+				$commit = mysqli_query($conect, $query);
+				while($rowA = mysqli_fetch_array($commit)){
 					print "<option value='".$rowA['mdit_cod']."' ";
 					if (isset($queryA) && $rowA['mdit_cod'] == $row['cod_gravador'])
 						print " selected";
@@ -437,8 +441,8 @@
 					print "<option value=null selected>".TRANS('SEL_MODEL')."</option>";
 
 				$query = "select * from modelos_itens where mdit_tipo = 5 order by mdit_fabricante, mdit_desc";
-				$commit = mysql_query($query);
-				while($rowA = mysql_fetch_array($commit)){
+				$commit = mysqli_query($conect, $query);
+				while($rowA = mysqli_fetch_array($commit)){
 					print "<option value='".$rowA['mdit_cod']."' ";
 					if (isset($queryA) && $rowA['mdit_cod'] == $row['cod_cdrom'])
 						print " selected";
@@ -455,8 +459,8 @@
 					print "<option value=null selected>".TRANS('SEL_MODEL')."</option>";
 
 				$query = "select * from modelos_itens where mdit_tipo = 8 order by mdit_fabricante, mdit_desc";
-				$commit = mysql_query($query);
-				while($rowA = mysql_fetch_array($commit)){
+				$commit = mysqli_query($conect, $query);
+				while($rowA = mysqli_fetch_array($commit)){
 					print "<option value='".$rowA['mdit_cod']."' ";
 					if (isset($queryA) && $rowA['mdit_cod'] == $row['cod_dvd'])
 						print " selected";
@@ -479,8 +483,8 @@
 				print "<option value=null selected>".TRANS('SEL_TYPE_PRINTER')." </option>";
 
 			$query = "SELECT * from tipo_imp  order by tipo_imp_nome";
-			$resultado = mysql_query($query);
-			while ($rowImp = mysql_fetch_array($resultado))
+			$resultado = mysqli_query($conect, $query);
+			while ($rowImp = mysqli_fetch_array($resultado))
 			{
 				print "<option value='".$rowImp['tipo_imp_cod']."' ";
 				if (isset($queryA) && $rowImp['tipo_imp_cod'] == $row['impressora_cod'])
@@ -498,8 +502,8 @@
 					print "<option value =null selected>".TRANS('SEL_SIZE_MONITOR')." </option>";
 
 			$query = "SELECT * from polegada  order by pole_nome";
-			$resultado = mysql_query($query);
-			while ($rowPol = mysql_fetch_array($resultado))
+			$resultado = mysqli_query($conect, $query);
+			while ($rowPol = mysqli_fetch_array($resultado))
 			{
 				print "<option value='".$rowPol['pole_cod']."' ";
 				if (isset($queryA) && $rowPol['pole_cod'] == $row['polegada_cod'])
@@ -520,8 +524,8 @@
 					print "<option value=null selected>".TRANS('SEL_RESOLUT_SCANNER')." </option>";
 
 			$query = "SELECT * from resolucao  order by resol_nome";
-			$resultado = mysql_query($query);
-			while ($rowResol = mysql_fetch_array($resultado))
+			$resultado = mysqli_query($conect, $query);
+			while ($rowResol = mysqli_fetch_array($resultado))
 			{
 				print "<option value='".$rowResol['resol_cod']."' ";
 				if (isset($queryA) && $rowResol['resol_cod'] == $row['resolucao_cod'])
@@ -547,8 +551,8 @@
 					print "<option value=null selected>".TRANS('OCO_SEL_UNIT')." </option>";
 
 				$query = "SELECT * from instituicao  order by inst_nome";
-				$resultado = mysql_query($query);
-				while ($rowInst = mysql_fetch_array($resultado))
+				$resultado = mysqli_query($conect, $query);
+				while ($rowInst = mysqli_fetch_array($resultado))
 				{
 					print "<option value='".$rowInst['inst_cod']."' ";
 					if (isset($queryA) && $rowInst['inst_cod'] == $row['cod_inst'])
@@ -565,8 +569,8 @@
 
 				//$query = "SELECT * from ".`DB_CCUSTO`.".".TB_CCUSTO."  order by ".CCUSTO_DESC.""; //where ano='2003'
 				$query = "SELECT * from `".DB_CCUSTO."`.".TB_CCUSTO."  order by ".CCUSTO_DESC."";
-				$resultado = mysql_query($query);
-				while ($rowCcusto = mysql_fetch_array($resultado))
+				$resultado = mysqli_query($conect, $query);
+				while ($rowCcusto = mysqli_fetch_array($resultado))
 				{
 					print "<option value='".$rowCcusto[CCUSTO_ID]."'>".$rowCcusto[CCUSTO_DESC]." - ".$rowCcusto[CCUSTO_COD]."</option>";
 				}
@@ -581,9 +585,9 @@
 					print "<option value=null selected>".TRANS('SEL_VENDOR')."</option>";
 
 				$query = "SELECT * from fornecedores  order by forn_nome";
-				$resultado = mysql_query($query);
+				$resultado = mysqli_query($conect, $query);
 
-				while ($rowForn = mysql_fetch_array($resultado))
+				while ($rowForn = mysqli_fetch_array($resultado))
 				{
 					print "<option value='".$rowForn['forn_cod']."' ";
 					if (isset($queryA) && $rowForn['forn_cod'] == $row['fornecedor_cod'])
@@ -611,8 +615,8 @@
 				//print "<option value=null selected>".TRANS('SEL_TYPE')."</option>";
 
 			$query = "SELECT * from tipo_garantia  order by tipo_garant_nome";
-			$resultado = mysql_query($query);
-			while ($rowGarant = mysql_fetch_array($resultado))
+			$resultado = mysqli_query($conect, $query);
+			while ($rowGarant = mysqli_fetch_array($resultado))
 			{
 				print "<option value='".$rowGarant['tipo_garant_cod']."'>".$rowGarant['tipo_garant_nome']."</option>";
 			}
@@ -626,8 +630,8 @@
 				//print "<option value=null selected>".TRANS('SEL_TIME_GUARANT')."</option>";
 
 				$query = "SELECT * from tempo_garantia  order by tempo_meses";
-				$resultado = mysql_query($query);
-				while ($rowTempo = mysql_fetch_array($resultado))
+				$resultado = mysqli_query($conect, $query);
+				while ($rowTempo = mysqli_fetch_array($resultado))
 				{
 					print "<option value='".$rowTempo['tempo_cod']."'>".$rowTempo['tempo_meses']." ".TRANS('TXT_MOUNTHS')."</option>";
 				}
@@ -665,8 +669,8 @@
 			$querySN = "SELECT c.* FROM equipamentos as c ".
 						"WHERE c.comp_marca='".$_POST['comp_marca']."' and ".
 							"c.comp_sn='".$_POST['comp_sn']."'";
-			$resultadoSN = mysql_query($querySN);
-			$linhasSN = mysql_numrows($resultadoSN);
+			$resultadoSN = mysqli_query($conect, $querySN);
+			$linhasSN = mysqli_num_rows($resultadoSN);
 			if ($linhasSN > 0)
 			{
 				$aviso = TRANS('MSG_SERIAL_NUMBER_CAD_IN_SYSTEM');
@@ -677,8 +681,8 @@
 						"WHERE ((c.comp_inv='".$_POST['comp_inv']."') and ".
 							"(c.comp_inst = '".$_POST['comp_inst']."'))";
 
-			$resultado2 = mysql_query($query2);
-			$linhas = mysql_numrows($resultado2);
+			$resultado2 = mysqli_query($conect, $query2);
+			$linhas = mysqli_num_rows($resultado2);
 			if ($linhas > 0)
 			{
 				$aviso.= TRANS('MSG_COD_TAG_CAD_IN_SYSTEM');
@@ -688,8 +692,8 @@
 			$gravaImg = false;
 			if (isset($_FILES['img']) and $_FILES['img']['name']!="") {
 				$qryConf = "SELECT * FROM config";
-				$execConf = mysql_query($qryConf) or die (TRANS('MSG_ERR_NOT_ACCESS_INFO_CONFIG'));
-				$rowConf = mysql_fetch_array($execConf);
+				$execConf = mysqli_query($conect, $qryConf) or die (TRANS('MSG_ERR_NOT_ACCESS_INFO_CONFIG'));
+				$rowConf = mysqli_fetch_array($execConf);
 				$arrayConf = array();
 				$arrayConf = montaArray($execConf,$rowConf);
 
@@ -723,40 +727,15 @@
 						// now we can delete the temp file
 						unlink($fileinput);
 					}
-					$exec = mysql_query($SQL);
+					$exec = mysqli_query($conect, $SQL);
 					if ($exec == 0) $aviso.= TRANS('MSG_NOT_ATTACH_IMG')."<br>";
 				}
 				$sql = "INSERT INTO historico (hist_inv, hist_inst, hist_local, hist_data) ".
 						"VALUES ('".$_POST['comp_inv']."', '".$_POST['comp_inst']."', '".$_POST['comp_local']."', '".date("Y-m-d H:i:s")."')";
-				$resultadoSQL = mysql_query($sql);
+				$resultadoSQL = mysqli_query($conect, $sql);
 
 				//$data = $hoje;
 				$comp_valor = str_replace(",",".",$_POST['comp_valor']);
-
-// 				$comp_data_compra = datam($_POST['comp_data_compra']);
-// 				if ($_POST['comp_sn'] == -1) { $comp_sn = "null";};// else $comp_sn = "$comp_sn";
-// 				if ($_POST['comp_mb'] == -1) { $comp_mb = "null";} else $comp_mb = "'$comp_mb'";
-// 				if ($_POST['comp_proc'] == -1) { $comp_proc = "null";} else $comp_proc = "'$comp_proc'";
-// 				if ($_POST['comp_memo'] == -1) { $comp_memo = "null";} else $comp_memo = "'$comp_memo'";
-// 				if ($_POST['comp_video'] == -1) { $comp_video = "null";} else $comp_video = "'$comp_video'";
-// 				if ($_POST['comp_som'] == -1) { $comp_som = "null";} else $comp_som = "'$comp_som'";
-// 				if ($_POST['comp_rede'] == -1) { $comp_rede = "null";} else $comp_rede = "'$comp_rede'";
-// 				if ($_POST['comp_modelohd'] == -1) { $comp_modelohd = "null";} else $comp_modelohd = "'$comp_modelohd'";
-// 				if ($_POST['comp_modem'] == -1) { $comp_modem = "null";} else $comp_modem = "'$comp_modem'";
-// 				if ($_POST['comp_cdrom'] == -1) { $comp_cdrom = "null";} else $comp_cdrom = "'$comp_cdrom'";
-// 				if ($_POST['comp_dvd'] == -1) { $comp_dvd = "null";} else $comp_dvd = "'$comp_dvd'";
-// 				if ($_POST['comp_grav'] == -1) { $comp_grav = "null";} else $comp_grav = "'$comp_grav'";
-// 				if ($_POST['comp_nome'] == -1) { $comp_nome = "null";} ;//else $comp_nome = "'$comp_nome'";
-// 				if ($_POST['comp_nf'] == -1) { $comp_nf = "null";};// else $comp_nf = "'$comp_nf'";
-// 				if ($_POST['comp_coment'] == -1) { $comp_coment = "null";};// else $comp_coment = "'$comp_coment'";
-// 				if ($_POST['comp_ccusto'] == -1) { $comp_ccusto = "null";} else $comp_ccusto = "'$comp_ccusto'";
-// 				if ($_POST['comp_tipo_imp'] == -1) { $comp_tipo_imp = "null";} else $comp_tipo_imp = "'$comp_tipo_imp'";
-// 				if ($_POST['comp_resolucao'] == -1) { $comp_resolucao = "null";} else $comp_resolucao = "'$comp_resolucao'";
-// 				if ($_POST['comp_polegada'] == -1) { $comp_polegada = "null";} else $comp_polegada = "'$comp_polegada'";
-// 				if ($_POST['comp_fornecedor'] == -1) { $comp_fornecedor = "null";} else $comp_fornecedor = "'$comp_fornecedor'";
-//
-// 				if ($_POST['comp_tipo_garant'] == -1) { $comp_tipo_garant = "null";} else $comp_tipo_garant = "'$comp_tipo_garant'";
-// 				if ($_POST['comp_garant_meses'] == -1) { $comp_garant_meses = "null";} else $comp_garant_meses = "'$comp_garant_meses'";
 
 				$query = "INSERT INTO equipamentos ".
 							"(comp_inv, comp_sn, comp_marca, comp_mb, comp_proc, comp_memo, comp_video, comp_som, ".
@@ -776,14 +755,14 @@
 							"'".$_POST['comp_fab']."', '".$_POST['comp_situac']."', ".$_POST['comp_tipo_garant'].", ".
 							"".$_POST['comp_garant_meses']." ".
 							")";
-					$resultado = mysql_query($query) or die (TRANS('ERR_INSERT'). '<br>'.$query);
+					$resultado = mysqli_query($conect, $query) or die (TRANS('ERR_INSERT'). '<br>'.$query);
 					if ($resultado == 0)
 					{
 						$aviso = TRANS('MSG_NOT_INCLUDE_DATA');
 					}
 					else
 					{
-						$numero = mysql_insert_id();
+						$numero = mysqli_insert_id();
 						$aviso = TRANS('MSG_OK_EQUIP_CAD_SUCESS');
 						$texto = "[Etiqueta = ".$_POST['comp_inv']."], [Unidade = ".$_POST['comp_inst']."]";
 						geraLog(LOG_PATH.'invmon.txt',date("d-m-Y H:i:s"),$_SESSION['s_usuario'], $_SERVER['PHP_SELF'],$texto);

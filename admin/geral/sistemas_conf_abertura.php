@@ -46,23 +46,23 @@
 		$query.= "AND sis_id = ".$_GET['cod']." ";
 	}
 	$query .=" ORDER  BY sistema";
-	$resultado = mysql_query($query) or die('ERRO NA EXECUÇÃO DA QUERY DE CONSULTA!');
-	$registros = mysql_num_rows($resultado);
+	$resultado = mysqli_query($conect,$query) or die('ERRO NA EXECUÇÃO DA QUERY DE CONSULTA!');
+	$registros = mysqli_num_rows($resultado);
 		
 	$qtdAreas=0;
-	while ($area = mysql_fetch_array($resultado)){
+	while ($area = mysqli_fetch_array($resultado)){
 		$areas[$qtdAreas++]=$area;
 		
 		$queryAreasAbremChamado = "SELECT * FROM areaXarea_abrechamado WHERE area = ".$area['sis_id'];
-		$resultadoAreasAbremChamado = mysql_query($queryAreasAbremChamado) or die('ERRO NA EXECUÇÃO DA QUERY DE CONSULTA!');
-		while ($areaAbreChamado = mysql_fetch_array($resultadoAreasAbremChamado)){
+		$resultadoAreasAbremChamado = mysqli_query($conect,$queryAreasAbremChamado) or die('ERRO NA EXECUÇÃO DA QUERY DE CONSULTA!');
+		while ($areaAbreChamado = mysqli_fetch_array($resultadoAreasAbremChamado)){
 			$areasAbremChamado[$area['sis_id']][$areaAbreChamado['area_abrechamado']]=true;
 		}
 	}
 	$areas_aux=$areas;
 
 	if ((!isset($_GET['action'])) && empty($_POST['submit'])) {
-		if (mysql_num_rows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS("MSG_NO_RECORDS"));
 		}
@@ -129,12 +129,12 @@
 				//Inserir a Área que abre chamado na devida área
 				if( isset($_REQUEST["areaalvo_".$area['sis_id']."_areaabre_".$area_aux['sis_id']]) && !isset($areasAbremChamado[$area['sis_id']][$area_aux['sis_id']]) ){
 					$queryInsert = "INSERT INTO areaXarea_abrechamado (area, area_abrechamado) VALUES (".$area['sis_id'].", ".$area_aux['sis_id'].")";
-					$resultado = mysql_query($queryInsert) or die('ADIÇÃO DE ÁREA QUE PODE ABRIR CHAMADO: '.mysql_error());
+					$resultado = mysqli_query($conect,$queryInsert) or die('ADIÇÃO DE ÁREA QUE PODE ABRIR CHAMADO: '.mysqli_error());
 				}
 				//Remover a Área que abre chamado na devida área
 				if( !isset($_REQUEST["areaalvo_".$area['sis_id']."_areaabre_".$area_aux['sis_id']]) && isset($areasAbremChamado[$area['sis_id']][$area_aux['sis_id']])){
 					$queryDelete = "DELETE FROM areaXarea_abrechamado WHERE area = '".$area['sis_id']."' AND area_abrechamado = '".$area_aux['sis_id']."'";
-					$resultado = mysql_query($queryDelete) or die('REMOÇÃO DE ÁREA QUE PODE ABRIR CHAMADO: '.mysql_error());
+					$resultado = mysqli_query($conect,$queryDelete) or die('REMOÇÃO DE ÁREA QUE PODE ABRIR CHAMADO: '.mysqli_error());
 				}
 			}
 		}

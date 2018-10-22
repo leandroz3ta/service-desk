@@ -40,30 +40,30 @@
 		$query = "SELECT c.*, a.*, b.sistema as ownarea, b.sis_id as ownarea_cod ".
 					"FROM configusercall as c, sistemas as a, sistemas as b ".
 					"WHERE c.conf_opentoarea = a.sis_id and c.conf_ownarea = b.sis_id and c.conf_cod <> 1"; //codigo 1 é reservado para as definicoes globais
-        	$resultado = mysql_query($query);
-        	$row = mysql_fetch_array($resultado);
+        	$resultado = mysqli_query($conect,$query);
+        	$row = mysqli_fetch_array($resultado);
         	
-        	$resultado2 = mysql_query($query);
+        	$resultado2 = mysqli_query($conect,$query);
 		
 
 
 		$qrymsgdefault = $QRY["useropencall"];
-		$execqrydefault = mysql_query($qrymsgdefault);
-		$rowmsgdefault = mysql_fetch_array($execqrydefault);
+		$execqrydefault = mysqli_query($conect,$qrymsgdefault);
+		$rowmsgdefault = mysqli_fetch_array($execqrydefault);
 
 		$customareas = "";
 		$customareas = sepcomma($row['conf_custom_areas'],$customareas);
 		$listAreas = "";
 		if (count($customareas)==1){
 			$qry = "SELECT * FROM sistemas where sis_id=".(int)$customareas."";
-			$exec = mysql_query($qry);
-			$rowAreas = mysql_fetch_array($exec);
+			$exec = mysqli_query($conect,$qry);
+			$rowAreas = mysqli_fetch_array($exec);
 			$listAreas = $rowAreas['sistema'];
 		} else {
 			for ($i=0; $i<count($customareas); $i++){
 				$qry = "SELECT * FROM sistemas where sis_id=".(int)$customareas[$i]."";
-				$exec = mysql_query($qry);
-				$rowAreas = mysql_fetch_array($exec);
+				$exec = mysqli_query($conect,$qry);
+				$rowAreas = mysqli_fetch_array($exec);
 				if (strlen($listAreas)>0) $listAreas.=", ";
 				$listAreas.=$rowAreas['sistema'];
 			}
@@ -77,7 +77,7 @@
         	"</TD><br><BR>";
 
 
-		if (mysql_numrows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('MSG_NO_RECORDS'));
 		}
@@ -85,7 +85,7 @@
 		{
 			$cor=TD_COLOR;
 			$cor1=TD_COLOR;
-			$linhas = mysql_numrows($resultado);
+			$linhas = mysqli_num_rows($resultado);
 			//print "<td>";
 			print "<TABLE border='0' cellpadding='5' cellspacing='0'  width='50%'>";
 			//print "<TR class='header'><td>".TRANS('OPT_DIRETIVA')."</TD><td>".TRANS('OPT_VALOR')."</TD></TD></tr>";
@@ -102,7 +102,7 @@
 			$j = 2;
 			$i = 0;
 			$trClass = "";	
-			while ($row = mysql_fetch_array($resultado2)) {
+			while ($row = mysqli_fetch_array($resultado2)) {
 				//print "<tr>";
 				if ($j % 2)
 				{
@@ -159,9 +159,9 @@
 
 		print "<tr><td>".TRANS('OPT_AREA_USER_OPENTO')."</td><td>";//.$row['sistema']."</td></tr>";
 		$qrytoarea = "SELECT * FROM sistemas where sis_atende = 1 ORDER BY sistema";
-		$exectoarea = mysql_query($qrytoarea);
+		$exectoarea = mysqli_query($conect,$qrytoarea);
 		print "<select name='toarea' class='select'>";
-		while ($rowtoarea = mysql_fetch_array($exectoarea)){
+		while ($rowtoarea = mysqli_fetch_array($exectoarea)){
 			print "<option value='".$rowtoarea['sis_id']."'";
 			if ($rowtoarea['sis_id'] == $row['sis_id']) print " selected";
 			print ">".$rowtoarea['sistema']."";
@@ -337,15 +337,7 @@
 		//print $qry;
 		//exit;
 		//$exec= mysql_query($qry) or die(TRANS('ERR_EDIT'));
-		$exec= mysql_query($qry) or die($qry);
-		//Verifica se a área para abertura de chamados possui permissão ao módulo de ocorrências, se não possuir, cadastra a permissão
-// 		$qrychecapermissao = "select * from permissoes where perm_area=".$_POST['ownarea']." and perm_modulo=1";
-// 		$execcheca = mysql_query($qrychecapermissao) or die(TRANS('ERR_QUERY').$execcheca);
-// 		$regs = mysql_num_rows($execcheca);
-// 		if ($regs == 0) {
-// 			$qrypermissao = "INSERT INTO permissoes (perm_area,perm_modulo,perm_flag) values (".$_POST['ownarea'].",1,1)";
-// 			$execpermissao = mysql_query($qrypermissao) or die (TRANS('ERR_QUERY').$qrypermissao);
-// 		}
+		$exec= mysqli_query($conect,$qry) or die($qry);
 
 		print "<script>mensagem('".TRANS('MSG_SUCCES_ALTER','',0)."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 	} else
@@ -354,9 +346,9 @@
 
 		$total = 0; $texto = "";
 		$sql_1 = "SELECT * from sistemas where sis_screen='".$_GET['cod_profile']."'";
-		$exec_1 = mysql_query($sql_1);
-		$total+=mysql_numrows($exec_1);
-		if (mysql_numrows($exec_1)!=0) $texto.="Áreas de atendimento, ";
+		$exec_1 = mysqli_query($conect, $sql_1);
+		$total+=mysqli_num_rows($exec_1);
+		if (mysqli_num_rows($exec_1)!=0) $texto.="Áreas de atendimento, ";
 
 
 		if ($total!=0)
@@ -367,7 +359,7 @@
 		else
 		{
 			$query2 = "DELETE FROM configusercall WHERE conf_cod='".$_GET['cod_profile']."'";
-			$resultado2 = mysql_query($query2);
+			$resultado2 = mysqli_query($conect, $query2);
 
 			if ($resultado2 == 0)
 			{

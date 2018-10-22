@@ -50,13 +50,13 @@
 			$query.= "WHERE sis_id = ".$_GET['cod']." ";
 		}
 		$query .=" ORDER  BY sistema";
-		$resultado = mysql_query($query) or die('ERRO NA EXECUÇÃO DA QUERY DE CONSULTA!');
-		$registros = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $query) or die('ERRO NA EXECUÇÃO DA QUERY DE CONSULTA!');
+		$registros = mysqli_num_rows($resultado);
 
 	if ((!isset($_GET['action'])) && empty($_POST['submit'])) {
 
 		print "<TR><TD><input type='button' class='button' id='idBtIncluir' value='".TRANS('BT_NEW_RECORD','',0)."' onClick=\"redirect('".$_SERVER['PHP_SELF']."?action=incluir&cellStyle=true');\"></TD></TR>";
-		if (mysql_num_rows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS("MSG_NO_RECORDS"));
 		}
@@ -70,7 +70,7 @@
 
 			$j=2;
 			$textScreen = "";
-			while ($row = mysql_fetch_array($resultado))
+			while ($row = mysqli_fetch_array($resultado))
 			{
 				if ($j % 2)
 				{
@@ -119,9 +119,9 @@
 			print "<select class='select' name='screen_name' id='idScreen'>";
 				print "<option value=NULL>".TRANS('SEL_SCREEN')."</option>";
 					$sql="select * from configusercall order by conf_name";
-					$commit = mysql_query($sql);
+					$commit = mysqli_query($conect, $sql);
 					$i=0;
-					while($row = mysql_fetch_array($commit)){
+					while($row = mysqli_fetch_array($commit)){
 						print "<option value=".$row['conf_cod'].">".$row["conf_name"]."</option>";
 						$i++;
 					} // while
@@ -153,7 +153,7 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="alter") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<BR><B>".TRANS('TTL_EDIT_RECORD','Edição do registro').":</B><BR>";
 
@@ -173,12 +173,12 @@
 			"<TD width='80%' align='left' bgcolor='".BODY_COLOR."'><select class='select' name='screen_name' id='idScreen'>";
 
 			$sql = "select * from configusercall where conf_cod = '".$row['sis_screen']."'";
-			$commit1 = mysql_query($sql);
-			$rowR = mysql_fetch_array($commit1);
+			$commit1 = mysqli_query($conect, $sql);
+			$rowR = mysqli_fetch_array($commit1);
 				print "<option value=NULL>".TRANS('SEL_SCREEN')."</option>";
 					$sql2="select * from configusercall order by conf_name";
-					$commit2 = mysql_query($sql2);
-					while($rowB = mysql_fetch_array($commit2)){
+					$commit2 = mysqli_query($sql2);
+					while($rowB = mysqli_fetch_array($commit2)){
 						print "<option value=".$rowB["conf_cod"]."";
                         			if ($rowB['conf_cod'] == $row['sis_screen'] ) {
                             				print " selected";
@@ -223,19 +223,19 @@
 
 		$total = 0; $texto = "";
 		$sql_1 = "SELECT * from usuarios where AREA='".$_GET['cod']."'";
-		$exec_1 = mysql_query($sql_1);
-		$total+=mysql_numrows($exec_1);
-		if (mysql_numrows($exec_1)!=0) $texto.="usuarios, ";
+		$exec_1 = mysqli_query($conect, $sql_1);
+		$total+=mysqli_num_rows($exec_1);
+		if (mysqli_num_rows($exec_1)!=0) $texto.="usuarios, ";
 
 		$sql_2 = "SELECT * FROM ocorrencias where sistema ='".$_GET['cod']."'";
-		$exec_2 = mysql_query($sql_2);
-		$total+= mysql_numrows($exec_2);
-		if (mysql_numrows($exec_2)!=0) $texto.="ocorrencias, ";
+		$exec_2 = mysqli_query($conect, $sql_2);
+		$total+= mysqli_num_rows($exec_2);
+		if (mysqli_num_rows($exec_2)!=0) $texto.="ocorrencias, ";
 
 		$sql_3 = "SELECT * FROM problemas where prob_area ='".$_GET['cod']."'";
-		$exec_3 = mysql_query($sql_3);
-		$total+= mysql_numrows($exec_3);
-		if (mysql_numrows($exec_3)!=0) $texto.="problemas, ";
+		$exec_3 = mysqli_query($conect,$sql_3);
+		$total+= mysqli_num_rows($exec_3);
+		if (mysqli_num_rows($exec_3)!=0) $texto.="problemas, ";
 
 		if ($total!=0)
 		{
@@ -245,7 +245,7 @@
 		else
 		{
 			$query2 = "DELETE FROM sistemas WHERE sis_id='".$_GET['cod']."'";
-			$resultado2 = mysql_query($query2);
+			$resultado2 = mysqli_query($conect, $query2);
 
 			if ($resultado2 == 0)
 			{
@@ -254,19 +254,19 @@
 			else
 			{
 				$queryDelete = "DELETE FROM areaXarea_abrechamado WHERE area = '".$_GET['cod']."' OR area_abrechamado = '".$_GET['cod']."'";
-				$resultadoDelete = mysql_query($queryDelete) or die(TRANS('ERR_DEL').'<br>'.mysql_error());					
+				$resultadoDelete = mysqli_query($conect, $queryDelete) or die(TRANS('ERR_DEL').'<br>'.mysql_error());					
 				$aviso = TRANS('OK_DEL');
 			}
 			
 			$qryAreas = "SELECT * FROM sistemas where sis_atende = 0";
-			$execAreas = mysql_query($qryAreas);
+			$execAreas = mysqli_query($conect, $qryAreas);
 			$confNewOwnAreas = "";
-			while ($rowAreas = mysql_fetch_array($execAreas)){
+			while ($rowAreas = mysqli_fetch_array($execAreas)){
 				if ($confNewOwnAreas != "") $confNewOwnAreas.=", ";
 				$confNewOwnAreas.=$rowAreas['sis_id'];
 			}
 			$updNewOwnAreas = "UPDATE configusercall SET conf_ownarea_2 = '".$confNewOwnAreas."'";
-			$execUpd = mysql_query($updNewOwnAreas) or die(mysql_error());
+			$execUpd = mysqli_query($conect, $updNewOwnAreas) or die(mysqli_error());
 			
 			print "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 
@@ -280,8 +280,8 @@
 		$erro=false;
 
 		$qryl = "SELECT * FROM sistemas WHERE sistema='".$_POST['area']."'";
-		$resultado = mysql_query($qryl);
-		$linhas = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $qryl);
+		$linhas = mysqli_num_rows($resultado);
 
 		if ($linhas > 0)
 		{
@@ -298,9 +298,9 @@
 
 			$query = "INSERT INTO sistemas (sistema,sis_status,sis_email,sis_atende, sis_screen) values ".
 				"('".noHtml($_POST['area'])."',".$_POST['status'].",'".$_POST['email']."','".$areaatende."', ".$_POST['screen_name'].")";
-			$resultado = mysql_query($query);
+			$resultado = mysqli_query($conect, $query);
 			
-			$id = mysql_insert_id();
+			$id = mysqli_insert_id();
 			if ($resultado == 0)
 			{
 				$aviso = TRANS('ERR_INSERT');
@@ -310,19 +310,19 @@
 				if ($areaatende == 0) {
 					$newArea = ", ".$id;
 					$queryUpd = "UPDATE configusercall SET conf_ownarea_2 = CONCAT(conf_ownarea_2,'".$newArea."') ";
-					$exeUpd = mysql_query($queryUpd) or die('ERROR_TRYING TO UPDATE RECORD'); 
+					$exeUpd = mysqli_query($conect, $queryUpd) or die('ERROR_TRYING TO UPDATE RECORD'); 
 				}
 				$aviso = TRANS('OK_INSERT');
 			}
 			$qryAreas = "SELECT * FROM sistemas where sis_atende = 0";
-			$execAreas = mysql_query($qryAreas);
+			$execAreas = mysqli_query($conect, $qryAreas);
 			$confNewOwnAreas = "";
-			while ($rowAreas = mysql_fetch_array($execAreas)){
+			while ($rowAreas = mysqli_fetch_array($execAreas)){
 				if ($confNewOwnAreas != "") $confNewOwnAreas.=", ";
 				$confNewOwnAreas.=$rowAreas['sis_id'];
 			}
 			$updNewOwnAreas = "UPDATE configusercall SET conf_ownarea_2 = '".$confNewOwnAreas."'";
-			$execUpd = mysql_query($updNewOwnAreas) or die(mysql_error());
+			$execUpd = mysqli_query($conect, $updNewOwnAreas) or die(mysqli_error());
 		}
 
 		echo "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
@@ -337,7 +337,7 @@
 			$areaatende = 0;
 		$query2 = "UPDATE sistemas SET sistema='".noHtml($_POST['sistema'])."',sis_status=".$_POST['status'].", ".
 							"sis_email='".$_POST['email']."', sis_screen=".$_POST['screen_name'].", sis_atende='".$areaatende."' WHERE sis_id='".$_POST['cod']."'";
-		$resultado2 = mysql_query($query2);
+		$resultado2 = mysqli_query($conect, $query2);
 
 		if ($resultado2 == 0)
 		{
@@ -350,14 +350,14 @@
 		}
 
 		$qryAreas = "SELECT * FROM sistemas where sis_atende = 0";
-		$execAreas = mysql_query($qryAreas);
+		$execAreas = mysqli_query($conect, $qryAreas);
 		$confNewOwnAreas = "";
-		while ($rowAreas = mysql_fetch_array($execAreas)){
+		while ($rowAreas = mysqli_fetch_array($execAreas)){
 			if ($confNewOwnAreas != "") $confNewOwnAreas.=", ";
 			$confNewOwnAreas.=$rowAreas['sis_id'];
 		}
 		$updNewOwnAreas = "UPDATE configusercall SET conf_ownarea_2 = '".$confNewOwnAreas."'";
-		$execUpd = mysql_query($updNewOwnAreas) or die(mysql_error());		
+		$execUpd = mysqli_query($conect, $updNewOwnAreas) or die(mysqli_error());		
 		
 		echo "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 

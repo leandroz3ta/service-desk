@@ -38,10 +38,10 @@
 							"LEFT JOIN scripts as script on script.scpt_id = sc.prscpt_scpt_id ". 
 						"WHERE p.prob_id = ".$selProb." ";
 				
-				$exec_problema = mysql_query($qry_problema) or die($qry_problema);
-				$row_problema = mysql_fetch_array($exec_problema);
+				$exec_problema = mysqli_query($conect, $qry_problema) or die($qry_problema);
+				$row_problema = mysqli_fetch_array($exec_problema);
 					
-				if (mysql_num_rows($exec_problema) == 0) {
+				if (mysqli_num_rows($exec_problema) == 0) {
 					print "<div></div>";
 				} else {
 					

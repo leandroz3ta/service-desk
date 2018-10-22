@@ -49,14 +49,14 @@
 			$query.= " WHERE S.stat_id = ".$_GET['cod']." ";
 		}
 		$query .=" ORDER  BY S.status";
-		$resultado = mysql_query($query) or die(TRANS('ERR_QUERY')."!");
-		$registros = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect,$query) or die(TRANS('ERR_QUERY')."!");
+		$registros = mysqli_num_rows($resultado);
 
 	if ((!isset($_GET['action'])) && empty($_POST['submit'])) {
 
 		//print "<TR><TD bgcolor='".BODY_COLOR."'><a href='".$_SERVER['PHP_SELF']."?action=incluir&cellStyle=true'>Incluir novo Status</a></TD></TR>";
 		print "<TR><TD><input type='button' class='button' id='idBtIncluir' value='".TRANS('BT_NEW_RECORD','',0)."' onClick=\"redirect('".$_SERVER['PHP_SELF']."?action=incluir&cellStyle=true');\"></TD></TR>";
-		if (mysql_num_rows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('MSG_NO_RECORDS','',0));
 		}
@@ -71,7 +71,7 @@
 				"<td class='line'>".TRANS('COL_EDIT')."</TD><td class='line'>".TRANS('COL_DEL')."</TD></tr>";
 
 			$j=2;
-			while ($row = mysql_fetch_array($resultado))
+			while ($row = mysqli_fetch_array($resultado))
 			{
 				if ($j % 2)
 				{
@@ -115,10 +115,10 @@
 		print "<TD width='80%' align='left' bgcolor='".BODY_COLOR."'>";
 
 			$sql = "select * from status_categ order by stc_desc";
-			$exec_sql = mysql_query($sql);
+			$exec_sql = mysqli_query($conect,$sql);
 			print "<select class='text' name='categoria' id='idCategoria'>";
 				print "<option value='null' selected>".TRANS('SEL_DEPS')."</option>";
-				while ($rowCateg = mysql_fetch_array($exec_sql)) {
+				while ($rowCateg = mysqli_fetch_array($exec_sql)) {
 					print "<option value=".$rowCateg['stc_cod'].">".$rowCateg['stc_desc']."</option>";
 				}
 				print "</select>";
@@ -152,7 +152,7 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="alter") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 		if ($row['stat_id'] == 1 || $row['stat_id'] == 2 || $row['stat_id'] == 4) { //These are hard status, it should not have its codes changed
 			$STATUS = "disabled";
 		} else {
@@ -171,10 +171,10 @@
 			"<TD width='80%' align='left' bgcolor='".BODY_COLOR."'>";
 
 			$sql = "select * from status_categ order by stc_desc";
-			$exec_sql = mysql_query($sql);
+			$exec_sql = mysqli_query($conect,$sql);
 			print "<select class='select' name='categoria' id='idCategoria' ".$STATUS.">";
 			print "<option value='null'>".TRANS('SEL_DEPS')."</option>";
-			while ($rowCateg = mysql_fetch_array($exec_sql)) {
+			while ($rowCateg = mysqli_fetch_array($exec_sql)) {
 				print "<option value=".$rowCateg['stc_cod']." ";
 				if ($rowCateg['stc_cod'] == $row['stat_cat']){
 					print " selected";
@@ -225,9 +225,9 @@
 		$total = 0; $texto = "";
 
 		$sql_2 = "SELECT * FROM ocorrencias where `status` ='".$_GET['cod']."'";
-		$exec_2 = mysql_query($sql_2);
-		$total+= mysql_numrows($exec_2);
-		if (mysql_numrows($exec_2)!=0) $texto.="ocorrencias, ";
+		$exec_2 = mysqli_query($conect,$sql_2);
+		$total+= mysqli_num_rows($exec_2);
+		if (mysqli_num_rows($exec_2)!=0) $texto.="ocorrencias, ";
 
 		if ($_GET['cod'] == 1 || $_GET['cod'] == 2 || $_GET['cod'] == 4) {
 			print "<script>mensagem('".TRANS('MSG_DEFAULT_STATUS')."');
@@ -241,7 +241,7 @@
 		else
 		{
 			$query2 = "DELETE FROM status WHERE stat_id='".$_GET['cod']."'";
-			$resultado2 = mysql_query($query2);
+			$resultado2 = mysqli_query($conect,$query2);
 
 			if ($resultado2 == 0)
 			{
@@ -263,8 +263,8 @@
 		$erro=false;
 
 		$qryl = "SELECT * FROM `status` WHERE status='".$_POST['status']."'";
-		$resultado = mysql_query($qryl);
-		$linhas = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect,$qryl);
+		$linhas = mysqli_num_rows($resultado);
 
 		if ($linhas > 0)
 		{
@@ -276,7 +276,7 @@
 		{
 
 			$query = "INSERT INTO status (status, stat_cat, stat_painel) values ('".noHtml($_POST['status'])."',".$_POST['categoria'].",".$_POST['painel'].")";
-			$resultado = mysql_query($query);
+			$resultado = mysqli_query($conect,$query);
 			if ($resultado == 0)
 			{
 				$aviso = TRANS('ERR_INSERT');
@@ -295,7 +295,7 @@
 
 		$query2 = "UPDATE status SET status='".noHtml($_POST['status'])."', stat_cat=".$_POST['categoria'].", stat_painel=".$_POST['painel']."  WHERE stat_id='".$_POST['cod']."'";
 
-		$resultado2 = mysql_query($query2);
+		$resultado2 = mysqli_query($conect, $query2);
 
 		if ($resultado2 == 0)
 		{

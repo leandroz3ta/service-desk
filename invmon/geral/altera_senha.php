@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -24,6 +25,11 @@
 
 	$auth = new auth;
 
+	
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+	
+	
 	if (isset($_GET['popup'])) {
 		$auth->testa_user_hidden($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],4);
 	} else
@@ -86,7 +92,7 @@
 		if (!$erro)
 		{
 			$query = "UPDATE usuarios SET password='".$password."' WHERE login = '".$_SESSION['s_usuario']."'";
-			$resultado = mysql_query($query);
+			$resultado = mysqli_query($conect,$query);
 			if ($resultado == 0)
 			{
 				$aviso = "ERRO ao alterar senha no sistema.";

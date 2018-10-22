@@ -1,4 +1,5 @@
 <?php session_start();
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Fl?vio Ribeiro
 
          This file is part of OCOMON.
@@ -20,6 +21,8 @@
 	include ("../../includes/include_geral.inc.php");
 	include ("../../includes/include_geral_II.inc.php");
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');	
 
 	$_SESSION['s_page_ocomon'] = $_SERVER['PHP_SELF'];
 
@@ -30,8 +33,8 @@
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],4);
 
 	$qry_config = "SELECT * FROM config ";
-	$exec_config = mysql_query($qry_config) or die (TRANS('ERR_QUERY'));
-	$row_config = mysql_fetch_array($exec_config);
+	$exec_config = mysqli_query($conect, $qry_config) or die (TRANS('ERR_QUERY'));
+	$row_config = mysqli_fetch_array($exec_config);
 
 
 	$qry = $QRY["useropencall_custom"];
@@ -44,19 +47,19 @@
 	//dump($_SESSION);
 	//exit;
 
-	$execqry = mysql_query($qry);
-	$rowconf = mysql_fetch_array($execqry);
+	$execqry = mysqli_query($conect, $qry);
+	$rowconf = mysqli_fetch_array($execqry);
 
 
 	$qryconfglobal = $QRY["useropencall"];
-	$execqryglobal = mysql_query($qryconfglobal);
-	$rowconf_global = mysql_fetch_array($execqryglobal);
+	$execqryglobal = mysqli_query($conect, $qryconfglobal);
+	$rowconf_global = mysqli_fetch_array($execqryglobal);
 
 	//dump($rowconf,'ROWCONF');
 
 	$qryarea = "SELECT * FROM sistemas where sis_id = ".$_SESSION['s_area']."";
-	$execarea = mysql_query($qryarea);
-	$rowarea = mysql_fetch_array($execarea);
+	$execarea = mysqli_query($conect, $qryarea);
+	$rowarea = mysqli_fetch_array($execarea);
 
 
 
@@ -97,8 +100,8 @@
 	if (isset($_REQUEST['pai'])) {
 
 		$sql = "select o.*, s.* from ocorrencias o, `status` s where o.`status` = s.stat_id and s.stat_painel not in (3) and o.numero = ".$_REQUEST['pai']."";
-		$execSql = mysql_query($sql) or die (TRANS('ERR_QUERY'));
-		$ocoOK = mysql_num_rows ($execSql);
+		$execSql = mysqli_query($conect,$sql) or die (TRANS('ERR_QUERY'));
+		$ocoOK = mysqli_num_rows ($execSql);
 		if ($ocoOK != 0) {
 			$subCallMsg = "<font color='red'>".TRANS('MSG_OCCO_SUBTICKET')."&nbsp;".$_REQUEST['pai']."</font>";
 		} else {
@@ -119,8 +122,8 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 	if (isset($_POST['carrega'])){
 
 		$sqlTag = "select c.*, l.* from equipamentos c, localizacao l where c.comp_local=l.loc_id and c.comp_inv=".$_POST['equipamento']." and c.comp_inst=".$_POST['instituicao']."";
-		$execTag = mysql_query($sqlTag);
-		$rowTag = mysql_fetch_array($execTag);
+		$execTag = mysqli_query($conect, $sqlTag);
+		$rowTag = mysqli_fetch_array($execTag);
 
 		//$invTag = $rowTag['comp_inv'];
 		$invTag = $_POST['equipamento'];
@@ -194,7 +197,7 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 
             		//$query = "SELECT * from sistemas where sis_status NOT in (0) and sis_atende = 1 order by sistema"; //NOT in (0) = INATIVO
 			$query = "SELECT s.* from sistemas s, areaXarea_abrechamado a WHERE s.sis_status NOT IN (0) AND s.sis_atende = 1 AND s.sis_id = a.area AND a.area_abrechamado IN (".$_SESSION['s_uareas'].") GROUP BY sistema ORDER BY sistema"; //NOT in (0) = INATIVO
-			$resultado = mysql_query($query);
+			$resultado = mysqli_query($conect, $query);
             		print "<option value=-1 selected>".TRANS('OCO_SEL_AREA')."</option>";
 
 			if (isset($_POST['sistema'])) {
@@ -202,7 +205,7 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 			} else
 				$sistema = "-1";
 
-			while ($rowArea=mysql_fetch_array($resultado)){
+			while ($rowArea=mysqli_fetch_array($resultado)){
 				print "<option value='".$rowArea['sis_id']."'";
 					if ($rowArea['sis_id']==$sistema) print " selected";
 				print ">".$rowArea['sistema']."</option>";
@@ -299,8 +302,8 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 			print "<option value=null selected>".TRANS('OCO_SEL_UNIT','Selecione a unidade')."</option>";
 
 			$query2 = "SELECT * from instituicao WHERE inst_status not in (0) order by inst_cod";
-			$resultado2 = mysql_query($query2);
-			$linhas = mysql_numrows($resultado2);
+			$resultado2 = mysqli_query($conect, $query2);
+			$linhas = mysqli_num_rows($resultado2);
 
 			if (isset($_GET['invInst'])){
 				$invInst = $_GET['invInst'];
@@ -309,7 +312,7 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 				$invInst = $_POST['instituicao'];
 			}
 
-			while ($rowInst = mysql_fetch_array($resultado2))
+			while ($rowInst = mysqli_fetch_array($resultado2))
 			{
 				print "<option value=".$rowInst['inst_cod']."";
 					if ($rowInst['inst_cod']== $invInst) print " selected";
@@ -376,8 +379,8 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 			print "<TD width='30%' align='left' bgcolor=".BODY_COLOR."><INPUT type='text' class='text' name='contato' id='idContato' value='".$contato."' ></TD>";//onChange=\"Habilitar();\"  onBlur=\"Habilitar();\"
 		} else {
 			$qry = "select nome from usuarios where user_id = ".$_SESSION['s_uid']."";
-			$exec = mysql_query($qry);
-			$r_user = mysql_fetch_array($exec);
+			$exec = mysqli_query($conect, $qry);
+			$r_user = mysqli_fetch_array($exec);
 			$contato = $r_user['nome'];
 			print "<input type='hidden' name='contato' value='".$contato."'>";
 		}
@@ -494,12 +497,12 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 				print "<select name='prioridade' class='select' id='idPrioridade'>";
 
 				$sql = "select * from prior_atend where pr_default = 1 ";
-				$commit1 = mysql_query($sql);
-				$rowR = mysql_fetch_array($commit1);
+				$commit1 = mysqli_query($conect, $sql);
+				$rowR = mysqli_fetch_array($commit1);
 					print "<option value=-1>".TRANS('OCO_PRIORITY')."</option>";
 						$sql2="select * from prior_atend order by pr_nivel";
-						$commit2 = mysql_query($sql2);
-						while($rowB = mysql_fetch_array($commit2)){
+						$commit2 = mysqli_query($conect, $sql2);
+						while($rowB = mysqli_fetch_array($commit2)){
 							print "<option value=".$rowB["pr_cod"]."";
 							if ($rowB['pr_cod'] == $rowR['pr_cod'] ) {
 								print " selected";
@@ -511,26 +514,15 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 				print "</td>";
 		} else {
 			$sql = "select * from prior_atend where pr_default = 1 ";
-			$commit1 = mysql_query($sql);
-			$rowR = mysql_fetch_array($commit1);
+			$commit1 = mysqli_query($conect, $sql);
+			$rowR = mysqli_fetch_array($commit1);
 			print "<input type='hidden' name='prioridade' value='".$rowR['pr_cod']."'>";
 		}
 
 		//if ($rowconf['conf_scr_foward'] || !isIn($_SESSION['s_area'],$rowconf['conf_custom_areas'])) {
 		if ((!empty($rowconf) && $rowconf['conf_scr_foward']) || empty($rowconf)) {
 			print "<TD width='20%' align='left' bgcolor=".TD_COLOR.">".TRANS('OCO_FIELD_FOWARD').":</TD>";
-//                 	print "<TD width='30%' align='left' bgcolor=".BODY_COLOR.">";
-//
-// 				print "<SELECT class='select' name='foward' id='idFoward' onChange=\"checkMailOper();\">";
-//                     	    		print "<option value='-1' selected>".TRANS('OCO_SEL_OPERATOR')."</option>";
-//                     	    	$query = "SELECT u.*, a.* from usuarios u, sistemas a where u.AREA = a.sis_id and a.sis_atende='1' and u.nivel not in (3,4,5) order by login";
-//                         	$exec_oper = mysql_query($query);
-//         	                while ($row_oper = mysql_fetch_array($exec_oper))
-//             	            	{
-// 					print "<option value=".$row_oper['user_id'].">".$row_oper['nome']."</option>";
-// 				}
-//                 	        print "</SELECT>";
-//                 	print "</TD>";
+
 			print "<TD width='30%' align='left' bgcolor=".BODY_COLOR.">";
 				print "<div id='divOperator'>";
 					print "<input type='hidden' name='foward' id='idFoward' value='".$foward."'>";
@@ -613,26 +605,26 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 
 
 			$queryB = "SELECT sis_id,sistema, sis_email FROM sistemas WHERE sis_id = ".$sistema."";
-			$sis_idB = mysql_query($queryB);
-			$rowSis = mysql_fetch_array($sis_idB);
+			$sis_idB = mysqli_query($conect, $queryB);
+			$rowSis = mysqli_fetch_array($sis_idB);
 
 			//if ($rowconf['conf_scr_local'] || !isIn($_SESSION['s_area'],$rowconf['conf_custom_areas'])) {
 			if ((!empty($rowconf) && $rowconf['conf_scr_local']) || empty($rowconf)) {
 				$queryC = "SELECT local from localizacao where loc_id = ".$_POST['local']."";
-				$loc_idC = mysql_query($queryC);
-				$setor = mysql_result($loc_idC,0);
+				$loc_idC = mysqli_query($conect, $queryC);
+				$setor = mysqli_result($loc_idC,0);
 			}
 
 			$queryD = "SELECT u.*,a.* from usuarios u, sistemas a where u.AREA = a.sis_id and user_id=".$_SESSION['s_uid']."";
-			$loginD = mysql_query($queryD);
-			$rowqryD = mysql_fetch_array($loginD);
+			$loginD = mysqli_query($conect, $queryD);
+			$rowqryD = mysqli_fetch_array($loginD);
 			$nome = $rowqryD['nome'];
 
 			/* ----------------- INICIO ALTERACAO ----------------- */
 			$gravaImg = false;
 			$qryConf = "SELECT * FROM config";
-			$execConf = mysql_query($qryConf) or die (TRANS('ERR_QUERY').", A TABELA CONF FOI CRIADA?");
-			$rowConf = mysql_fetch_array($execConf);
+			$execConf = mysqli_query($conect, $qryConf) or die (TRANS('ERR_QUERY').", A TABELA CONF FOI CRIADA?");
+			$rowConf = mysqli_fetch_array($execConf);
 			$arrayConf = array();
 			$arrayConf = montaArray($execConf,$rowConf);
 			for($i=1;$i<=$row_config['conf_qtd_max_anexos']; $i++){
@@ -716,18 +708,18 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 						" '".$date_schedule."',NULL,".$oStatus.",NULL,".$_SESSION['s_uid'].",".$schedule.", '".date("Y-m-d H:i:s")."', NULL, '".$_POST['prioridade']."')";
 					}
 
-					$resultado = mysql_query($query) or die (TRANS('ERR_QUERY'));
+					$resultado = mysqli_query($conect, $query) or die (TRANS('ERR_QUERY'));
 
-					$numero = mysql_insert_id();
+					$numero = mysqli_insert_id();
 					$globalID = random();
 
 					//GERA ID GLOBAL PARA ACESSO À OCORRÊNCIA
 					$qryGlobal = "INSERT INTO global_tickets (gt_ticket, gt_id) values (".$numero.", ".$globalID.")";
-					$execGlobal = mysql_query($qryGlobal) or die($qryGlobal);
+					$execGlobal = mysqli_query($conect, $qryGlobal) or die($qryGlobal);
 
 					//INSERSAO PARA ARMAZENAR O TEMPO DO CHAMADO EM CADA STATUS
 					$sql = " insert into tempo_status (ts_ocorrencia, ts_status, ts_tempo, ts_data) values (".$numero.", ".$oStatus.", 0, '".date("Y-m-d H:i:s")."')  ";
-					$exec_sql = mysql_query($sql);
+					$exec_sql = mysqli_query($conect, $sql);
 					if ($exec_sql == 0) $error = " erro na tabela TEMPO_STATUS ";
 
 					$i++;
@@ -739,12 +731,12 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 				//$numero = mysql_insert_id();
 
 				$sqlDoc = "insert into doc_time (doc_oco, doc_open, doc_edit, doc_close, doc_user) values (".$numero.",".diff_em_segundos($_POST['data_gravada'],date("Y-m-d H:i:s")).", 0, 0, ".$_SESSION['s_uid'].")";
-				$execDoc = mysql_query($sqlDoc) or die (TRANS('ERR_QUERY').'br>').$sqlDoc;
+				$execDoc = mysqli_query($conect, $sqlDoc) or die (TRANS('ERR_QUERY').'br>').$sqlDoc;
 
 
 				if (isset($_POST['pai'])) {
 					$sqlDep = "insert into ocodeps (dep_pai, dep_filho) values (".$_POST['pai'].", ".$numero.")";
-					$execDep = mysql_query($sqlDep) or die (TRANS('ERR_QUERY').'<br>'.$sqlDep);
+					$execDep = mysqli_query($conect, $sqlDep) or die (TRANS('ERR_QUERY').'<br>'.$sqlDep);
 					if ($execDep == 0) $aviso.= TRANS('MSG_NOT_TO_TIE_OCCOR');
 				}
 
@@ -758,20 +750,14 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 						$tamanho2 = filesize($fileinput);
 
 						if(chop($fileinput)!=""){
-							// $fileinput should point to a temp file on the server
-							// which contains the uploaded image. so we will prepare
-							// the file for upload with addslashes and form an sql
-							// statement to do the load into the database.
+
 							$image = addslashes(fread(fopen($fileinput,"r"), 1000000));
 							$SQL = "Insert Into imagens (img_nome, img_oco, img_tipo, img_bin, img_largura, img_altura, img_size) values ".
 									"('".noSpace($_FILES[$nomeAnexo]['name'])."',".$numero.", '".$_FILES[$nomeAnexo]['type']."', ".
 									"'".$image."', '".$tamanho[0]."', '".$tamanho[1]."', '".$tamanho2."')";
 							// now we can delete the temp file
 							unlink($fileinput);
-						} /*else {
-							echo "".TRANS('MSG_NOT_IMAGE_SELECT')."";
-							exit;
-						}*/
+						}
 						$exec = mysql_query($SQL); //or die ("N?O FOI POSS?VEL GRAVAR O ARQUIVO NO BANCO DE DADOS! ");
 						if ($exec == 0)
 							$aviso.= TRANS('MSG_ATTACH_IMAGE')."<br>";
@@ -781,8 +767,8 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 
 
 				$qryfull = $QRY["ocorrencias_full_ini"]." WHERE o.numero = ".$numero."";
-				$execfull = mysql_query($qryfull) or die(TRANS('ERR_QUERY').$qryfull);
-				$rowfull = mysql_fetch_array($execfull);
+				$execfull = mysqli_query($conect, $qryfull) or die(TRANS('ERR_QUERY').$qryfull);
+				$rowfull = mysqli_fetch_array($execfull);
 
 				$VARS = array();
 				$VARS['%numero%'] = $rowfull['numero'];
@@ -803,8 +789,8 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 				$VARS['%versao%'] = VERSAO;
 
 				$qryconfmail = "SELECT * FROM mailconfig";
-				$execconfmail = mysql_query($qryconfmail) or die (TRANS('ERR_QUERY'));
-				$rowconfmail = mysql_fetch_array($execconfmail);
+				$execconfmail = mysqli_query($conect, $qryconfmail) or die (TRANS('ERR_QUERY'));
+				$rowconfmail = mysqli_fetch_array($execconfmail);
 
 				//((!empty($rowconf) && $rowconf['conf_scr_status']) || empty($rowconf))
 				//if (isset($_POST['mailAR']) || isIn($_SESSION['s_area'],$rowconf['conf_custom_areas'])) {
@@ -812,8 +798,8 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 
 					$event = 'abertura-para-area';
 					$qrymsg = "SELECT * FROM msgconfig WHERE msg_event like ('".$event."')";
-					$execmsg = mysql_query($qrymsg) or die(TRANS('ERR_QUERY'));
-					$rowmsg = mysql_fetch_array($execmsg);
+					$execmsg = mysqli_query($conect, $qrymsg) or die(TRANS('ERR_QUERY'));
+					$rowmsg = mysqli_fetch_array($execmsg);
 
 					send_mail($event, $rowSis['sis_email'], $rowconfmail, $rowmsg, $VARS);
 				}
@@ -822,12 +808,12 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 				if (isset($_POST['mailOP'])) {
 					$event = 'abertura-para-operador';
 					$qrymsg = "SELECT * FROM msgconfig WHERE msg_event like ('".$event."')";
-					$execmsg = mysql_query($qrymsg) or die(TRANS('MSG_ERR_MSCONFIG'));
-					$rowmsg = mysql_fetch_array($execmsg);
+					$execmsg = mysqli_query($conect, $qrymsg) or die(TRANS('MSG_ERR_MSCONFIG'));
+					$rowmsg = mysqli_fetch_array($execmsg);
 
 					$sqlMailOper = "select * from usuarios where user_id =".$_POST['foward']."";
-					$execMailOper = mysql_query($sqlMailOper);
-					$rowMailOper = mysql_fetch_array($execMailOper);
+					$execMailOper = mysqli_query($conect, $sqlMailOper);
+					$rowMailOper = mysqli_fetch_array($execMailOper);
 
 					$VARS['%operador%'] = $rowMailOper['nome'];
 					send_mail($event, $rowMailOper['email'], $rowconf, $rowmsg, $VARS);
@@ -859,15 +845,15 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 
 			} else {
 				$qrymail = "SELECT * FROM usuarios WHERE user_id = ".$_SESSION['s_uid']."";
-				$execmail = mysql_query($qrymail) or die(TRANS('ERR_QUERY'));
-				$rowmail = mysql_fetch_array($execmail);
+				$execmail = mysqli_query($conect, $qrymail) or die(TRANS('ERR_QUERY'));
+				$rowmail = mysqli_fetch_array($execmail);
 				//ENVIA E-MAIL PARA O PR?PRIO USU?RIO QUE ABRIU O CHAMADO
 
 				//$flag = mail_user($rowmail['email'],$rowconf['sis_email'],$rowmail['nome'],$numero,OCOMON_SITE);
 				$event = 'abertura-para-usuario';
 				$qrymsg = "SELECT * FROM msgconfig WHERE msg_event like ('".$event."')";
-				$execmsg = mysql_query($qrymsg) or die(TRANS('ERR_QUERY'));
-				$rowmsg = mysql_fetch_array($execmsg);
+				$execmsg = mysqli_query($conect, $qrymsg) or die(TRANS('ERR_QUERY'));
+				$rowmsg = mysqli_fetch_array($execmsg);
 
 				//ENVIA E-MAIL PARA O PR?PRIO USU?RIO QUE ABRIU O CHAMADO
 				//send_mail($event, $rowSis['sis_email'], $rowconfmail, $rowmsg, $VARS);
@@ -883,8 +869,8 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 		}
 
 		$qrylogado = "SELECT sis_atende FROM sistemas where sis_id = ".$_SESSION['s_area']."";
-		$execlogado = mysql_query($qrylogado) or die(TRANS('ERR_QUERY'));
-		$rowlogado = mysql_fetch_array($execlogado);
+		$execlogado = mysqli_query($conect, $qrylogado) or die(TRANS('ERR_QUERY'));
+		$rowlogado = mysqli_fetch_array($execlogado);
 
 ?>
 <script type="text/javascript">
@@ -1129,7 +1115,7 @@ print "<TABLE border='0'  align='center' width='100%' bgcolor='".BODY_COLOR."'>"
 		document.form1.date_schedule.focus();
 	}
 
-
+$conect, 
 	//window.setInterval("Habilitar()",100);
 	window.setInterval("HabilitarCarrega()",200);
 
