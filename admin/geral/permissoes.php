@@ -31,28 +31,32 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+	
+
 	print "<BR><B>".TRANS('TTL_CENTER_PERMISSIONS').":</B><BR>";
 
 	$query = "SELECT p.*, s.*, m.* FROM permissoes p, sistemas s, modulos m WHERE p.perm_area = s.sis_id and
 					p.perm_modulo = m.modu_cod order by s.sistema";
-        $resultado = mysql_query($query);
+        $resultado = mysqli_query($conect, $query);
 
 	if ((!isset($_GET['action'])) and (!isset($_POST['submit']))) {
 
 		print "<TD align='right'><a href='".$_SERVER['PHP_SELF']."?action=incluir'>".TRANS('TXT_INCLUDE_PERMISSION')."</a></TD><BR>";
-		if (mysql_numrows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem("".TRANS('MSG_NOT_PERMISSION_CAD_SYSTEM')."");
 		}
         else
         {
-                $linhas = mysql_numrows($resultado);
+                $linhas = mysqli_num_rows($resultado);
                 print "<td class='line'>";
                 print "".TRANS('THERE_IS_ARE')." <b>".$linhas."</b> ".TRANS('MSG_PERMISSION_CAD_SYSTEM').".<br>";
                 print "<TABLE border='0' cellpadding='5' cellspacing='0'  width='50%'>";
                 print "<TR class='header'><td class='line'><b>".TRANS('COL_AREA')."</b></TD><td class='line'><b>".TRANS('TXT_MODULE')."</b></TD><td class='line'><b>".TRANS('COL_DEL')."</b></TD>";
                 $j=2;
-                while ($row=mysql_fetch_array($resultado))
+                while ($row=mysqli_fetch_array($resultado))
                 {
                         if ($j % 2)
                         {
@@ -81,8 +85,8 @@
 		print "<tr><td class='line'>".TRANS('COL_AREA').":</td><td class='line'><select class='select' name='area' id='idArea'>";
 		print "<option value=-1>".TRANS('SEL_AREA')."</option>";
 			$qry = "select * from sistemas order by sistema";
-			$exec = mysql_query($qry);
-			while ($row_area = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $qry);
+			while ($row_area = mysqli_fetch_array($exec)){
 				print "<option value=".$row_area['sis_id'].">".$row_area['sistema']."</option>";
 			}
 		print "</select>";
@@ -90,8 +94,8 @@
 		print "<tr><td class='line'>".TRANS('TXT_MODULE').":</td><td class='line'><select class='select' name='modulo' id='idModulo'>";
 		print "<option value=-1>".TRANS('SEL_MODULE')."</option>";
 			$qry = "select * from modulos order by modu_nome";
-			$exec = mysql_query($qry);
-			while ($row_modulo = mysql_fetch_array($exec)){
+			$exec = mysqli_query($conect, $qry);
+			while ($row_modulo = mysqli_fetch_array($exec)){
 				print "<option value=".$row_modulo['modu_cod'].">".$row_modulo['modu_nome']."</option>";
 			}
 		print "</select>";
@@ -104,7 +108,7 @@
 	} else
 	if (isset($_GET['action']) && $_GET['action']=="excluir"){
 		$qry = "DELETE FROM permissoes where perm_cod = ".$_GET['cod']."";
-		$exec = mysql_query($qry) or die (TRANS('MSG_ERR_DEL_REGISTER'));
+		$exec = mysqli_query($conect, $qry) or die (TRANS('MSG_ERR_DEL_REGISTER'));
 
 		print "<script>mensagem('".TRANS('OK_DEL')."'); window.location.href='".$_SERVER['PHP_SELF']."'; </script>";
 
@@ -112,8 +116,8 @@
 	if ($_POST['submit']== TRANS('BT_INCLUDE')) {
 		if (($_POST['area']!=-1)&& ($_POST['modulo']!=-1)){
 			$qry = "select * from permissoes where perm_area=".$_POST['area']." and perm_modulo=".$_POST['modulo']."";
-			$exec= mysql_query($qry);
-			$achou = mysql_numrows($exec);
+			$exec= mysqli_query($conect, $qry);
+			$achou = mysqli_num_rows($exec);
 			if ($achou){
 
 				print "<script>mensagem('".TRANS('MSG_THIS_PERMISSION_EXIST')."'); history.go(-2)(); </script>";
@@ -121,7 +125,7 @@
 			} else {
 
 				$qry = "INSERT INTO permissoes (perm_area,perm_modulo,perm_flag) values (".$_POST['area'].",".$_POST['modulo'].",1)";
-				$exec = mysql_query($qry) or die (TRANS('MSG_ERR_INCLUDE_PERMISSION') .$qry);
+				$exec = mysqli_query($conect, $qry) or die (TRANS('MSG_ERR_INCLUDE_PERMISSION') .$qry);
 
 				print "<script>mensagem('".TRANS('MSG_DATA_INCLUDE_OK')."'); history.go(-2)(); </script>";
 
@@ -134,22 +138,17 @@
 
 	}
 
-
-
-print "</body>";
 ?>
-<script type="text/javascript">
-<!--
-	function valida(){
-		var ok = validaForm('idArea','COMBO','Área',1);
-		if (ok) var ok = validaForm('idModulo','COMBO','Módulo',1);
+	<script type="text/javascript">
+	<!--
+		function valida(){
+			var ok = validaForm('idArea','COMBO','Área',1);
+			if (ok) var ok = validaForm('idModulo','COMBO','Módulo',1);
 
 
-		return ok;
-	}
--->
-</script>
-<?php 
-print "</html>";
-
-?>
+			return ok;
+		}
+	-->
+	</script>
+</body>
+</html>
