@@ -70,7 +70,7 @@
 
                         print "<tr class=".$trClass." id='linhax".$j."' onMouseOver=\"destaca('linhax".$j."','".$_SESSION['s_colorDestaca']."');\" onMouseOut=\"libera('linhax".$j."','".$_SESSION['s_colorLinPar']."','".$_SESSION['s_colorLinImpar']."');\"  onMouseDown=\"marca('linhax".$j."','".$_SESSION['s_colorMarca']."');\">";
                         print "<td class='line'>".$row['sistema']."</TD>";
-                        print "<td class='line'>".strtoupper($row['modu_nome'])."</TD>";
+                        print "<td class='line'>".ucfirst($row['modu_nome'])."</TD>";
                         print "<td class='line'><a onClick=\"confirma('".TRANS('MSG_DEL_PERMISSION')."','".$_SERVER['PHP_SELF']."?action=excluir&cod=".$row['perm_cod']."')\"><img height='16' width='16' src='".ICONS_PATH."drop.png' title='".TRANS('HNT_DEL')."o'></a></TD>";
                         print "</TR>";
 				}

@@ -624,32 +624,26 @@ header('Content-Type: text/html; charset=iso-8859-1');
 		}
 		print "<script>mensagem('".$aviso."'); redirect('usuarios.php');</script>";
 	}
-	print "</table>";
-	print "</form>";
 ?>
-<script type="text/javascript">
-<!--
-	function valida(){
+			</table>
+		</form>
+	<script type="text/javascript">
+	<!--
+		function valida(){
 
-		var ok = validaForm('idLogin','ALFAFULL','Login',1)
-		if (ok) var ok = validaForm('idCategoria','COMBO','Categoria',1);
-		if (ok) var ok = validaForm('idNome','','Nome',1);
-		if (ok) var ok = validaForm('idSenha','ALFAFULL','Senha',1);
-		if (ok) var ok = validaForm('idDataInc','DATA','Data Inscrição',1);
-		if (ok) var ok = validaForm('idDataAdmis','DATA','Data Admissão',1);
-		if (ok) var ok = validaForm('idEmail','EMAIL','Email',1);
-		if (ok) var ok = validaForm('idTelefone','FONE','Telefone',1);
-		if (ok) var ok = validaForm('idArea','COMBO','Área',1);
+			var ok = validaForm('idLogin','ALFAFULL','Login',1)
+			if (ok) var ok = validaForm('idCategoria','COMBO','Categoria',1);
+			if (ok) var ok = validaForm('idNome','','Nome',1);
+			if (ok) var ok = validaForm('idSenha','ALFAFULL','Senha',1);
+			if (ok) var ok = validaForm('idDataInc','DATA','Data Inscrição',1);
+			if (ok) var ok = validaForm('idDataAdmis','DATA','Data Admissão',1);
+			if (ok) var ok = validaForm('idEmail','EMAIL','Email',1);
+			if (ok) var ok = validaForm('idTelefone','FONE','Telefone',1);
+			if (ok) var ok = validaForm('idArea','COMBO','Área',1);
 
-		return ok;
-	}
--->
-</script>
-<?php 
-
-
-print "</body>";
-print "</html>";
-
-
-?>
+			return ok;
+		}
+	-->
+	</script>
+</body>
+</html>
