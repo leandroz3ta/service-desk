@@ -30,6 +30,9 @@
 
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
+	
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
 
 	$fecha = "";
 	if (isset($_GET['popup'])) {
@@ -56,8 +59,8 @@
 			$query.= " AND soft_cod = ".$_GET['cod']." ";
 		}
 		$query .=" ORDER BY soft_desc";
-		$resultado = mysql_query($query) or die(TRANS('ERR_QUERY').'<br>'.$query);
-		$registros = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $query) or die(TRANS('ERR_QUERY').'<br>'.$query);
+		$registros = mysqli_num_rows($resultado);
 
 	if ((!isset($_GET['action'])) && empty($_POST['submit'])) {
 
@@ -66,7 +69,7 @@
 				"".TRANS('LINK_CAD_SOFT')."</a></TD>".
 				"<TD bgcolor='".BODY_COLOR."'><a href='sw_padrao.php'>".TRANS('SUBTTL_LST_STAND')."</a></TD>".
 			"</TR>";
-		if (mysql_num_rows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			print "<tr><td align='center'>";
 			echo mensagem(TRANS('MSG_NOT_REG_CAD'));
@@ -83,7 +86,7 @@
 				"<td class='line'>".TRANS('COL_AVAILABLE')."</TD><td class='line'>".TRANS('COL_VENDOR')."</TD><td class='line'>".TRANS('COL_NF')."</TD><td class='line'>".TRANS('COL_EDIT')."</TD><td class='line'>".TRANS('COL_DEL')."</TD>";
 
 			$j=2;
-			while ($row = mysql_fetch_array($resultado))
+			while ($row = mysqli_fetch_array($resultado))
 			{
 				if ($j % 2)
 				{
@@ -97,8 +100,8 @@
 				print "<tr class=".$trClass." id='linhax".$j."' onMouseOver=\"destaca('linhax".$j."','".$_SESSION['s_colorDestaca']."');\" onMouseOut=\"libera('linhax".$j."','".$_SESSION['s_colorLinPar']."','".$_SESSION['s_colorLinImpar']."');\"  onMouseDown=\"marca('linhax".$j."','".$_SESSION['s_colorMarca']."');\">";
 
 				$sqlAux = "select count(*) total from hw_sw where hws_sw_cod = ".$row['soft_cod']." ";
-				$commitAux = mysql_query($sqlAux);
-				$rowAux = mysql_fetch_array($commitAux);
+				$commitAux = mysqli_query($conect, $sqlAux);
+				$rowAux = mysqli_fetch_array($commitAux);
 				$dispo = $row['soft_qtd_lic'] - $rowAux['total'];
 
 				print "<td class='line'>".$row['fab_nome']." ".$row['soft_desc']." ".$row['soft_versao']."</TD>";
@@ -139,8 +142,8 @@
 					print "<select class='select' name=fabricante id='idFabricante'>";
 					print "<option value=".null." selected>".TRANS('SEL_MANUFACTURE')."</option>";
 					$select = "select * from fabricantes where fab_tipo in (2,3) order by fab_tipo,fab_nome";
-					$exec = mysql_query($select);
-					while($row = mysql_fetch_array($exec)){
+					$exec = mysqli_query($conect, $select);
+					while($row = mysqli_fetch_array($exec)){
 						print "<option value=".$row['fab_cod'].">".$row['fab_nome']."</option>";
 					} // while
 					print "</select>";
@@ -153,8 +156,8 @@
 					print "<select class='select' name='categoria' id='idCategoria'>";
 					print "<option value=".null." selected>".TRANS('SEL_CAT')."</option>";
 					$select = "select * from categorias order by cat_desc";
-					$exec = mysql_query($select);
-					while($row = mysql_fetch_array($exec)){
+					$exec = mysqli_query($conect, $select);
+					while($row = mysqli_fetch_array($exec)){
 						print "<option value=".$row['cat_cod'].">".$row['cat_desc']."</option>";
 					} // while
 					print "</select>";
@@ -167,8 +170,8 @@
 					print "<select class='select' name='licenca' id='idLicenca'>";
 					print "<option value='-1' selected>".TRANS('SEL_LICENSE')."</option>";
 					$select = "select * from licencas order by lic_desc";
-					$exec = mysql_query($select);
-					while($row = mysql_fetch_array($exec)){
+					$exec = mysqli_query($conect, $select);
+					while($row = mysqli_fetch_array($exec)){
 						print "<option value=".$row['lic_cod'].">".$row['lic_desc']."</option>";
 					} // while
 					print "</select>";
@@ -188,8 +191,8 @@
 					print "<select class='select' name='fornecedor' id='idFornecedor'>";
 					print "<option value=".null." selected>".TRANS('SEL_VENDOR')."</option>";
 					$select = "select * from fornecedores order by forn_nome";
-					$exec = mysql_query($select);
-					while($row = mysql_fetch_array($exec)){
+					$exec = mysqli_query($conect, $select);
+					while($row = mysqli_fetch_array($exec)){
 						print "<option value=".$row['forn_cod'].">".$row['forn_nome']."</option>";
 					} // while
 					print "</select>";
@@ -212,15 +215,15 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="alter") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<BR><B>".TRANS('SUBTTL_EDIT_SOFT')."</B><BR>";
 
 			print "<tr><td bgcolor=".TD_COLOR.">".TRANS('COL_MANUFACTURE')."</td><td bgcolor=".BODY_COLOR."><select name='fabricante' class='select' id='idFabricante'>";
 			print "<option value=-1 selected>".TRANS('SEL_MANUFACTURE')."</option>";
 			$qry = "SELECT * from fabricantes order by fab_nome";
-			$exec_qry = mysql_query($qry);
-			while ($row_fab = mysql_fetch_array($exec_qry)){
+			$exec_qry = mysqli_query($conect, $qry);
+			while ($row_fab = mysqli_fetch_array($exec_qry)){
 				print "<option value='".$row_fab['fab_cod']."'";
 				if ($row_fab['fab_cod']==$row['soft_fab']) print " selected";
 				print ">".$row_fab['fab_nome']."</option>";
@@ -235,8 +238,8 @@
 			print "<tr><td bgcolor=".TD_COLOR.">".TRANS('COL_CAT')."</td><td class='line'><select name='categoria' class='select' id='idCategoria'>";
 			print "<option value=-1 selected>".TRANS('SEL_SOFT')."</option>";
 			$qry = "SELECT * from categorias order by cat_desc";
-			$exec_qry = mysql_query($qry);
-			while ($row_cat = mysql_fetch_array($exec_qry)){
+			$exec_qry = mysqli_query($conect, $qry);
+			while ($row_cat = mysqli_fetch_array($exec_qry)){
 				print "<option value='".$row_cat['cat_cod']."'";
 				if ($row_cat['cat_cod']==$row['soft_cat']) print " selected";
 				print ">".$row_cat['cat_desc']."</option>";
@@ -248,8 +251,8 @@
 			print "<tr><td bgcolor=".TD_COLOR.">".TRANS('COL_LICENSE')."</td><td class='line'><select name='licenca' class='select' id='idLicenca'>";
 			print "<option value=-1 selected>".TRANS('SEL_LICENSE')."</option>";
 			$qry = "SELECT * from licencas order by lic_desc";
-			$exec_qry = mysql_query($qry);
-			while ($row_lic = mysql_fetch_array($exec_qry)){
+			$exec_qry = mysqli_query($conect, $qry);
+			while ($row_lic = mysqli_fetch_array($exec_qry)){
 				print "<option value='".$row_lic['lic_cod']."'";
 				if ($row_lic['lic_cod']==$row['soft_tipo_lic']) print " selected";
 				print ">".$row_lic['lic_desc']."</option>";
@@ -263,8 +266,8 @@
 			print "<tr><td bgcolor=".TD_COLOR.">".TRANS('COL_VENDOR')."</td><td class='line'><select name='fornecedor' class='select' id='idFornecedor'>";
 			print "<option value=-1 selected>".TRANS('SEL_VENDOR')."</option>";
 			$qry = "SELECT * from fornecedores order by forn_nome";
-			$exec_qry = mysql_query($qry);
-			while ($row_forn = mysql_fetch_array($exec_qry)){
+			$exec_qry = mysqli_query($conect, $qry);
+			while ($row_forn = mysqli_fetch_array($exec_qry)){
 				print "<option value='".$row_forn['forn_cod']."'";
 				if ($row_forn['forn_cod']==$row['soft_forn']) print " selected";
 				print ">".$row_forn['forn_nome']."</option>";
@@ -289,14 +292,14 @@
 
 		$total = 0; $texto = "";
 		$sql_1 = "select * from hw_sw where hws_sw_cod = '".$_GET['cod']."'";
-		$exec_1 = mysql_query($sql_1);
-		$total+=mysql_numrows($exec_1);
-		if (mysql_numrows($exec_1)!=0) $texto.=" de equipamentos, ";
+		$exec_1 = mysqli_query($conect, $sql_1);
+		$total+=mysqli_num_rows($exec_1);
+		if (mysqli_num_rows($exec_1)!=0) $texto.=" de equipamentos, ";
 
 		$sql_2 = "select * from sw_padrao where swp_sw_cod = '".$_GET['cod']."'";
-		$exec_2 = mysql_query($sql_2);
-		$total+=mysql_numrows($exec_2);
-		if (mysql_numrows($exec_2)!=0) $texto.=", Softwares padrão";
+		$exec_2 = mysqli_query($conect, $sql_2);
+		$total+=mysqli_num_rows($exec_2);
+		if (mysqli_num_rows($exec_2)!=0) $texto.=", Softwares padrão";
 
 
 
@@ -308,7 +311,7 @@
 		else
 		{
 			$query2 = "DELETE FROM softwares where soft_cod=".$_GET['cod']."";
-			$resultado2 = mysql_query($query2);
+			$resultado2 = mysqli_query($conect, $query2);
 
 			if ($resultado2 == 0)
 			{
@@ -334,8 +337,8 @@
 				"and s.soft_desc like ('".$_POST['software']."') and s.soft_fab = ".$_POST['fabricante']."  ".
 				"and s.soft_versao = '".$_POST['versao']."' ".
 				"order by f.fab_nome, s.soft_desc, s.soft_versao";
-		$resultado = mysql_query($qryl) or die(TRANS('MSG_ERR_CHECK_REG').'<BR>'.$qryl);
-		$linhas = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $qryl) or die(TRANS('MSG_ERR_CHECK_REG').'<BR>'.$qryl);
+		$linhas = mysqli_num_rows($resultado);
 
 		if ($linhas > 0)
 		{
@@ -350,7 +353,7 @@
 				"('".noHtml($_POST['software'])."', '".noHtml($_POST['versao'])."', ".$_POST['fabricante'].", ".$_POST['categoria'].", ".
 				"".$_POST['licenca'].", '".$_POST['quantidade']."', '".$_POST['fornecedor']."', '".noHtml($_POST['nf'])."')";
 
-			$resultado = mysql_query($query) or die (TRANS('ERR_INSERT').'<BR>'.$query);
+			$resultado = mysqli_query($conect, $query) or die (TRANS('ERR_INSERT').'<BR>'.$query);
 
 			$aviso = TRANS('OK_INSERT');
 
@@ -368,34 +371,30 @@
 				"soft_qtd_lic='".$_POST['n_licencas']."', soft_forn='".$_POST['fornecedor']."', soft_nf='".noHtml($_POST['nf'])."' ".
 				"where soft_cod=".$_POST['cod']."";
 
-		$resultado2 = mysql_query($query2) or die(TRANS('ERR_EDIT').'<BR>'.$query2);
+		$resultado2 = mysqli_query($conect, $query2) or die(TRANS('ERR_EDIT').'<BR>'.$query2);
 			$aviso =  TRANS('OK_EDIT');
 
 		echo "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 
 	}
 
-	print "</table>";
-	print "</form>";
-
 ?>
-<script type="text/javascript">
-<!--
-	function valida(){
-		var ok = validaForm('idSoftware','','<?php print TRANS('COL_SOFT');?>',1);
-		if (ok) var ok = validaForm('idVersao','','<?php print TRANS('COL_VERSION');?>',1);
-		if (ok) var ok = validaForm('idFabricante','COMBO','<?php print TRANS('COL_MANUFACTURE');?>',1);
-		if (ok) var ok = validaForm('idCategoria','COMBO','<?php print TRANS('COL_CAT');?>',1);
-		if (ok) var ok = validaForm('idLicenca','COMBO','<?php print TRANS('COL_LICENSE');?>',1);
+		</table>
+	</form>
 
-		return ok;
-	}
+	<script type="text/javascript">
+	<!--
+		function valida(){
+			var ok = validaForm('idSoftware','','<?php print TRANS('COL_SOFT');?>',1);
+			if (ok) var ok = validaForm('idVersao','','<?php print TRANS('COL_VERSION');?>',1);
+			if (ok) var ok = validaForm('idFabricante','COMBO','<?php print TRANS('COL_MANUFACTURE');?>',1);
+			if (ok) var ok = validaForm('idCategoria','COMBO','<?php print TRANS('COL_CAT');?>',1);
+			if (ok) var ok = validaForm('idLicenca','COMBO','<?php print TRANS('COL_LICENSE');?>',1);
 
--->
-</script>
+			return ok;
+		}
 
-
-<?php 
-print "</body>";
-print "</html>";
-?>
+	-->
+	</script>
+</body>
+</html>
