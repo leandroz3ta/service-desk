@@ -30,6 +30,9 @@
 
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
+	
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
 
 	$fecha = "";
 	if (isset($_GET['popup'])) {
@@ -56,13 +59,13 @@
 			$query.= " WHERE forn_cod = ".$_GET['cod']." ";
 		}
 		$query .=" ORDER BY forn_nome";
-		$resultado = mysql_query($query) or die('ERRO NA EXECUÇÃO DA QUERY DE CONSULTA!');
-		$registros = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $query) or die('ERRO NA EXECUÇÃO DA QUERY DE CONSULTA!');
+		$registros = mysqli_num_rows($resultado);
 
 	if ((!isset($_GET['action'])) && empty($_POST['submit'])) {
 
 		print "<TR><TD bgcolor='".BODY_COLOR."'><a href='".$_SERVER['PHP_SELF']."?action=incluir&cellStyle=true'>".TRANS('SUBTTL_CAD_SUPP')."</a></TD></TR>";
-		if (mysql_num_rows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('MSG_NOT_REG_CAD'));
 		}
@@ -75,7 +78,7 @@
 				"<td class='line'>".TRANS('COL_EDIT')."</TD><td class='line'>".TRANS('COL_DEL')."</TD></tr>";
 
 			$j=2;
-			while ($row = mysql_fetch_array($resultado))
+			while ($row = mysqli_fetch_array($resultado))
 			{
 				if ($j % 2)
 				{
@@ -123,7 +126,7 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="alter") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<BR><B>".TRANS('SUBTTL_EDIT_SUPP')."</B><BR>";
 
@@ -153,14 +156,14 @@
 
 		$total = 0; $texto = "";
 		$sql_1 = "SELECT * from equipamentos where comp_fornecedor='".$_GET['cod']."'";
-		$exec_1 = mysql_query($sql_1);
-		$total+=mysql_numrows($exec_1);
-		if (mysql_numrows($exec_1)!=0) $texto.="equipamentos, ";
+		$exec_1 = mysqli_query($conect, $sql_1);
+		$total+=mysqli_num_rows($exec_1);
+		if (mysqli_num_rows($exec_1)!=0) $texto.="equipamentos, ";
 
 		$sql_2 = "SELECT * FROM softwares where soft_forn ='".$_GET['cod']."'";
-		$exec_2 = mysql_query($sql_2);
-		$total+= mysql_numrows($exec_2);
-		if (mysql_numrows($exec_2)!=0) $texto.="softwares, ";
+		$exec_2 = mysqli_query($conect, $sql_2);
+		$total+= mysqli_num_rows($exec_2);
+		if (mysqli_num_rows($exec_2)!=0) $texto.="softwares, ";
 
 
 		if ($total!=0)
@@ -171,7 +174,7 @@
 		else
 		{
 			$query2 = "DELETE FROM fornecedores WHERE forn_cod='".$_GET['cod']."'";
-			$resultado2 = mysql_query($query2);
+			$resultado2 = mysqli_query($conect, $query2);
 
 			if ($resultado2 == 0)
 			{
@@ -193,8 +196,8 @@
 		$erro=false;
 
 		$qryl = "SELECT * FROM fornecedores WHERE forn_fone='".$_POST['forn_fone']."' and forn_nome='".$_POST['forn_nome']."'";
-		$resultado = mysql_query($qryl);
-		$linhas = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $qryl);
+		$linhas = mysqli_num_rows($resultado);
 
 		if ($linhas > 0)
 		{
@@ -206,7 +209,7 @@
 		{
 
 			$query = "INSERT INTO fornecedores (forn_nome, forn_fone) values ('".noHtml($_POST['forn_nome'])."','".$_POST['forn_fone']."')";
-			$resultado = mysql_query($query);
+			$resultado = mysqli_query($conect, $query);
 			if ($resultado == 0)
 			{
 				$aviso = TRANS('ERR_INSERT');
@@ -225,7 +228,7 @@
 
 		$query2 = "UPDATE fornecedores SET forn_nome='".noHtml($_POST['forn_nome'])."', forn_fone='".$_POST['forn_fone']."' ".
 					" WHERE forn_cod='".$_POST['cod']."'";
-		$resultado2 = mysql_query($query2);
+		$resultado2 = mysqli_query($conect, $query2);
 
 		if ($resultado2 == 0)
 		{
@@ -239,23 +242,19 @@
 		echo "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 
 	}
-
-	print "</table>";
-
 ?>
-<script type="text/javascript">
-<!--
-	function valida(){
-		var ok = validaForm('idFornecedor','','Fornecedor',1);
-		if (ok) var ok = validaForm('idTelefone','FONE','Telefone',1);
+	</table>
 
-		return ok;
-	}
+	<script type="text/javascript">
+	<!--
+		function valida(){
+			var ok = validaForm('idFornecedor','','Fornecedor',1);
+			if (ok) var ok = validaForm('idTelefone','FONE','Telefone',1);
 
--->
-</script>
+			return ok;
+		}
 
-
-<?php 
-print "</body>";
-print "</html>";
+	-->
+	</script>
+</body>
+</html>
