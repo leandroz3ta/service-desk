@@ -522,11 +522,15 @@
 
 		//print $qry;
 		//exit;
-		$exec= mysql_query($qry) or die(TRANS('ERR_EDIT'));
+		$conec = new conexao;
+		$conect=$conec->conecta('MYSQL');
+
+		$exec = mysqli_query($conect, $qry) or die(TRANS('ERR_EDIT'));
 
 		//print "<script>mensagem('Configuração alterada com sucesso!'); window.open('../../index.php?LOAD=ADMIN','_parent',''); </script>";
 		print "<script>mensagem('".TRANS('MSG_SUCCESS_CONFIG_SQUEMA','Configuração alterada com sucesso!\\nO Esquema selecionado será carregado agora',0)."!'); window.open('../../index.php?LOAD=ADMIN','_parent',''); </script>";
 		//redirect('configGeral.php');
+		
 	}
 
 ?>
