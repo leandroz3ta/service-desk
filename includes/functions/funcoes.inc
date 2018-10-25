@@ -1,4 +1,5 @@
-<?php  /*                        Copyright 2005 Flávio Ribeiro
+<?php  
+/*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
 
@@ -425,7 +426,7 @@ function menu_admin(){
 
 function veremail($email)
 {
-	if(!eregi("^[0-9a-z]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.[a-z]{2,3}$",$email))
+	if(!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.[a-z]{2,3}$/",$email))
 		$passou = "erro";
 	else
 		$passou = "ok";
@@ -1096,7 +1097,7 @@ function showArray($array){
 }
 
 function isImage($type){
-	if(eregi("^image\/(pjpeg|jpeg|png|gif|x-ms-bmp)$", $type))
+	if(preg_match("/^image\/(pjpeg|jpeg|png|gif|x-ms-bmp)$/", $type))
 		return true; else
 		return false;
 }
@@ -1160,7 +1161,7 @@ function upload($img_file,$config, $FILE_TYPES="%%IMG%") {
 		for ($i=0; $i<count($TYPE); $i++) {
 			if (strlen($types)>0) $types.=", ";
 			$types.=$TYPE[$i];
-			if(eregi("^".$mime[$TYPE[$i]]."$", $arquivo["type"])) {
+			if(preg_match("/^".$mime[$TYPE[$i]]."$/", $arquivo["type"])) {
 				$typeOK = true;
 			}
 		}
@@ -1176,7 +1177,7 @@ function upload($img_file,$config, $FILE_TYPES="%%IMG%") {
 				$erro[] = "Arquivo em tamanho muito grande! O arquivo deve ser de no máximo " . $kbytes . " Kbytes.";
 			}
 
-			if(eregi("^image\/(pjpeg|jpeg|png|gif|bmp)$", $arquivo["type"])) {
+			if(preg_match("/^image\/(pjpeg|jpeg|png|gif|bmp)$/", $arquivo["type"])) {
 				// Para verificar as dimensões da imagem
 				$tamanhos = getimagesize($arquivo["tmp_name"]);
 				// Verifica largura
@@ -1334,7 +1335,7 @@ function upload($img_file,$config, $FILE_TYPES="%%IMG%") {
 			if ($dh = opendir($dir)) {
 				while (($file = readdir($dh)) !== false) {
 					if($file != '..' && $file !='.' && $file !=''){
-						if (eregi("\.(".$ext."){1}$", $file))
+						if (preg_match("/\.(".$ext."){1}$/", $file))
 							$array[]=$file;
 					}
 				}
