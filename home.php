@@ -1,6 +1,6 @@
 <?php 
 header('Content-Type: text/html; charset=iso-8859-1');
- /*                        Copyright 2005 Fl�vio Ribeiro
+ /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
 
@@ -59,12 +59,12 @@ header('Content-Type: text/html; charset=iso-8859-1');
 	<link rel=stylesheet type='text/css' href='includes/css/estilos.css.php'>
 </head>
 <body>
-<?
+<?php
 
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],3);
 
-	//Todas as �reas que o usu�rio percente
+	//Todas as áreas que o usuário percente
 	$uareas = $_SESSION['s_area'];
 	if ($_SESSION['s_uareas']) {
 		$uareas.=",".$_SESSION['s_uareas'];
@@ -73,10 +73,10 @@ header('Content-Type: text/html; charset=iso-8859-1');
 	$qryTotal = "select a.sistema area, a.sis_id area_cod from ocorrencias o left join sistemas a on o.sistema = a.sis_id".
 			" left join `status` s on s.stat_id = o.status where o.sistema in (".$uareas.") and s.stat_painel in (1,2) ";
 	
-	$execTotal = mysql_query($qryTotal) or die (TRANS('MSG_ERR_TOTAL_OCCO'). $qryTotal);
-	$regTotal = mysql_num_rows($execTotal);
+	$execTotal = mysqli_query($conect,$qryTotal) or die (TRANS('MSG_ERR_TOTAL_OCCO'). $qryTotal);
+	$regTotal = mysqli_num_rows($execTotal);
 
-	//Todas as �reas que o usu�rio percente
+	//Todas as áreas que o usuário percente
 	$qryAreas = "select count(*) total, a.sistema area, a.sis_id area_cod from ocorrencias o left join sistemas a on o.sistema = a.sis_id".
 			" left join `status` s on s.stat_id = o.status where o.sistema in (".$uareas.") and s.stat_painel in (1,2) ".
 			"group by a.sistema";
@@ -102,7 +102,7 @@ header('Content-Type: text/html; charset=iso-8859-1');
 <?php
 	$a = 0;
 	$b = 0;
-	while ($rowAreas = mysql_fetch_array($execAreas)) {
+	while ($rowAreas = mysqli_fetch_array($execAreas)) {
 ?>		
 
 					<table border='0' cellpadding='5' cellspacing='0' align='center' width='100%'>
@@ -120,7 +120,7 @@ header('Content-Type: text/html; charset=iso-8859-1');
 								<div id='ocorrencias<?php echo $b;?>'> <!--//style='display:none;'-->
 <?php						
 
-			//TOTAL DE N�VEIS DE STATUS
+			//TOTAL DE NÍVEIS DE STATUS
 		$qryStatus = "select count(*) total, o.*, s.* from ocorrencias o left join `status` s on o.status = s.stat_id where ".
 				"o.sistema = ".$rowAreas['area_cod']." and s.stat_painel in (1,2) group by s.status";
 		$execStatus = mysqli_query($conect,$qryStatus) or die (TRANS('MSG_ERR_QRY_STATUS'). $qryStatus);
@@ -129,7 +129,7 @@ header('Content-Type: text/html; charset=iso-8859-1');
 		While ($rowStatus = mysqli_fetch_array($execStatus)) {
 			print "<tr><td colspan='7'><IMG ID='imgstatus".$a."' SRC='./includes/icons/open.png' width='9' height='9' ".
 				"STYLE=\"{cursor: pointer;}\" onClick=\"invertView('status".$a."')\">&nbsp;<b>".TRANS('OCO_FIELD_STATUS').": ".$rowStatus['status']." - ".
-				"".$rowStatus['total']." ocorr�ncias</b><br>";
+				"".$rowStatus['total']." ocorrências</b><br>";
 			print "<div id='status".$a."' style='display:none;' >"; //style='display:none;'
 
 			print "<TABLE border='0' style='{padding-left:10px;}' cellpadding='5' cellspacing='0' align='left' width='100%'>";
