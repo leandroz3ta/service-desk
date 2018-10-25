@@ -504,7 +504,7 @@
     - [ ] [solucoes.php](./ocomon/solucoes.php)
     - [ ] [tempo_doc.php](./ocomon/tempo_doc.php)
     - [ ] [updateCollapseSession.php](./ocomon/updateCollapseSession.php)
-    - [ ] [user_lang.php](./ocomon/user_lang.php)
+    - [x] [user_lang.php](./ocomon/user_lang.php)
     - [ ] [user_theme.php](./ocomon/user_theme.php)
     - [ ] [validacookie.php](./ocomon/validacookie.php)
     * includes
