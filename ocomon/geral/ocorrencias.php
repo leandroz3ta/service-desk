@@ -31,6 +31,9 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+
 	print "<BR><B>".TRANS('ADM_OCO')."</B><BR>";
 
 	print "<FORM method='POST' action='".$_SERVER['PHP_SELF']."' onSubmit=\"return valida()\">";
@@ -43,12 +46,12 @@
 
 
 	$queryTotal = "SELECT * from ocorrencias";
-        $resultadoTotal = mysql_query($queryTotal);
-        $linhasTotal = mysql_num_rows($resultadoTotal);
+        $resultadoTotal = mysqli_query($conect, $queryTotal);
+        $linhasTotal = mysqli_num_rows($resultadoTotal);
 
 	$qry_page = "SELECT conf_page_size AS page FROM config";
-	$qry_page_exec = mysql_query($qry_page) or die ('É NECESSÁRIO ATUALIZAR A TABELA CONF - VERSAO 1.50');
-	$rowConf = mysql_fetch_array($qry_page_exec);
+	$qry_page_exec = mysqli_query($conect, $qry_page) or die ('É NECESSÁRIO ATUALIZAR A TABELA CONF - VERSAO 1.50');
+	$rowConf = mysqli_fetch_array($qry_page_exec);
 	$PAGE_SIZE = $rowConf['page'];
 
 	/*------------------------------------------------------------------------------
@@ -163,8 +166,8 @@
 
 	//print $query;
 
-	$resultado = mysql_query($query);
-        $linhas = mysql_num_rows($resultado);
+	$resultado = mysqli_query($conect, $query);
+        $linhas = mysqli_num_rows($resultado);
         $cor=TD_COLOR;
         $cor1=TD_COLOR;
 
@@ -212,7 +215,7 @@
                 <td class='line'>".TRANS('COL_OPEN')."</TD><td class='line'>".TRANS('COL_STATUS')."</TD><td class='line'>".TRANS('COL_EDIT')."</TD><td class='line'>".TRANS('COL_DEL')."</TD></TR>";
         $i=0;
         $j=2;
-        while ($row= mysql_fetch_array($resultado))
+        while ($row= mysqli_fetch_array($resultado))
         {
                 if ($j % 2)
                 {
@@ -238,6 +241,7 @@
 		print "</TR>";
 		$i++;
         }
-print "</table>";
-print "</BODY>";
-print "</HTML>";
+?>        
+	</table>
+</body>
+</html>
