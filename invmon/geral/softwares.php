@@ -394,7 +394,7 @@
 			return ok;
 		}
 
-	-->
+	//-->
 	</script>
 </body>
 </html>
