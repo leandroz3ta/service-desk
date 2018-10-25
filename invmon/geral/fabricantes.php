@@ -302,7 +302,7 @@
 			return ok;
 		}
 
-	-->
+	//-->
 	</script>
 
 </body>
