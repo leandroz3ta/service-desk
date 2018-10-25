@@ -92,7 +92,7 @@ is_file( "./includes/config.inc.php" )
 				<div class='col-sm-4'>
 					<div class='login-adm'>
 						<span class='logged'>
-							$USER_TYPE:<b> <?php echo $uLogado;?></b>
+							<?php echo $USER_TYPE; ?>:<b> <?php echo $uLogado;?></b>
 						</span>
 						<a class='logoff' href='<?php echo $commonPath;?>logout.php' title='<?php echo $hnt;?>'><?php echo $logInfo;?>
 							<i class='fa fa-power-off'></i>
@@ -126,7 +126,7 @@ is_file( "./includes/config.inc.php" )
 <?php	
 		if (empty($_SESSION['s_permissoes'])&& $_SESSION['s_nivel']!=1){
 			$conec->desconecta('MYSQL');
-		} else{
+		} else {
 
 	// 		include("includes/classes/conecta.class.php");
 	// 		$conec = new conexao;
@@ -180,16 +180,16 @@ is_file( "./includes/config.inc.php" )
 				$sisPath = $ocoDirPath;
 				$sistem = "abertura_user.php?action=listall";
 				$marca = "OCOMON";
-			} else
+			} else {
 ?>			
 				<li> <?php echo TRANS('MNS_OCORRENCIAS');?> </li>
 
-<?php
+<?php       }
 			if ($_SESSION['s_invmon']==1){
 ?>				
 				<li id='INVMON'>
 					<a onMouseOver="destaca('INVMON')" onMouseOut="libera('INVMON')" onclick="loadIframe('menu.php?sis=i','menu','<?php echo $invDirPath;?>abertura.php','centro',2,'INVMON')"> <?php echo TRANS('MNS_INVENTARIO');?> </a>
-				</li>"; 
+				</li>
 <?php
 				//abertura.php   -   ".$invDirPath."".$invHome."
 				if ($sis=="") $sis="sis=i";
@@ -197,10 +197,10 @@ is_file( "./includes/config.inc.php" )
 				$sistem = "abertura.php";
 				if ($marca=="") $marca = "INVMON";
 				//$home = "home=true";
-			} else
+			} else {
 ?>			
 				<li> <?php echo TRANS('MNS_INVENTARIO');?> </li>
-<?php				
+<?php		}		
 	// 		if ($_SESSION['s_nivel']==1) {
 	// 			print "<td id='ADMIN' width='5%'  class='barraMenu'><a class='barra' onMouseOver=\"destaca('ADMIN')\" onMouseOut=\"libera('ADMIN')\" onclick=\"loadIframe('menu.php?sis=a','menu','','','1','ADMIN')\">&nbsp;".TRANS('MNS_ADMIN')."&nbsp;</a></td>";
 	// 			if ($sis=="") $sis="sis=a";
@@ -221,10 +221,10 @@ is_file( "./includes/config.inc.php" )
 				if ($sistem=="") $sistem = "menu.php";
 				if ($marca=="")$marca = "ADMIN";
 				//$home = "home=true";
-			} else
+			} else {
 ?>			
 				<li> <?php echo TRANS('MNS_ADMIN'); ?> </li>
-<?php
+<?php       }
 			//print "<li width='72%'></li>";
 			$conec->desconecta('MYSQL');
 		}
