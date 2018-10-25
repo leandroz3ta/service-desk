@@ -35,12 +35,6 @@ header('Content-Type: text/html; charset=iso-8859-1');
 		@import url('includes/menu/phplm320/layerstreemenu-hidden.css');
 	//-->
 	</style>
-	<script language='JavaScript' type='text/javascript'>
-	<?php 
-	require_once $phplmDirPath.'libjs/layersmenu-browser_detection.js'
-	?>
-	</script>
-	<script language='JavaScript' type='text/javascript' src='includes/menu/phplm320/libjs/layerstreemenu-cookies.js'></script>
 	<?php 
 	require_once $phplmDirPath.'lib/PHPLIB.php';
 	require_once $phplmDirPath.'lib/layersmenu-common.inc.php';
@@ -274,7 +268,15 @@ if($OPERADOR_AREA){
 	//print "</table>";
 
 ?>
+	<script language='JavaScript' type='text/javascript' src='includes/menu/phplm320/libjs/layerstreemenu-cookies.js'></script>
+
 	<script src='includes/javascript/libs/modernizr.js'></script>
+	<script language='JavaScript' type='text/javascript'>
+	<?php 
+	require_once $phplmDirPath.'libjs/layersmenu-browser_detection.js'
+	?>
+	</script>
+
 	<script type="text/javascript">
 		 function popup(pagina)	{ //Exibe uma janela popUP
 	      	x = window.open(pagina,'popup','dependent=yes,width=400,height=200,scrollbars=yes,statusbar=no,resizable=yes');
