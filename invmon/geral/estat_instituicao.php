@@ -1,5 +1,5 @@
 <?php 
- /*                        Copyright 2005 Flï¿½vio Ribeiro
+ /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
 

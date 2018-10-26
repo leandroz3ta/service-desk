@@ -1,5 +1,5 @@
 <?php 
- /*                        Copyright 2005 Flï¿½vio Ribeiro
+ /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
 
@@ -86,7 +86,7 @@
 		$resultadoAux = mysqli_query($conect, $queryAux);
 		$linhasAux = mysqli_num_rows($resultadoAux);
 
-		//Monta o cabeï¿½alho do quadro de estatï¿½stica
+		//Monta o cabeçalho do quadro de estatística
 		print "<TABLE border='0' cellpadding='5' cellspacing='0' align='left' width='80%' bgcolor='".$cor3."'>";
 
 			print "<tr><td width='80%' align='center'><b>".TRANS('TTL_ESTAT_SITUAC_GENERAL')."<p>".TRANS('OCO_FIELD_UNIT').": ".$msgInst."</p></b></td></tr>";
@@ -97,7 +97,7 @@
 			print "<TABLE border='0' cellpadding='5' cellspacing='0' align='center' width='80%' bgcolor='".$cor3."'>";
 			print "<TR><TD bgcolor='".$cor3."'><b>".TRANS('MNL_CAD_EQUIP')."</TD><TD bgcolor='".$cor3."'><b>".TRANS('COL_SITUAC')."</TD><TD bgcolor='".$cor3."'><b>".TRANS('COL_QTD')."</TD><TD bgcolor='".$cor3."'><b>".TRANS('COL_PORCENTEGE_FOR_TYPE')."</TD>";
 
-			print "<td rowspan='100%' ><div id='Layer2'>";//  <!-- Ver: overflow: auto    nï¿½o funciona para o Mozilla-->
+			print "<td rowspan='100%' ><div id='Layer2'>";//  <!-- Ver: overflow: auto    não funciona para o Mozilla-->
 			print "<b>".TRANS('OCO_FIELD_UNIT').":</font></font></b>";
 			print "<FORM name='form1' method='post' action='".$_SERVER['PHP_SELF']."'>";
 			$sizeLin = $linhasInst+1;
@@ -123,7 +123,7 @@
 				$qtd_equip = $rowAux['Quantidade'];
 
 
-				//Monsta os percentuais de cada tipo de equipamento de acordo com a sua situaï¿½ï¿½o
+				//Monsta os percentuais de cada tipo de equipamento de acordo com a sua situação
 				$query= "SELECT t.tipo_nome AS equipamento, t.tipo_cod as tipo_cod, s.situac_nome AS situacao,
 				s.situac_cod as situac_cod, count( t.tipo_nome ) AS qtd_equip, count( s.situac_nome )  AS qtd_situac,
 				concat(count( * ) / ".$qtd_equip." * 100,'%') AS porcento
@@ -140,7 +140,7 @@
 					$color =  BODY_COLOR;
 					print "<TR>";
 					print "<TD bgcolor='".$color."'><a href='mostra_consulta_comp.php?comp_tipo_equip=".$row['tipo_cod']."&comp_situac=".$row['situac_cod']."&ordena=local,etiqueta' title='Exibe a listagem dos equipamentos desse tipo.'>".$row['equipamento']."</a></TD>";
-					print "<TD bgcolor='".$color."'><a href='mostra_consulta_comp.php?comp_situac=".$row['situac_cod']."&ordena=local,etiqueta' title='Exibe a listagem dos equipamentos cadastrados nessa situaï¿½ï¿½o.'>".$row['situacao']."</a></TD>";
+					print "<TD bgcolor='".$color."'><a href='mostra_consulta_comp.php?comp_situac=".$row['situac_cod']."&ordena=local,etiqueta' title='Exibe a listagem dos equipamentos cadastrados nessa situação.'>".$row['situacao']."</a></TD>";
 					print "<TD bgcolor='".$color."'>".$row['qtd_situac']."</TD>";
 					print "<TD bgcolor='".$color."'>".$row['porcento']."</TD>";
 				} //Fim do loop interno
