@@ -29,6 +29,9 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],2);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+
 	$hoje = date("Y-m-d H:i:s");
 
 
@@ -37,9 +40,10 @@
 	$cor3 = BODY_COLOR;
 
 	$queryB = "SELECT count(*) from equipamentos";
-	$resultadoB = mysql_query($queryB);
-	$total = mysql_result($resultadoB,0);
-
+	$resultadoB = mysqli_query($conect, $queryB);
+	//$total = mysql_result($resultadoB,0);
+	$row = mysqli_fetch_row($resultadoB);
+	$total = $row[0];
 
 	// Select para retornar a quantidade e percentual de equipamentos cadastrados no sistema
 	$query= "SELECT count( l.loc_reitoria )  AS qtd, count(  *  )  / ".$total." * 100 AS porcento,
@@ -49,51 +53,75 @@
 				c.comp_local = l.loc_id AND l.loc_reitoria = r.reit_cod GROUP  BY l.loc_reitoria
 				ORDER  BY reitoria, qtd DESC";
 
-	$resultado = mysql_query($query);
-	$linhas = mysql_num_rows($resultado);
+	$resultado = mysqli_query($conect, $query);
+	$linhas = mysqli_num_rows($resultado);
+?>
+	<table border='0' cellpadding='5' cellspacing='0' align='center' width='80%' bgcolor='<?php echo $cor3; ?>'>
+		<tr>
+			<td width='80%' align='center'>
+				<b><?php echo TRANS('TTL_TOTAL_EQUIP_CAD_MAJOR'); ?>:</b>
+			</td>
+		</tr>
 
-	print "<TABLE border='0' cellpadding='5' cellspacing='0' align='center' width='80%' bgcolor='".$cor3."'>";
-
-		print "<tr><td width='80%' align='center'><b>".TRANS('TTL_TOTAL_EQUIP_CAD_MAJOR').":</b></td></tr>";
-
-
-		print "<td class='line'>";
-		print "<fieldset><legend>".TRANS('TTL_EQUIP_X_MAJOR')."</legend>";
-		print "<TABLE border='0' cellpadding='5' cellspacing='0' align='center' width='80%' bgcolor='".$cor3."'>";
-		print "<TR><TD bgcolor='".$cor3."'><b>".TRANS('COL_MAJOR')."</TD><TD bgcolor='".$cor3."'><b>".TRANS('COL_QTD')."</TD><TD bgcolor='".$cor3."'><b>".TRANS('COL_PORCENTEGE')."</TD></tr>";
+		<tr>
+			<td class='line'>
+				<fieldset>
+					<legend><?php echo TRANS('TTL_EQUIP_X_MAJOR'); ?></legend>
+					<table border='0' cellpadding='5' cellspacing='0' align='center' width='80%' bgcolor='<?php echo $cor3; ?>'>
+						<tr>
+							<td bgcolor='<?php echo $cor3; ?>'>
+								<b><?php echo TRANS('COL_MAJOR'); ?></b>
+							</td>
+							<td bgcolor='<?php echo $cor3; ?>'>
+								<b><?php echo TRANS('COL_QTD'); ?></b>
+							</td>
+							<td bgcolor='<?php echo $cor3; ?>'>
+								<b><?php echo TRANS('COL_PORCENTEGE'); ?>
+							</td>
+						</tr>
+<?php						
 		$i=0;
 		$j=2;
 
-		while ($row = mysql_fetch_array($resultado)) {
+		while ($row = mysqli_fetch_array($resultado)) {
 			$color =  BODY_COLOR;
 			$j++;
-			print "<TR>";
-			print "<TD bgcolor='".$color."'><a href='mostra_consulta_comp.php?comp_tipo_equip=".$row['tipo']."&comp_reitoria=".$row['cod_reitoria']."&ordena=modelo,etiqueta' title='".TRANS('HNT_LIST_EQUIP_CAD_FOR_TYPE_LOCAL')."'>".$row['reitoria']."</TD>";
-			print "<TD bgcolor='".$color."'><a href='estat_equipporreitoria.php'>".$row['qtd']."</a></TD>";
-			print "<TD bgcolor='".$color."'>".$row['porcento']."%</TD>";
-			print "</TR>";
+?>			
+				 		<tr>
+							<td bgcolor='<?php echo $color; ?>'>
+								<a href='mostra_consulta_comp.php?comp_tipo_equip=<?php echo $row['tipo']; ?>&comp_reitoria=<?php echo $row['cod_reitoria']; ?>&ordena=modelo,etiqueta' title='<?php echo TRANS('HNT_LIST_EQUIP_CAD_FOR_TYPE_LOCAL'); ?>'><?php echo $row['reitoria']; ?> </a>
+							</td>
+							<td bgcolor='<?php echo $color; ?>'>
+								<a href='estat_equipporreitoria.php'><?php echo $row['qtd']; ?></a>
+							</td>
+							<td bgcolor='<?php echo $color; ?>'>
+								<?php echo $row['porcento']; ?>%
+							</td>
+						</tr>
+<?php
 			$i++;
 		}
-		print "<TR><TD bgcolor='".$cor3."'><b></TD><TD bgcolor='".$cor3."'><b></TD><TD bgcolor='".$cor3."'><b>".TRANS('TOTAL').": ".$total."</TD></tr>";
-		print "</TABLE>";
-		print "</fieldset>";
-
-		print "<TABLE width='80%' align='center'>";
-		// print "<tr><td class='line'></TD></tr>";
-		// print "<tr><td class='line'></TD></tr>";
-		// print "<tr><td class='line'></TD></tr>";
-		// print "<tr><td class='line'></TD></tr>";
-		// print "</TABLE>";
-
-		// print "<TABLE width='80%' align='center'>";
-		// print "<tr><td class='line'></TD></tr>";
-		// print "<tr><td class='line'></TD></tr>";
-		// print "<tr><td class='line'></TD></tr>";
-		// print "<tr><td class='line'></TD></tr>";
-
-		print "<tr><td width='80%' align='center'><b>".TRANS('SLOGAN_OCOMON')." <a href='http://www.unilasalle.edu.br' target='_blank'>".TRANS('COMPANY')."</a>.</b></td></tr>";
-		print "</TABLE>";
-
-print "</BODY>";
-print "</HTML>";
 ?>
+			<tr>
+				<td bgcolor='<?php echo $cor3; ?>'>
+					<b></b>
+				</td>
+				<td bgcolor='<?php echo $cor3; ?>'>
+					<b><?php echo TRANS('TOTAL').': '.$total; ?></b>
+				</td>
+				<td bgcolor='<?php echo $cor3; ?>'>
+					<b>%</b>
+				</td>
+			</tr>
+		</table>
+	</fieldset>";
+
+	<table width='80%' align='center'>
+		<tr>
+			<td width='80%' align='center'><b><?php echo TRANS('SLOGAN_OCOMON'); ?>
+				<a href='http://www.unilasalle.edu.br' target='_blank'><?php echo TRANS('COMPANY'); ?></a>.</b>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>
