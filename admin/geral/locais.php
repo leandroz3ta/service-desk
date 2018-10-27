@@ -32,6 +32,9 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+
 	$PAGE = new paging("PRINCIPAL");
 	$PAGE->setRegPerPage($_SESSION['s_page_size']);
 
@@ -53,8 +56,8 @@
 			$query.= " WHERE lower(l.local) like lower(('%".noHtml($_POST['search'])."%')) ";
 		}
 		$query .="ORDER  BY reit_nome, LOCAL";
-		$resultado = mysql_query($query) or die(TRANS('MSG_ERR_QRY_CONS'));
-		$registros = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $query) or die(TRANS('MSG_ERR_QRY_CONS'));
+		$registros = mysqli_num_rows($resultado);
 
 		if (isset($_GET['LIMIT']))
 			$PAGE->setLimit($_GET['LIMIT']);
@@ -70,7 +73,7 @@
 		print "<tr><TD align='left'><a href='locais.php?action=incluir'>".TRANS('TXT_INCLUDE_LOCAL')."</a></TD></tr>";
 
 
-		if (mysql_num_rows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			if (isset($_POST['search'])) {
 				print "<tr>".//<td>".TRANS('FIELD_SEARCH')."</td>".
@@ -104,7 +107,7 @@
 			print "<TR class='header'><td class='line'><b>".TRANS('OCO_LOCAL')."</b></TD><td class='line'><b>".TRANS('COL_BUILDING')."</b></TD><td class='line'><b>".TRANS('COL_MAJOR')."</b></TD><td class='line'><b>".TRANS('COL_DOMAIN')."</b></TD><td class='line'><b>".TRANS('COL_PRIORITY')."</b></TD><td class='line'><b>".TRANS('OCO_STATUS')."</b></TD><td class='line'><b>".TRANS('COL_EDIT')."</b></TD><td class='line'><b>".TRANS('COL_DEL')."</b></TD>";
 
 					$j=2;
-			while ($row = mysql_fetch_array($PAGE->RESULT_SQL))
+			while ($row = mysqli_fetch_array($PAGE->RESULT_SQL))
 			{
 				if ($j % 2)
 				{
@@ -150,8 +153,8 @@
 		print "<TD width='30%' align='left' bgcolor=".BODY_COLOR."><select class='select' name='predio' id='idPredio'>";
 			print "<option value='-1'>".TRANS('SEL_BUILDING')."</option>";
 					$sql="select * from predios order by pred_desc";
-					$commit = mysql_query($sql);
-					while($rowp = mysql_fetch_array($commit)){
+					$commit = mysqli_query($conect, $sql);
+					while($rowp = mysqli_fetch_array($commit)){
 						 print "<option value=".$rowp['pred_cod'].">".$rowp['pred_desc']."</option>";
 					} // while
 			print "</select>";
@@ -164,9 +167,9 @@
 			print "<select class='select' name='reitoria' id='idReitoria'>";
 			print "<option value=-1>".TRANS('SEL_MAJOR')."</option>";
 					$sql="select * from reitorias order by reit_nome";
-					$commit = mysql_query($sql);
+					$commit = mysqli_query($conect, $sql);
 					$i=0;
-					while($rowr = mysql_fetch_array($commit)){
+					while($rowr = mysqli_fetch_array($commit)){
 						print "<option value=".$rowr['reit_cod'].">".$rowr["reit_nome"]."</option>";
 						$i++;
 					} // while
@@ -181,9 +184,9 @@
 			print "<select class='select' name='dominio' id='idDominio'>";
 			print "<option value='-1'>".TRANS('SEL_DOMAIN')."</option>";
 					$sql="select * from dominios order by dom_desc";
-					$commit = mysql_query($sql);
+					$commit = mysqli_query($conect, $sql);
 
-					while($rowd = mysql_fetch_array($commit)){
+					while($rowd = mysqli_fetch_array($commit)){
 						print "<option value=".$rowd['dom_cod'].">".$rowd["dom_desc"]."</option>";
 
 					} // while
@@ -197,9 +200,9 @@
 		print "<TD width='80%' align='left' bgcolor='".BODY_COLOR."'><select class='select' name='sla' id='idSla'>";
 			print "<option value='-1'>".TRANS('SEL_SLA')."</option>";
 					$sql="select * from prioridades order by prior_nivel";
-					$commit = mysql_query($sql);
+					$commit = mysqli_query($conect, $sql);
 
-					while($row = mysql_fetch_array($commit)){
+					while($row = mysqli_fetch_array($commit)){
 						print "<option value=".$row['prior_cod'].">".$row["prior_nivel"]."</option>";
 
 					} // while
@@ -219,7 +222,7 @@
 
 	if ((isset($_GET['action'])  && $_GET['action']=="alter") && (!isset($_POST['submit']))) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 		print "<BR><B>".TRANS('SUBTTL_ALTER_LOCAL')."</B><BR>";
 
 		//print "<FORM method='POST' action='".$_SERVER['PHP_SELF']."' onSubmit=\"return valida()\">";
@@ -234,13 +237,13 @@
 			print "<select class='select' name='reitoria' id='idReitoria'>";
 			print "<option value=-1 selected>".TRANS('SEL_MAJOR')."</option>";
 			$sql = "select * from reitorias where reit_cod=".$row["loc_reitoria"]."";
-			$commit = mysql_query($sql);
-			$rowR = mysql_fetch_array($commit);
+			$commit = mysqli_query($conect, $sql);
+			$rowR = mysqli_fetch_array($commit);
 				//print "<option value=".$row["loc_reitoria"]." selected>".$rowR["reit_nome"]."</option>";
 
 					$sql="select * from reitorias order by reit_nome";
-					$commit = mysql_query($sql);
-					while($rowB = mysql_fetch_array($commit)){
+					$commit = mysqli_query($conect, $sql);
+					while($rowB = mysqli_fetch_array($commit)){
 						print "<option value=".$rowB["reit_cod"]." ";
 						if ($rowB['reit_cod'] == $row["loc_reitoria"])
 							print " selected";
@@ -256,12 +259,12 @@
 		print "<TD width='80%' align='left' bgcolor='".BODY_COLOR."'>";
         	print "<select class='select'  name='predio'>";
 			$sql = "select * from predios where pred_cod=".$row["loc_predio"]."";
-			$commit = mysql_query($sql);
-			$rowR = mysql_fetch_array($commit);
+			$commit = mysqli_query($conect, $sql);
+			$rowR = mysqli_fetch_array($commit);
 				print "<option value='-1'>".TRANS('SEL_BUILDING')."</option>";
 					$sql="select * from predios order by pred_desc";
-					$commit = mysql_query($sql);
-					while($rowB = mysql_fetch_array($commit)){
+					$commit = mysqli_query($conect, $sql);
+					while($rowB = mysqli_fetch_array($commit)){
 						print "<option value=".$rowB["pred_cod"]."";
 					    if ($rowB['pred_cod'] == $row['loc_predio'] ) {
                             print " selected";
@@ -280,12 +283,12 @@
 		print "<TD width='80%' align='left' bgcolor='".BODY_COLOR."'>";
 		print "<select  class='select' name='dominio'>";
 			$sql = "select * from dominios where dom_cod=".$row["loc_dominio"]."";
-			$commit = mysql_query($sql);
-			$rowR = mysql_fetch_array($commit);
+			$commit = mysqli_query($conect, $sql);
+			$rowR = mysqli_fetch_array($commit);
 				print "<option value='-1'>".TRANS('SEL_DOMAIN')."</option>";
 					$sql="select * from dominios order by dom_desc";
-					$commit = mysql_query($sql);
-					while($rowB = mysql_fetch_array($commit)){
+					$commit = mysqli_query($conect, $sql);
+					while($rowB = mysqli_fetch_array($commit)){
 						print "<option value=".$rowB["dom_cod"]."";
 					    if ($rowB['dom_cod'] == $row['loc_dominio'] ) {
                             print " selected";
@@ -303,13 +306,13 @@
 		print "<TD width='80%' align='left' bgcolor='".BODY_COLOR."'>";
 			print "<select  class='select' name='p_nivel'>";
 			$sql = "select * from prioridades where prior_cod=".$row["loc_prior"]."";
-			$commit = mysql_query($sql);
-			$rowR = mysql_fetch_array($commit);
+			$commit = mysqli_query($conect, $sql);
+			$rowR = mysqli_fetch_array($commit);
 				print "<option value='-1'>".TRANS('SEL_SLA')."</option>";
 
 					$sql="select * from prioridades  order by prior_nivel";
-					$commit = mysql_query($sql);
-					while($rowB = mysql_fetch_array($commit)){
+					$commit = mysqli_query($conect, $sql);
+					while($rowB = mysqli_fetch_array($commit)){
 						print "<option value=".$rowB["prior_cod"]."";
 					    if ($rowB['prior_cod'] == $row['loc_prior'] ) {
                             print " selected";
@@ -349,8 +352,8 @@
 	if (isset($_GET['action']) && $_GET['action'] == "excluir"){
 
 		$sql_3 = "SELECT * FROM ocorrencias where local ='".$_GET['cod']."'";
-		$exec_3 = mysql_query($sql_3) or die(TRANS('MSG_ERR_NOT_RESCUE_INFO_CALL_LOCAL'));
-		$total= mysql_num_rows($exec_3);
+		$exec_3 = mysqli_query($conect, $sql_3) or die(TRANS('MSG_ERR_NOT_RESCUE_INFO_CALL_LOCAL'));
+		$total= mysqli_num_rows($exec_3);
 
 		if ($total!=0)
 		{
@@ -360,7 +363,7 @@
 		else
 		{
 			$query2 = "DELETE FROM localizacao WHERE loc_id=".$_GET['cod']."";
-			$resultado2 = mysql_query($query2) or die(TRANS('ERR_DEL'));
+			$resultado2 = mysqli_query($conect, $query2) or die(TRANS('ERR_DEL'));
 
 			$aviso = TRANS('MSG_OK_RESG_EXCLUDE');
 
@@ -376,8 +379,8 @@
 		$erro=false;
 
 		$qryl = "SELECT local FROM localizacao WHERE local='".$_POST['local']."'";
-		$resultado = mysql_query($qryl);
-		$linhas = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $qryl);
+		$linhas = mysqli_num_rows($resultado);
 
 		if ($linhas > 0)
 		{
@@ -389,7 +392,7 @@
 		{
 			$query = "INSERT INTO localizacao (local,loc_reitoria, loc_prior, loc_dominio, loc_predio) ".
 						"values ('".noHtml($_POST['local'])."',".$_POST['reitoria'].",".$_POST['sla'].", ".$_POST['dominio'].",".$_POST['predio'].")";
-			$resultado = mysql_query($query) or die(TRANS('MSG_ERR_INCLUDE_LOCAL').$query);
+			$resultado = mysqli_query($conect, $query) or die(TRANS('MSG_ERR_INCLUDE_LOCAL').$query);
 			$aviso = TRANS('MSG_OK_RESG_INCLUDE');
 		}
 
@@ -402,7 +405,7 @@
 		$query2 = "UPDATE localizacao SET local='".noHtml($_POST['local'])."', loc_reitoria=".$_POST['reitoria'].", ".
 				"loc_prior=".$_POST['p_nivel'].", loc_dominio=".$_POST['dominio'].", loc_predio=".$_POST['predio'].", ".
 				"loc_status=".$_POST['lstatus']." WHERE loc_id=".$_POST['cod']."";
-		$resultado2 = mysql_query($query2) or die(TRANS('MSG_ERR_UPDATE_REG'). $query2);
+		$resultado2 = mysqli_query($conect, $query2) or die(TRANS('MSG_ERR_UPDATE_REG'). $query2);
 
 		$aviso = TRANS('MSG_LOCAL_ALTER_OK');
 		echo "<script>mensagem('".$aviso."'); redirect('locais.php');</script>";

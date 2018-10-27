@@ -30,29 +30,32 @@
 
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],2);
+	
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
 
         print "<BR><B>".TRANS('ADM_WARRANTY','Administração de períodos de garantia').":</B><BR>";
 
 	$query = "SELECT * from tempo_garantia order by tempo_meses";
-        $resultado = mysql_query($query);
+        $resultado = mysqli_query($conect, $query);
 
 	if ((!isset($_GET['action'])) and !isset($_POST['submit'])) {
 
 		print "<TR><TD><input type='button' class='button' id='idBtIncluir' value='".TRANS('BT_NEW_RECORD','',0)."' onClick=\"redirect('".$_SERVER['PHP_SELF']."?action=incluir&cellStyle=true');\"></TD></TR>";
-		if (mysql_numrows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('MSG_NO_RECORDS'));
 		}
 		else
 		{
-			$linhas = mysql_numrows($resultado);
+			$linhas = mysqli_num_rows($resultado);
 			print "<td class='line'>";
 			print "<br><br>";
 			print "".TRANS('THERE_IS_ARE')." <b>".$linhas."</b> ".TRANS('RECORDS_IN_SYSTEM').".<br>";
 			print "<TABLE border='0' cellpadding='5' cellspacing='0'  width='50%'>";
 			print "<TR class='header'><td class='line'><b>".TRANS('FIELD_TIME_MONTH')."</b></TD><td class='line'><b>".TRANS('COL_EDIT')."</b></TD><td class='line'><b>".TRANS('COL_DEL')."</b></TD>";
 			$j=2;
-			while ($row=mysql_fetch_array($resultado))
+			while ($row=mysqli_fetch_array($resultado))
 			{
 				if ($j % 2)
 				{
@@ -92,8 +95,8 @@
 
 	if ((isset($_GET['action'])  && $_GET['action']=="alter") && (!isset($_POST['submit']))) {
 		$qry = "SELECT * from tempo_garantia where tempo_cod = ".$_GET['cod']."";
-		$exec = mysql_query($qry);
-		$rowAlter = mysql_fetch_array($exec);
+		$exec = mysqli_query($conect, $qry);
+		$rowAlter = mysqli_fetch_array($exec);
 
 		print "<B>".TRANS('TTL_EDIT_RECORD').":<br>";
 		print "<form name='alter' method='post' action='".$_SERVER['PHP_SELF']."' onSubmit='return valida()'>";
@@ -113,13 +116,13 @@
 	if (isset($_GET['action']) &&  $_GET['action']=="excluir"){
 		$texto = "";
 		$qryBusca1 = "SELECT * from equipamentos where comp_garant_meses = ".$_GET['cod']."";
-		$execBusca1 = mysql_query($qryBusca1);
-		$achou1 = mysql_numrows($execBusca1);
+		$execBusca1 = mysqli_query($conect, $qryBusca1);
+		$achou1 = mysqli_num_rows($execBusca1);
 		if ($achou1) $texto = "equipamentos";
 
 		$qryBusca2 = "SELECT * from estoque where estoq_warranty = ".$_GET['cod']."";
-		$execBusca2 = mysql_query($qryBusca2);
-		$achou2 = mysql_numrows($execBusca2);
+		$execBusca2 = mysqli_query($conect, $qryBusca2);
+		$achou2 = mysqli_num_rows($execBusca2);
 		if ($achou2) $texto = "estoque";
 
 
@@ -130,7 +133,7 @@
 		} else {
 
 			$qry = "DELETE FROM tempo_garantia where tempo_cod = ".$_GET['cod']."";
-			$exec = mysql_query($qry) or die (TRANS('ERR_DEL'));
+			$exec = mysqli_query($conect, $qry) or die (TRANS('ERR_DEL'));
 
 			print "<script>mensagem('".TRANS('OK_DEL')."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 		}
@@ -139,14 +142,14 @@
 	if ($_POST['submit']==TRANS('bt_cadastrar')){
 		if (isset($_POST['tempo'])){
 			$qry = "select * from tempo_garantia where tempo_meses='".$_POST['tempo']."'";
-			$exec= mysql_query($qry);
-			$achou = mysql_numrows($exec);
+			$exec= mysqli_query($conect, $qry);
+			$achou = mysqli_num_rows($exec);
 			if ($achou){
 				print "<script>mensagem('".TRANS('MSG_RECORD_EXISTS','',0)."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 			} else {
 
 				$qry = "INSERT INTO tempo_garantia (tempo_meses) values ('".noHtml($_POST['tempo'])."')";
-				$exec = mysql_query($qry) or die (TRANS('ERR_QUERY'));
+				$exec = mysqli_query($conect, $qry) or die (TRANS('ERR_QUERY'));
 
 				print "<script>mensagem('".TRANS('OK_INSERT')."!'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 			}
@@ -159,28 +162,24 @@
 	if ($_POST['submit'] = TRANS('BT_ALTER')){
 		if (!empty($_POST['tempo'])){
 			$qry = "UPDATE tempo_garantia set tempo_meses='".noHtml($_POST['tempo'])."' where tempo_cod=".$_POST['cod']."";
-			$exec= mysql_query($qry) or die(TRANS('ERR_QUERY'));
+			$exec= mysqli_query($conect, $qry) or die(TRANS('ERR_QUERY'));
 
 			print "<script>mensagem('".TRANS('OK_EDIT')."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 		} else {
 			print "<script>mensagem('".TRANS('MSG_EMPTY_DATA')."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 		}
 	}
-
-print "</body>";
 ?>
-<script type="text/javascript">
-<!--
-	function valida(){
-		var ok = validaForm('idTempo','','Tempo de garantia',1);
-		//if (ok) var ok = validaForm('idData','DATA-','Data',1);
-		//if (ok) var ok = validaForm('idStatus','COMBO','Status',1);
+	<script type="text/javascript">
+	<!--
+		function valida(){
+			var ok = validaForm('idTempo','','Tempo de garantia',1);
+			//if (ok) var ok = validaForm('idData','DATA-','Data',1);
+			//if (ok) var ok = validaForm('idStatus','COMBO','Status',1);
 
-		return ok;
-	}
--->
-</script>
-<?php 
-print "</html>";
-
-?>
+			return ok;
+		}
+	-->
+	</script>
+</body>
+</html>

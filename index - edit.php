@@ -1,5 +1,4 @@
 <?php 
-header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -30,27 +29,27 @@ is_file( "./includes/config.inc.php" )
 	if (!isset($_SESSION['s_logado']))  $_SESSION['s_logado']= "";
 	if (!isset($_SESSION['s_nivel']))  $_SESSION['s_nivel']= "";
 
-	include ("PATHS.php"); 
+	include ("PATHS.php");
 	//include ("".$includesPath."var_sessao.php");
 	include ("includes/functions/funcoes.inc");
 	include ("includes/javascript/funcoes.js");
 	include ("includes/queries/queries.php");
 	include ($includesPath."config.inc.php");
 	//require_once ("includes/languages/".LANGUAGE."");
-	include ("".$includesPath."versao.php");
+	include ($includesPath."versao.php");
 
 	include("includes/classes/conecta.class.php");
 
 	$conec = new conexao;
 	$conec->conecta('MYSQL') ;
-	$conect = $conec->conecta('MYSQL') ;
+
 	if (is_file("./includes/icons/favicon.ico")) {
 		print "<link rel='shortcut icon' href='./includes/icons/favicon.ico'>";
 	}
 
 	$qryLang = "SELECT * FROM config";
-	$execLang = mysqli_query($conect, $qryLang);
-	$rowLang = mysqli_fetch_array($execLang);
+	$execLang = mysql_query($qryLang);
+	$rowLang = mysql_fetch_array($execLang);
 	if (!isset($_SESSION['s_language'])) $_SESSION['s_language']= $rowLang['conf_language'];
 
 
@@ -70,6 +69,8 @@ is_file( "./includes/config.inc.php" )
 	}
 	$marca = "HOME";
 ?>
+
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 	<meta charset="utf-8">
@@ -92,7 +93,7 @@ is_file( "./includes/config.inc.php" )
 				<div class='col-sm-4'>
 					<div class='login-adm'>
 						<span class='logged'>
-							<?php echo $USER_TYPE; ?>:<b> <?php echo $uLogado;?></b>
+							$USER_TYPE:<b> <?php echo $uLogado;?></b>
 						</span>
 						<a class='logoff' href='<?php echo $commonPath;?>logout.php' title='<?php echo $hnt;?>'><?php echo $logInfo;?>
 							<i class='fa fa-power-off'></i>
@@ -102,8 +103,8 @@ is_file( "./includes/config.inc.php" )
 				
 				<div class='col-sm-2'>
 					<select class='form-control help' id='idHelp' name='help' onChange="showPopup('idHelp')">
-						<option value=1 selected><?php echo TRANS('MNS_AJUDA');?></option>
-						<option value=2><?php echo TRANS('MNS_SOBRE');?></option>
+						<option value=1 selected><?php echoTRANS('MNS_AJUDA');?></option>
+						<option value=2><?php echoTRANS('MNS_SOBRE');?></option>
 					</select>						
 				</div>
 			</div>
@@ -126,7 +127,7 @@ is_file( "./includes/config.inc.php" )
 <?php	
 		if (empty($_SESSION['s_permissoes'])&& $_SESSION['s_nivel']!=1){
 			$conec->desconecta('MYSQL');
-		} else {
+		} else{
 
 	// 		include("includes/classes/conecta.class.php");
 	// 		$conec = new conexao;
@@ -134,18 +135,18 @@ is_file( "./includes/config.inc.php" )
 
 
 			$qryconf = $QRY["useropencall"];
-			$execconf = mysqli_query($conect, $qryconf) or die('Não foi possível ler as informações de configuração do sistema!');
-			$rowconf = mysqli_fetch_array($execconf);
+			$execconf = mysql_query($qryconf) or die('Não foi possível ler as informações de configuração do sistema!');
+			$rowconf = mysql_fetch_array($execconf);
 
 			$qryStyle = "SELECT * FROM temas t, uthemes u  WHERE u.uth_uid = ".$_SESSION['s_uid']." and t.tm_id = u.uth_thid";
-			$execStyle = mysqli_query($conect, $qryStyle) or die('ERRO NA TENTATIVA DE RECUPERAR AS INFORMAÇÕES DE ESTILOS!<BR>'.$qryStyle);
-			$rowStyle = mysqli_fetch_array($execStyle);
-			$regs = mysqli_num_rows($execStyle);
+			$execStyle = mysql_query($qryStyle) or die('ERRO NA TENTATIVA DE RECUPERAR AS INFORMAÇÕES DE ESTILOS!<BR>'.$qryStyle);
+			$rowStyle = mysql_fetch_array($execStyle);
+			$regs = mysql_num_rows($execStyle);
 			if ($regs==0){ //SE NÃO ENCONTROU TEMA ESPECÍFICO PARA O USUÁRIO
 				unset ($rowStyle);
 				$qryStyle = "SELECT * FROM styles";
-				$execStyle = mysqli_query($conect, $qryStyle);
-				$rowStyle = mysqli_fetch_array($execStyle);
+				$execStyle = mysql_query($qryStyle);
+				$rowStyle = mysql_fetch_array($execStyle);
 			}
 ?>
 				<li id='HOME'>
@@ -180,16 +181,16 @@ is_file( "./includes/config.inc.php" )
 				$sisPath = $ocoDirPath;
 				$sistem = "abertura_user.php?action=listall";
 				$marca = "OCOMON";
-			} else {
+			} else
 ?>			
 				<li> <?php echo TRANS('MNS_OCORRENCIAS');?> </li>
 
-<?php       }
+<?php
 			if ($_SESSION['s_invmon']==1){
 ?>				
 				<li id='INVMON'>
 					<a onMouseOver="destaca('INVMON')" onMouseOut="libera('INVMON')" onclick="loadIframe('menu.php?sis=i','menu','<?php echo $invDirPath;?>abertura.php','centro',2,'INVMON')"> <?php echo TRANS('MNS_INVENTARIO');?> </a>
-				</li>
+				</li>"; 
 <?php
 				//abertura.php   -   ".$invDirPath."".$invHome."
 				if ($sis=="") $sis="sis=i";
@@ -197,10 +198,10 @@ is_file( "./includes/config.inc.php" )
 				$sistem = "abertura.php";
 				if ($marca=="") $marca = "INVMON";
 				//$home = "home=true";
-			} else {
+			} else
 ?>			
 				<li> <?php echo TRANS('MNS_INVENTARIO');?> </li>
-<?php		}		
+<?php				
 	// 		if ($_SESSION['s_nivel']==1) {
 	// 			print "<td id='ADMIN' width='5%'  class='barraMenu'><a class='barra' onMouseOver=\"destaca('ADMIN')\" onMouseOut=\"libera('ADMIN')\" onclick=\"loadIframe('menu.php?sis=a','menu','','','1','ADMIN')\">&nbsp;".TRANS('MNS_ADMIN')."&nbsp;</a></td>";
 	// 			if ($sis=="") $sis="sis=a";
@@ -221,10 +222,10 @@ is_file( "./includes/config.inc.php" )
 				if ($sistem=="") $sistem = "menu.php";
 				if ($marca=="")$marca = "ADMIN";
 				//$home = "home=true";
-			} else {
+			} else
 ?>			
 				<li> <?php echo TRANS('MNS_ADMIN'); ?> </li>
-<?php       }
+<?php
 			//print "<li width='72%'></li>";
 			$conec->desconecta('MYSQL');
 		}

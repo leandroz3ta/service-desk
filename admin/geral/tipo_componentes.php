@@ -31,28 +31,31 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+
         print "<BR><B>".TRANS('ADM_COMPONENT_TYPE','Administração de tipos de componentes').":</B><BR>";
 
 	$query = "SELECT * from itens order by item_nome";
-        $resultado = mysql_query($query);
+        $resultado = mysqli_query($conect, $query);
 
 	if ((!isset($_GET['action'])) and !isset($_POST['submit'])) {
 
 		print "<TR><TD><input type='button' class='button' id='idBtIncluir' value='".TRANS('BT_NEW_RECORD','',0)."' onClick=\"redirect('".$_SERVER['PHP_SELF']."?action=incluir&cellStyle=true');\"></TD></TR>";
-		if (mysql_numrows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('MSG_NO_RECORDS'));
 		}
 		else
 		{
-			$linhas = mysql_numrows($resultado);
+			$linhas = mysqli_num_rows($resultado);
 			print "<td class='line'>";
 			print "<br><br>";
 			print "".TRANS('THERE_IS_ARE')." <b>".$linhas."</b> ".TRANS('RECORDS_IN_SYSTEM').".<br>";
 			print "<TABLE border='0' cellpadding='5' cellspacing='0'  width='50%'>";
 			print "<TR class='header'><td class='line'><b>".TRANS('COL_TYPE')."</b></TD><td class='line'><b>".TRANS('COL_EDIT')."</b></TD><td class='line'><b>".TRANS('COL_DEL')."</b></TD>";
 			$j=2;
-			while ($row=mysql_fetch_array($resultado))
+			while ($row=mysqli_fetch_array($resultado))
 			{
 				if ($j % 2)
 				{
@@ -92,8 +95,8 @@
 
 	if ((isset($_GET['action'])  && $_GET['action']=="alter") && (!isset($_POST['submit']))) {
 		$qry = "SELECT * from itens where item_cod = ".$_GET['cod']."";
-		$exec = mysql_query($qry);
-		$rowAlter = mysql_fetch_array($exec);
+		$exec = mysqli_query($conect, $qry);
+		$rowAlter = mysqli_fetch_array($exec);
 
 		print "<B>".TRANS('TTL_EDIT_RECORD').":<br>";
 		print "<form name='alter' method='post' action='".$_SERVER['PHP_SELF']."' onSubmit='return valida()'>";
@@ -113,8 +116,8 @@
 	if (isset($_GET['action']) &&  $_GET['action']=="excluir"){
 		$texto = "modelos_itens";
 		$qryBusca = "SELECT * from modelos_itens where mdit_tipo = ".$_GET['cod']."";
-		$execBusca = mysql_query($qryBusca);
-		$achou = mysql_numrows($execBusca);
+		$execBusca = mysqli_query($conect, $qryBusca);
+		$achou = mysqli_num_rows($execBusca);
 		if ($achou) {
 			print "<script>mensagem('".TRANS('MSG_CANT_DEL').": ".$texto." ".TRANS('LINKED_TABLE')."!');
 				redirect('".$_SERVER['PHP_SELF']."');</script>";
@@ -122,7 +125,7 @@
 		} else {
 
 			$qry = "DELETE FROM itens where item_cod = ".$_GET['cod']."";
-			$exec = mysql_query($qry) or die (TRANS('ERR_DEL'));
+			$exec = mysqli_query($conect, $qry) or die (TRANS('ERR_DEL'));
 
 			print "<script>mensagem('".TRANS('OK_DEL')."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 		}
@@ -131,14 +134,14 @@
 	if ($_POST['submit']==TRANS('bt_cadastrar')){
 		if (isset($_POST['tipo'])){
 			$qry = "select * from itens where item_nome='".$_POST['tipo']."'";
-			$exec= mysql_query($qry);
-			$achou = mysql_numrows($exec);
+			$exec= mysqli_query($conect, $qry);
+			$achou = mysqli_num_rows($exec);
 			if ($achou){
 				print "<script>mensagem('".TRANS('MSG_RECORD_EXISTS','',0)."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 			} else {
 
 				$qry = "INSERT INTO itens (item_nome) values ('".noHtml($_POST['tipo'])."')";
-				$exec = mysql_query($qry) or die (TRANS('ERR_QUERY'));
+				$exec = mysqli_query($conect, $qry) or die (TRANS('ERR_QUERY'));
 
 				print "<script>mensagem('".TRANS('OK_INSERT')."!'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 			}
@@ -151,28 +154,24 @@
 	if ($_POST['submit'] = TRANS('BT_ALTER')){
 		if (!empty($_POST['tipo'])){
 			$qry = "UPDATE itens set item_nome='".noHtml($_POST['tipo'])."' where item_cod=".$_POST['cod']."";
-			$exec= mysql_query($qry) or die(TRANS('ERR_QUERY'));
+			$exec= mysqli_query($conect, $qry) or die(TRANS('ERR_QUERY'));
 
 			print "<script>mensagem('".TRANS('OK_EDIT')."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 		} else {
 			print "<script>mensagem('".TRANS('MSG_EMPTY_DATA')."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 		}
 	}
-
-print "</body>";
 ?>
-<script type="text/javascript">
-<!--
-	function valida(){
-		var ok = validaForm('idTipo','','Tipo de componente',1);
-		//if (ok) var ok = validaForm('idData','DATA-','Data',1);
-		//if (ok) var ok = validaForm('idStatus','COMBO','Status',1);
+	<script type="text/javascript">
+	<!--
+		function valida(){
+			var ok = validaForm('idTipo','','Tipo de componente',1);
+			//if (ok) var ok = validaForm('idData','DATA-','Data',1);
+			//if (ok) var ok = validaForm('idStatus','COMBO','Status',1);
 
-		return ok;
-	}
--->
-</script>
-<?php 
-print "</html>";
-
-?>
+			return ok;
+		}
+	-->
+	</script>
+</body>
+</html>

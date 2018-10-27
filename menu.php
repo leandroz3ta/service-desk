@@ -1,6 +1,6 @@
 <?php 
 header('Content-Type: text/html; charset=iso-8859-1');
- /*                        Copyright 2005 Fl·vio Ribeiro
+ /*                        Copyright 2005 Fl√°vio Ribeiro
 
          This file is part of OCOMON.
 
@@ -35,12 +35,6 @@ header('Content-Type: text/html; charset=iso-8859-1');
 		@import url('includes/menu/phplm320/layerstreemenu-hidden.css');
 	//-->
 	</style>
-	<script language='JavaScript' type='text/javascript'>
-	<?php 
-	require_once $phplmDirPath.'libjs/layersmenu-browser_detection.js'
-	?>
-	</script>
-	<script language='JavaScript' type='text/javascript' src='includes/menu/phplm320/libjs/layerstreemenu-cookies.js'></script>
 	<?php 
 	require_once $phplmDirPath.'lib/PHPLIB.php';
 	require_once $phplmDirPath.'lib/layersmenu-common.inc.php';
@@ -184,20 +178,23 @@ if($OPERADOR_AREA){
 
 	$mid->setMenuStructureString($menuHome);
 	$mid->parseStructureForMenu('treemenu5');
-
-
-
 // FIM DA INCLUSAO	PARA USUARIO SOMENTE CONSULTAS E ABERTURA DE OCORRENCIA
+?>
 
-print "<html>";
-print "<title>OcoMon</title>";
-print "<link rel='stylesheet' href='includes/css/bootstrap/bootstrap.css'>"; //type='text/css'
-print "<script src='includes/javascript/libs/modernizr.js'></script>";
-print "<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'>";
-//print "</head><body style={background-image:url('MENU_IMG.png'); background-repeat:no-repeat;}>"; //background-position:center; background-repeat:no-repeat;  background-attachment: fixed;
-print "</head><body class='menu alternative-body'>";
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1, user-scalable=no">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>OcoMon</title>
+	<link rel='stylesheet' href='includes/css/bootstrap/bootstrap.css'>
+</head>
+<!-- <body style={background-image:url('MENU_IMG.png'); background-repeat:no-repeat;}> -->
+<body class='menu alternative-body'>
 
-	//Para compatibilizar os scripts da vers„o 1.40 na restauraÁ„o da sess„o
+<?php
+	//Para compatibilizar os scripts da vers√£o 1.40 na restaura√ß√£o da sess√£o
 	if (isset($_SESSION['s_page_ocomon']) && $_SESSION['s_page_ocomon'] == basename($_SESSION['s_page_ocomon'])) $_SESSION['s_page_ocomon'] = $ocoHome.$_SESSION['s_page_ocomon'];
 	if (isset($_SESSION['s_page_simples']) && $_SESSION['s_page_simples'] == basename($_SESSION['s_page_simples'])) $_SESSION['s_page_simples'] = $simplesHome.$_SESSION['s_page_simples'];
 	if (isset($_SESSION['s_page_invmon']) && $_SESSION['s_page_invmon'] == basename($_SESSION['s_page_invmon'])) $_SESSION['s_page_invmon'] = $invHome.$_SESSION['s_page_invmon'];
@@ -212,7 +209,7 @@ print "</head><body class='menu alternative-body'>";
 	if (isset($_SESSION['s_page_admin'])) $admHome = $_SESSION['s_page_admin']; else $admHome = $admDirPath."sistemas.php";
 
 
-	if (isset($_GET['LOAD']) && $_GET['LOAD'] == 'ADMIN'){//QUANDO A P¡GINA FOR RECARREGADA PARA NOVO TEMA
+	if (isset($_GET['LOAD']) && $_GET['LOAD'] == 'ADMIN'){//QUANDO A P√ÅGINA FOR RECARREGADA PARA NOVO TEMA
 		$where = TRANS('MNL_ADM');
 		$menu="treemenu3";
 		print "<script>window.parent.frames['centro'].location = '".$admHome."'</script>";
@@ -261,7 +258,7 @@ print "</head><body class='menu alternative-body'>";
 	//print "<img src=".$logosPath."phpmyadmin.png>";
 	//print "<table class='menutop' width='100%' border='0'><tr class='menutop'><td class='line'><b>".$where."</b></td></tr></table>";
 	//#C7C8C6   //<tr class='menutop'> //bgcolor='".BODY_COLOR."'
-	print "".$where."";
+	print $where;
 
 	//<TABLE bgcolor='#C7C8C6' STYLE='{border-bottom: thin solid #999999; }' cellspacing='1' border='0' cellpadding='1' align='center' width='100%'>
 	//print "<table class='menu'>";
@@ -270,16 +267,23 @@ print "</head><body class='menu alternative-body'>";
 		}
 	//print "</table>";
 
-
-
-print "</body></html>";
-
 ?>
-<script type="text/javascript">
-	 function popup(pagina)	{ //Exibe uma janela popUP
-      	x = window.open(pagina,'popup','dependent=yes,width=400,height=200,scrollbars=yes,statusbar=no,resizable=yes');
-      	//x.moveTo(100,100);
-		x.moveTo(window.parent.screenX+100, window.parent.screenY+100);
-		return false
-     }
-</script>
+	<script language='JavaScript' type='text/javascript' src='includes/menu/phplm320/libjs/layerstreemenu-cookies.js'></script>
+
+	<script src='includes/javascript/libs/modernizr.js'></script>
+	<script language='JavaScript' type='text/javascript'>
+	<?php 
+	require_once $phplmDirPath.'libjs/layersmenu-browser_detection.js'
+	?>
+	</script>
+
+	<script type="text/javascript">
+		 function popup(pagina)	{ //Exibe uma janela popUP
+	      	x = window.open(pagina,'popup','dependent=yes,width=400,height=200,scrollbars=yes,statusbar=no,resizable=yes');
+	      	//x.moveTo(100,100);
+			x.moveTo(window.parent.screenX+100, window.parent.screenY+100);
+			return false
+	     }
+	</script>
+</body>
+</html>

@@ -41,24 +41,26 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
 
         print "<BR><B>".TRANS('ADM_PRIORIDADES_ATEND').":</B><BR>";
 
 	$query = "SELECT * from prior_atend order by pr_nivel";
-        $resultado = mysql_query($query);
+        $resultado = mysqli_query($conect, $query);
 
 	if ((!isset($_GET['action'])) && !isset($_POST['submit'])) {
 
         	$qryUpdateDefault = "SELECT oco_prior FROM ocorrencias WHERE oco_prior is null";
-        	$execUpdate = mysql_query($qryUpdateDefault);
-        	if (mysql_numrows($execUpdate) > 0) {
+        	$execUpdate = mysqli_query($conect, $qryUpdateDefault);
+        	if (mysqli_num_rows($execUpdate) > 0) {
 			print "<TR><TD><a href='update_old_tickets_prior.php'>".TRANS('LINK_UPDATE_TICKETS_PRIOR')."</a></TD></TR><BR/>";
         	}
         	
         	
         	//print "<TD align='right'><a href='".$_SERVER['PHP_SELF']."?action=incluir'>Incluir feriado.</a></TD><BR>";
         	print "<TR><TD><input type='button' class='button' id='idBtIncluir' value='".TRANS('BT_NEW_RECORD','',0)."' onClick=\"redirect('".$_SERVER['PHP_SELF']."?action=incluir&cellStyle=true');\"></TD></TR>";
-		if (mysql_numrows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('MSG_NO_RECORDS')."!");
 		}
@@ -66,14 +68,14 @@
 		{
 			$cor=TD_COLOR;
 			$cor1=TD_COLOR;
-			$linhas = mysql_numrows($resultado);
+			$linhas = mysqli_num_rows($resultado);
 
 			print "<br><br><TR><td class='line'>";
 			print "".TRANS('THERE_IS_ARE')." <b>".$linhas."</b> ".TRANS('RECORDS_IN_SYSTEM').".</TD></TR>";
 			print "<TABLE border='0' cellpadding='5' cellspacing='0'  width='50%'>";
 			print "<TR class='header'><td class='line'>".TRANS('COL_LEVEL')."</TD><td class='line'>".TRANS('COL_DESC')."</TD><td class='line'>".TRANS('COL_DEFAULT','PADRAO')."</TD><td class='line'>".TRANS('COL_COLOR','COR')."</TD><td class='line'><b>".TRANS('COL_EDIT')."</b></TD><td class='line'><b>".TRANS('COL_DEL')."</b></TD>";
 			$j=2;
-			while ($row=mysql_fetch_array($resultado))
+			while ($row=mysqli_fetch_array($resultado))
 			{
 				if ($j % 2)
 				{
@@ -115,9 +117,9 @@
 			print "<select class='select' name='nivel' id='idNivel'>";
 				print "<option value=-1>".TRANS('COL_LEVEL')."</option>";
 					$sql="select * from prior_nivel WHERE prn_used=0 order by prn_level";
-					$commit = mysql_query($sql);
+					$commit = mysqli_query($conect, $sql);
 					$i=0;
-					while($row = mysql_fetch_array($commit)){
+					while($row = mysqli_fetch_array($commit)){
 						print "<option value=".$row['prn_cod'].">".$row["prn_level"]."</option>";
 						$i++;
 					} // while
@@ -145,8 +147,8 @@
 
 	if ( (isset($_GET['action']) && $_GET['action']=="alter") && !isset($_POST['submit'])) {
 		$qry = "SELECT * from prior_atend where pr_cod = ".$_GET['cod']."";
-		$exec = mysql_query($qry);
-		$rowAlter = mysql_fetch_array($exec);
+		$exec = mysqli_query($conect, $qry);
+		$rowAlter = mysqli_fetch_array($exec);
 
 		print "<B>".TRANS('TTL_EDIT_RECORD').":<br>";
 		print "<form method='post' name='alter' action='".$_SERVER['PHP_SELF']."' onSubmit='return valida()'>";
@@ -167,12 +169,12 @@
 		$nivel_anterior = $rowAlter['pr_nivel'];
 		
 			$sql = "select * from prior_nivel where prn_level = '".$rowAlter['pr_nivel']."'";
-			$commit1 = mysql_query($sql);
-			$rowR = mysql_fetch_array($commit1);
+			$commit1 = mysqli_query($conect, $sql);
+			$rowR = mysqli_fetch_array($commit1);
 				print "<option value=-1>".TRANS('SEL_LEVEL')."</option>";
 					$sql2="select * from prior_nivel WHERE (prn_used = 0 OR prn_level = '".$rowAlter['pr_nivel']."') order by prn_level";
-					$commit2 = mysql_query($sql2);
-					while($rowB = mysql_fetch_array($commit2)){
+					$commit2 = mysqli_query($conect, $sql2);
+					while($rowB = mysqli_fetch_array($commit2)){
 						print "<option value=".$rowB["prn_cod"]."";
                         			if ($rowB['prn_cod'] == $rowR['prn_cod'] ) {
                             				print " selected";
@@ -210,9 +212,9 @@
 		$total = 0; $texto = "";
 
 		$sql_2 = "SELECT * FROM ocorrencias WHERE oco_prior ='".$_GET['cod']."'";
-		$exec_2 = mysql_query($sql_2);
-		$total+= mysql_numrows($exec_2);
-		if (mysql_numrows($exec_2)!=0) $texto.="ocorrencias, ";
+		$exec_2 = mysqli_query($conect, $sql_2);
+		$total+= mysqli_num_rows($exec_2);
+		if (mysqli_num_rows($exec_2)!=0) $texto.="ocorrencias, ";
 
 		if ($total!=0)
 		{
@@ -222,7 +224,7 @@
 		else
 		{
 			$qry = "DELETE FROM prior_atend where pr_cod = ".$_GET['cod']."";
-			$exec = mysql_query($qry) or die (TRANS('ERR_DEL')."!");
+			$exec = mysqli_query($conect, $qry) or die (TRANS('ERR_DEL')."!");
 			if ($exec == 0)
 			{
 				$aviso = TRANS('ERR_DEL');
@@ -230,7 +232,7 @@
 			else
 			{
 				$qry2 = "UPDATE prior_nivel SET prn_used = 0 WHERE prn_level = ".$_GET['cod_nivel']."";
-				$exec2 = mysql_query($qry2) or die ($qry2);
+				$exec2 = mysqli_query($conect, $qry2) or die ($qry2);
 				$aviso = TRANS('OK_DEL');
 			}
 			print "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
@@ -241,8 +243,8 @@
 	if (isset($_POST['submit']) && $_POST['submit'] == TRANS('bt_cadastrar')) {
 		if ((!empty($_POST['descricao'])) && (!empty($_POST['nivel']))){
 			$qry = "select * from prior_atend where pr_desc = '".$_POST['descricao']."' ";
-			$exec= mysql_query($qry);
-			$achou = mysql_numrows($exec);
+			$exec= mysqli_query($conect, $qry);
+			$achou = mysqli_num_rows($exec);
 			if ($achou){
 				print "<script>mensagem('".TRANS('MSG_RECORD_EXISTS','',0)."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 			} else {
@@ -253,17 +255,17 @@
 				if (isset($_POST['permanente'])){
 					$permanente = 1;
 					$qryDefault = "UPDATE prior_atend SET pr_default = 0 ";//todas prioridades sao afetadas;
-					$execDefault = mysql_query($qryDefault);
+					$execDefault = mysqli_query($conect, $qryDefault);
 				
 				} else
 					$permanente = 0;
 
 				$qry = "INSERT INTO prior_atend (pr_nivel, pr_default, pr_desc, pr_color) ".
 						"values (".$_POST['nivel'].", '".$permanente."','".noHtml($_POST['descricao'])."', '".$_POST['cor']."')";
-				$exec = mysql_query($qry) or die ('Erro na inclusão do registro!'.$qry);
+				$exec = mysqli_query($conect, $qry) or die ('Erro na inclusão do registro!'.$qry);
 				
 				$qry2 = "UPDATE prior_nivel SET prn_used = 1 where prn_level = ".$_POST['nivel']."";
-				$exec2 = mysql_query($qry2) or die ('ERRO NA ATUALIZACAO DO NÍVEL UTILIZADO'.$qry2);
+				$exec2 = mysqli_query($conect, $qry2) or die ('ERRO NA ATUALIZACAO DO NÍVEL UTILIZADO'.$qry2);
 				
 				
 				print "<script>mensagem('".TRANS('OK_INSERT')."!'); redirect('".$_SERVER['PHP_SELF']."');</script>";
@@ -283,7 +285,7 @@
 			if (isset($_POST['permanente'])){
 				$permanente = 1;
 				$qryDefault = "UPDATE prior_atend SET pr_default = 0 ";//todas prioridades sao afetadas;
-				$execDefault = mysql_query($qryDefault);				
+				$execDefault = mysqli_query($conect, $qryDefault);				
 			} else
 				$permanente = 0;
 
@@ -293,19 +295,17 @@
 					"pr_nivel='".$_POST['nivel']."', pr_default=".$permanente.", ".
 					"pr_color = '".$_POST['cor']."' ".
 				"WHERE pr_cod=".$_POST['cod']."";
-			$exec= mysql_query($qry) or die(TRANS('ERR_QUERY'.$qry));
+			$exec= mysqli_query($conect, $qry) or die(TRANS('ERR_QUERY'.$qry));
 
 			
 			if ($_POST['nivel_anterior'] != $_POST['nivel']){ //O nível foi alterado
 			
 				$qry2 = "UPDATE prior_nivel SET prn_used = 1 where prn_level = ".$_POST['nivel']."";
-				$exec2 = mysql_query($qry2) or die ('ERRO NA ATUALIZACAO DO NÍVEL UTILIZADO'.$qry2);			
+				$exec2 = mysqli_query($conect, $qry2) or die ('ERRO NA ATUALIZACAO DO NÍVEL UTILIZADO'.$qry2);			
 			
 				$qry3 = "UPDATE prior_nivel SET prn_used = 0 where prn_level = ".$_POST['nivel_anterior']."";
-				$exec3 = mysql_query($qry3) or die ('ERRO NA ATUALIZACAO DO NÍVEL UTILIZADO'.$qry3);			
+				$exec3 = mysqli_query($conect, $qry3) or die ('ERRO NA ATUALIZACAO DO NÍVEL UTILIZADO'.$qry3);			
 			}
-			
-			
 			
 			
 			print "<script>mensagem('".TRANS('OK_EDIT')."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
@@ -314,27 +314,19 @@
 			print "<script>mensagem('".TRANS('MSG_EMPTY_DATA')."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 		}
 	}
-
-
-
-
-
 ?>
-<script type="text/javascript">
-<!--
-	function valida(){
-		var ok = validaForm('idDesc','','Descrição',1);
-		if (ok) var ok = validaForm('idNivel','COMBO','Nível',1);
-		if (ok) var ok = validaForm('idCor','COR','Cor',1);
-		//if (ok) var ok = validaForm('idStatus','COMBO','Status',1);
+	<script language="javascript">cp.writeDiv()</script>
+	<script type="text/javascript">
+	<!--
+		function valida(){
+			var ok = validaForm('idDesc','','Descrição',1);
+			if (ok) var ok = validaForm('idNivel','COMBO','Nível',1);
+			if (ok) var ok = validaForm('idCor','COR','Cor',1);
+			//if (ok) var ok = validaForm('idStatus','COMBO','Status',1);
 
-		return ok;
-	}
--->
-</script>
-<SCRIPT LANGUAGE="JavaScript">cp.writeDiv()</SCRIPT>
-<?php 
-print "</body>";
-print "</html>";
-
-?>
+			return ok;
+		}
+	//-->
+	</script>
+</body>
+</html>

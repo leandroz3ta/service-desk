@@ -31,22 +31,25 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+
 	print "<BR><B>".TRANS('TTL_UNIT').":</B><BR>";
 
 	$query = "SELECT * from instituicao order by inst_nome";
-        $resultado = mysql_query($query);
+        $resultado = mysqli_query($conect, $query);
 
 	if ((!isset($_GET['action'])) and !isset($_POST['submit'])){
 
 		//print "<TD align='right'><a href='".$_SERVER['PHP_SELF']."'?action=incluir'>".TRANS('TXT_INCLUDE_UNIT').".</a></TD><BR>";
 		print "<TR><TD><input type='button' class='button' id='idBtIncluir' value='".TRANS('TXT_INCLUDE_UNIT','',0)."' onClick=\"redirect('".$_SERVER['PHP_SELF']."?action=incluir&cellStyle=true');\"></TD></TR><br><br>";
-		if (mysql_numrows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('MSG_NOT_UNIT_IN_SYSTEM'));
 		}
         else
         {
-                $linhas = mysql_numrows($resultado);
+                $linhas = mysqli_num_rows($resultado);
                 print "<tr>";
                 print "<td class='line'>";
                 print "".TRANS('THERE_IS_ARE')." <b>".$linhas."</b> ".TRANS('TXT_UNIT_CAD_SYSTEM')."<br>";
@@ -54,7 +57,7 @@
                 print "<TABLE border='0' cellpadding='5' cellspacing='0'  width='50%'>";
                 print "<TR class='header'><td class='line'>".TRANS('OCO_FIELD_UNIT')."</TD><td class='line'>".TRANS('OCO_FIELD_STATUS')."</TD><td class='line'><b>".TRANS('OCO_FIELD_ALTER')."</b></TD><td class='line'><b>".TRANS('OCO_FIELD_EXCLUDE')."</b></TD>";
                 $j=2;
-                while ($row=mysql_fetch_array($resultado))
+                while ($row=mysqli_fetch_array($resultado))
                 {
                         if ($j % 2)
                         {
@@ -98,8 +101,8 @@
 	if ((isset($_GET['action'])  && $_GET['action']=="alter") && (!isset($_POST['submit']))) {
 
 		$qry = "SELECT * from instituicao where inst_cod = ".$_GET['cod']."";
-		$exec = mysql_query($qry);
-		$rowAlter = mysql_fetch_array($exec);
+		$exec = mysqli_query($conect, $qry);
+		$rowAlter = mysqli_fetch_array($exec);
 
 		print "<B>".TRANS('SUBTTL_ALTER_DESC_UNIT').":<br>";
 		print "<form name='alter' method='post' action='".$_SERVER['PHP_SELF']."' onSubmit='return valida()'>";
@@ -131,8 +134,8 @@
 
 	if (isset($_GET['action']) && $_GET['action']=="excluir"){
 			$qryAcha = "select * from equipamentos where comp_inst = ".$_GET['cod']."";
-			$execAcha = mysql_query($qryAcha);
-			$achou = mysql_numrows($execAcha);
+			$execAcha = mysqli_query($conect, $qryAcha);
+			$achou = mysqli_num_rows($execAcha);
 
 			if ($achou){
 				print "<script>mensagem('".TRANS('MSG_NOT_DEL_EQUIP_ASSOC')."');".
@@ -141,7 +144,7 @@
 			} else {
 
 				$qry = "DELETE FROM instituicao where inst_cod = ".$_GET['cod']."";
-				$exec = mysql_query($qry) or die (TRANS('MSG_ERR_DEL_REGISTER'));
+				$exec = mysqli_query($conect, $qry) or die (TRANS('MSG_ERR_DEL_REGISTER'));
 
 				print "<script>mensagem('".TRANS('OK_DEL')."');".
 						" redirect('".$_SERVER['PHP_SELF']."');</script>";
@@ -151,14 +154,14 @@
 	if ($_POST['submit']==TRANS('BT_INCLUDE')){
 		if (!empty($_POST['descricao'])){
 			$qry = "select * from instituicao where inst_nome = '".$_POST['descricao']."'";
-			$exec= mysql_query($qry);
-			$achou = mysql_numrows($exec);
+			$exec= mysqli_query($conect, $qry);
+			$achou = mysqli_num_rows($exec);
 			if ($achou){
 				print "<script>mensagem('".TRANS('MSG_UNIT_CAD_IN_SYSTEM')."'); redirect('".$_SERVER['PHP_SELF']."'); </script>";
 
 			} else {
 				$qry = "INSERT INTO instituicao (inst_nome) values ('".noHtml($_POST['descricao'])."')";
-				$exec = mysql_query($qry) or die (TRANS('MSG_ERR_INCLUDE_UNIT') .$qry);
+				$exec = mysqli_query($conect, $qry) or die (TRANS('MSG_ERR_INCLUDE_UNIT') .$qry);
 				print "<script>mensagem('".TRANS('MSG_DATA_INCLUDE_OK')."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 				}
 		} else {
@@ -171,7 +174,7 @@
 		if (!empty($_POST['descricao'])){
 
 			$qry = "UPDATE instituicao set inst_nome='".noHtml($_POST['descricao'])."', inst_status='".$_POST['status']."' where inst_cod=".$_POST['cod']."";
-			$exec= mysql_query($qry) or die(TRANS('MSG_NOT_ALTER_REG') .$qry);
+			$exec= mysqli_query($conect, $qry) or die(TRANS('MSG_NOT_ALTER_REG') .$qry);
 
 				print "<script>mensagem('".TRANS('MSG_DATA_ALTER_OK')."'); history.go(-2)(); </script>";
 
@@ -182,20 +185,14 @@
 		}
 	}
 
-
-
-
-print "</body>";
 ?>
-<script type="text/javascript">
-<!--
-	function valida(){
-		var ok = validaForm('idDesc','','Descrição',1);
-		return ok;
-	}
--->
-</script>
-<?php 
-print "</html>";
-
-?>
+	<script type="text/javascript">
+	<!--
+		function valida(){
+			var ok = validaForm('idDesc','','Descrição',1);
+			return ok;
+		}
+	-->
+	</script>
+</body>
+</html>

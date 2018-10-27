@@ -31,6 +31,9 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+
 	print "<BR><B>".TRANS('ADM_SITUAC')."</B><BR>";
 
 	print "<FORM method='POST' action='".$_SERVER['PHP_SELF']."' onSubmit=\"return valida()\">";
@@ -47,8 +50,8 @@
 			$query.= " WHERE situac_cod = ".$_GET['cod']." ";
 		}
 		$query .=" ORDER  BY situac_nome";
-		$resultado = mysql_query($query) or die('ERRO NA EXECUÇÃO DA QUERY DE CONSULTA!');
-		$registros = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $query) or die('ERRO NA EXECUÇÃO DA QUERY DE CONSULTA!');
+		$registros = mysqli_num_rows($resultado);
 
 	if ((!isset($_GET['action'])) && empty($_POST['submit'])) {
 
@@ -56,7 +59,7 @@
 		print "<TD><input type='button' class='button' id='idBtIncluir' value='".TRANS('BT_NEW_RECORD','',0)."' onClick=\"redirect('".$_SERVER['PHP_SELF']."?action=incluir&cellStyle=true');\">".
 			"</TD>";
 
-		if (mysql_num_rows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			print "<tr><td>";
 			print mensagem(TRANS('MSG_NO_RECORDS'));
@@ -72,7 +75,7 @@
 			print "<TR class='header'><td class='line'>".TRANS('COL_SITUAC')."</TD><td class='line'>".TRANS('COL_DESC')."</TD><td class='line'>".TRANS('COL_HILIGHT')."</TD><td class='line'>".TRANS('COL_EDIT')."</TD><td class='line'>".TRANS('COL_DEL')."</TD></tr>";
 
 			$j=2;
-			while ($row = mysql_fetch_array($resultado))
+			while ($row = mysqli_fetch_array($resultado))
 			{
 				if ($j % 2)
 				{
@@ -123,7 +126,7 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="alter") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<BR><B>".TRANS('TTL_EDIT_RECORD')."</B><BR>";
 
@@ -157,9 +160,9 @@
 		$total = 0; $texto = "";
 
 		$sql_2 = "SELECT * FROM equipamentos where comp_situac ='".$_GET['cod']."'";
-		$exec_2 = mysql_query($sql_2);
-		$total+= mysql_numrows($exec_2);
-		if (mysql_numrows($exec_2)!=0) $texto.="equipamentos, ";
+		$exec_2 = mysqli_query($conect, $sql_2);
+		$total+= mysqli_num_rows($exec_2);
+		if (mysqli_num_rows($exec_2)!=0) $texto.="equipamentos, ";
 
 		if ($total!=0)
 		{
@@ -169,7 +172,7 @@
 		else
 		{
 			$query2 = "DELETE FROM situacao WHERE situac_cod='".$_GET['cod']."'";
-			$resultado2 = mysql_query($query2) or die ('ERRO NA TENTATIVA DE EXCLUIR O REGISTRO!<br>'.$query2);
+			$resultado2 = mysqli_query($conect, $query2) or die ('ERRO NA TENTATIVA DE EXCLUIR O REGISTRO!<br>'.$query2);
 
 			if ($resultado2 == 0)
 			{
@@ -191,8 +194,8 @@
 		$erro=false;
 
 		$qryl = "SELECT * FROM situacao WHERE situac_nome='".$_POST['situacao']."'";
-		$resultado = mysql_query($qryl);
-		$linhas = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $qryl);
+		$linhas = mysqli_num_rows($resultado);
 
 		if ($linhas > 0)
 		{
@@ -205,7 +208,7 @@
 			(isset($_POST['destaque']))?$destaque=1:$destaque=0;
 			$query = "INSERT INTO situacao (situac_nome, situac_desc, situac_destaque) values ".
 						"('".noHtml($_POST['situacao'])."', '".noHtml($_POST['descricao'])."', '".$destaque."')";
-			$resultado = mysql_query($query);
+			$resultado = mysqli_query($conect, $query);
 			if ($resultado == 0)
 			{
 				$aviso = TRANS('ERR_INSERT');
@@ -226,7 +229,7 @@
 		$query2 = "UPDATE situacao SET situac_nome='".noHtml($_POST['situacao'])."', situac_desc ='".noHtml($_POST['descricao'])."', ".
 				"situac_destaque='".$destaque."' ".
 				"WHERE situac_cod='".$_POST['cod']."'";
-		$resultado2 = mysql_query($query2) or die (TRANS('ERR_QUERY').$query2);
+		$resultado2 = mysqli_query($conect, $query2) or die (TRANS('ERR_QUERY').$query2);
 
 		if ($resultado2 == 0)
 		{
@@ -240,23 +243,19 @@
 		echo "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 
 	}
-
-	print "</table>";
-
 ?>
-<script type="text/javascript">
-<!--
-	function valida(){
-		var ok = validaForm('idSituacao','','Situação',1);
-		if (ok) var ok = validaForm('idDescricao','','Descrição',1);
+		</table>
 
-		return ok;
-	}
+	<script type="text/javascript">
+	<!--
+		function valida(){
+			var ok = validaForm('idSituacao','','Situação',1);
+			if (ok) var ok = validaForm('idDescricao','','Descrição',1);
 
--->
-</script>
+			return ok;
+		}
 
-
-<?php 
-print "</body>";
-print "</html>";
+	-->
+	</script>
+</body>
+</html>

@@ -26,10 +26,14 @@
 
 
 	$cab = new headers;
-	$cab->set_title($TRANS["html_title"]);
+	//$cab->set_title($TRANS["html_title"]);
+	$cab->set_title(TRANS("html_title"));
 
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],4);
+
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
 
 	$hojeLog = date ("d-m-Y H:i:s");
 
@@ -57,8 +61,8 @@
 		$query.= " AND soft_cod = ".$_GET['cod']." ";
 	}
 	$query .=" ORDER BY f.fab_nome, s.soft_desc, s.soft_versao";
-	$resultado = mysql_query($query) or die(TRANS('MSG_ERR_QRY_CONS').'<br>'.$query);
-	$registros = mysql_num_rows($resultado);
+	$resultado = mysqli_query($conect, $query) or die(TRANS('MSG_ERR_QRY_CONS').'<br>'.$query);
+	$registros = mysqli_num_rows($resultado);
 
 
 
@@ -70,7 +74,7 @@
 			"</TR>";
 
 
-		if (mysql_num_rows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			print "<tr><td align='center'>";
 			echo mensagem(TRANS('MSG_NOT_REG_CAD'));
@@ -90,7 +94,7 @@
 
 
 		   $j=2;
-		   while ($row = mysql_fetch_array($resultado))
+		   while ($row = mysqli_fetch_array($resultado))
 		   {
 			  if ($j % 2)
 			  {
@@ -104,8 +108,8 @@
 
 
 			$sqlAux = "select count(*) total from hw_sw where hws_sw_cod = ".$row['soft_cod']." ";
-			$commitAux = mysql_query($sqlAux);
-			$rowAux = mysql_fetch_array($commitAux);
+			$commitAux = mysqli_query($conect, $sqlAux);
+			$rowAux = mysqli_fetch_array($commitAux);
 			$dispo = $row['soft_qtd_lic'] - $rowAux['total'];
 
 		   print "<tr class=".$trClass." id='linhax".$j."' onMouseOver=\"destaca('linhax".$j."','".$_SESSION['s_colorDestaca']."');\" onMouseOut=\"libera('linhax".$j."','".$_SESSION['s_colorLinPar']."','".$_SESSION['s_colorLinImpar']."');\"  onMouseDown=\"marca('linhax".$j."','".$_SESSION['s_colorMarca']."');\">";
@@ -130,8 +134,8 @@
 					print "<option value=-1 selected>".TRANS('SEL_SOFT')."</option>";
 
 					$sql = "select * from sw_padrao;";
-					$commit = mysql_query($sql);
-					while($rowA = mysql_fetch_array($commit)){
+					$commit = mysqli_query($conect, $sql);
+					while($rowA = mysqli_fetch_array($commit)){
 						$softs.= $rowA["swp_sw_cod"].",";
 					}
 					if (isset($softs)) {
@@ -142,8 +146,8 @@
 					//Retorna todos os softwares menos os já cadastrados como instalaçao padrão
 					$select = "select s.*, f.* from softwares s, fabricantes f where f.fab_cod = s.soft_fab
 								 and s.soft_cod not in ($softs) order by fab_nome, soft_desc";
-					$exec = mysql_query($select);
-					while($row = mysql_fetch_array($exec)){
+					$exec = mysqli_query($conect, $select);
+					while($row = mysqli_fetch_array($exec)){
 						print "<option value=".$row['soft_cod'].">".$row['fab_nome']." ".$row['soft_desc']." ".$row["soft_versao"]."</option>";
 					} // while
 					print "</select>";
@@ -176,7 +180,7 @@
                 {
 			$query = "insert into sw_padrao (swp_sw_cod) values ".
 				"(".$_POST['software'].")";
-			$resultado = mysql_query($query) or die (TRANS('ERR_INSERT'). $query);
+			$resultado = mysqli_query($conect, $query) or die (TRANS('ERR_INSERT'). $query);
 			if ($resultado == 0)
 			{
 				print $query."<br>";
@@ -195,7 +199,7 @@
 	if (isset($_GET['action']) && $_GET['action'] == "excluir"){
 
 		$sql = "delete from sw_padrao where swp_sw_cod=".$_GET['cod']."";
-		$commit = mysql_query($sql);
+		$commit = mysqli_query($conect, $sql);
 		if ($commit==0) {
 		$aviso = TRANS('ERR_DEL');
 		} else

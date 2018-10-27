@@ -31,27 +31,30 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+
 	print "<BR><B>".TRANS('SUBTTL_DOMAIN').":</B><BR>";
 
 	$query = "SELECT * from dominios order by dom_desc";
-        $resultado = mysql_query($query);
+        $resultado = mysqli_query($conect, $query);
 
 	if ((!isset($_GET['action'])) and !isset($_POST['submit'])){
 
         print "<TD align='right'><a href='dominios.php?action=incluir'>".TRANS('TXT_INCLUDE_DOMAIN').".</a></TD><BR>";
-        if (mysql_numrows($resultado) == 0)
+        if (mysqli_num_rows($resultado) == 0)
         {
                 echo mensagem(TRANS('MSG_NOT_DOMAIN_IN_SYSTEM'));
         }
         else
         {
-                $linhas = mysql_numrows($resultado);
+                $linhas = mysqli_num_rows($resultado);
                 print "<td class='line'>";
                 print "".TRANS('THERE_IS_ARE')." <b>".$linhas."</b> ".TRANS('TXT_DOMAIN_CAD_IN_SYSTEM').".<br>";
                 print "<TABLE border='0' cellpadding='5' cellspacing='0'  width='50%'>";
                 print "<TR class='header'><td class='line'>".TRANS('COL_DOMAIN')."</TD><td class='line'><b>".TRANS('COL_EDIT')."</b></TD><td class='line'><b>".TRANS('COL_DEL')."</b></TD>";
                 $j=2;
-                while ($row=mysql_fetch_array($resultado))
+                while ($row=mysqli_fetch_array($resultado))
                 {
                         if ($j % 2)
                         {
@@ -92,8 +95,8 @@
 
 	if ((isset($_GET['action'])  && $_GET['action']=="alter") && (!isset($_POST['submit']))) {
 		$qry = "SELECT * from dominios where dom_cod = ".$_GET['cod']."";
-		$exec = mysql_query($qry);
-		$rowAlter = mysql_fetch_array($exec);
+		$exec = mysqli_query($conect, $qry);
+		$rowAlter = mysqli_fetch_array($exec);
 
 		print "<B>".TRANS('TXT_ALTER_DOMAIN_NETWORK').":<br>";
 		print "<form name='alter' method='post' action='".$_SERVER['PHP_SELF']."' onSubmit='return valida()' >";
@@ -114,8 +117,8 @@
 	if (isset($_GET['action'])  && $_GET['action']=="excluir"){
 
 		$qry = "select * from localizacao where loc_dominio = ".$_GET['cod']."";
-		$exec = mysql_query($qry);
-		$linhas = mysql_numrows($exec);
+		$exec = mysqli_query($conect, $qry);
+		$linhas = mysqli_num_rows($exec);
 		if ($linhas!=0) {
 			print "<script>mensagem('".TRANS('MSG_NOT_EXCLUDE_DOMAIN_ASSOC_DEP')."');
 					redirect('dominios.php')</script>";
@@ -123,7 +126,7 @@
 
 
 			$qry = "DELETE FROM dominios where dom_cod = ".$_GET['cod']."";
-			$exec = mysql_query($qry) or die (TRANS('MSG_ERR_DEL_REG'));
+			$exec = mysqli_query($conect, $qry) or die (TRANS('MSG_ERR_DEL_REG'));
 
 			print "<script>mensagem('".TRANS('MSG_ERR_DEL_REG')."'); window.opener.location.reload(); window.location.href='dominios.php'; </script>";
 
@@ -133,8 +136,8 @@
 	if ($_POST['submit']== TRANS('BT_INCLUDE')) {
 		if (!empty($_POST['descricao'])){
 			$qry = "select * from dominios where dom_desc = '".$_POST['descricao']."'";
-			$exec= mysql_query($qry);
-			$achou = mysql_numrows($exec);
+			$exec= mysqli_query($conect, $qry);
+			$achou = mysqli_num_rows($exec);
 			if ($achou){
 
 				print "<script>mensagem('".TRANS('MSG_DOMAIN_CAD_SYSTEM')."'); history.go(-2)(); </script>";
@@ -142,7 +145,7 @@
 			} else {
 
 				$qry = "INSERT INTO dominios (dom_desc) values ('".noHtml($_POST['descricao'])."')";
-				$exec = mysql_query($qry) or die (TRANS('MSG_ERR_INCLUDE_REG'). $qry);
+				$exec = mysqli_query($conect, $qry) or die (TRANS('MSG_ERR_INCLUDE_REG'). $qry);
 
 				print "<script>mensagem('".TRANS('MSG_DATA_INCLUDE_OK')."'); window.opener.location.reload(); redirect('dominios.php');</script>";
 				}
@@ -156,7 +159,7 @@
 		if ((!empty($_POST['descricao']))){
 
 			$qry = "UPDATE dominios set dom_desc='".noHtml($_POST['descricao'])."' where dom_cod=".$_POST['cod']."";
-			$exec= mysql_query($qry) or die(TRANS('MSG_NOT_ALTER_REG'). $qry);
+			$exec= mysqli_query($conect, $qry) or die(TRANS('MSG_NOT_ALTER_REG'). $qry);
 
 				print "<script>mensagem('".TRANS('MSG_DATA_ALTER_OK')."'); window.opener.location.reload(); history.go(-2)(); </script>";
 

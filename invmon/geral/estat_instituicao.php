@@ -29,6 +29,9 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],2);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+
 	$hoje = date("Y-m-d H:i:s");
 
 
@@ -37,8 +40,10 @@
 	$cor3 = BODY_COLOR;
 
 	$queryB = "SELECT count(*) from equipamentos";
-	$resultadoB = mysql_query($queryB);
-	$total = mysql_result($resultadoB,0);
+	$resultadoB = mysqli_query($conect, $queryB);
+	//$total = mysql_result($resultadoB,0);
+	$row = mysqli_fetch_row($resultadoB);
+	$total = $row[0];
 
 	// Select para retornar a quantidade e percentual de equipamentos cadastrados no sistema
 	$query= "SELECT count( i.inst_nome ) AS qtd_inst, i.inst_nome AS instituicao, i.inst_cod as inst_cod,
@@ -47,8 +52,8 @@
 			WHERE c.comp_inst = i.inst_cod
 			GROUP BY i.inst_nome order by qtd_inst desc";
 		//and (comp_tipo_equip=1 or comp_tipo_equip=2)
-		$resultado = mysql_query($query);
-		$linhas = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $query);
+		$linhas = mysqli_num_rows($resultado);
 
        print "<TABLE border='0' cellpadding='5' cellspacing='0' align='center' width='60%' bgcolor='".$cor3."'>";
 
@@ -64,7 +69,7 @@
 		$i=0;
 		$j=2;
 
-		while ($row = mysql_fetch_array($resultado)) {
+		while ($row = mysqli_fetch_array($resultado)) {
 			$color =  BODY_COLOR;
 			$j++;
 			print "<TR>";
@@ -95,8 +100,7 @@
 
 		print "<tr><td class='line' align='center'><a href='".$_SERVER['PHP_SELF']."' target='_blank')\">".TRANS('NEW_SCREEN')."</a></TD></tr>";
 		print "<tr><td width='80%' align='center'><b>".TRANS('SLOGAN_OCOMON')." <a href='http://www.unilasalle.edu.br' target='_blank'>".TRANS('COMPANY')."</a>.</b></td></tr>";
-		print "</TABLE>";
-
-print "</BODY>";
-print "</HTML>";
 ?>
+	</table>
+</body>
+</html>

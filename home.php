@@ -1,6 +1,6 @@
 <?php 
 header('Content-Type: text/html; charset=iso-8859-1');
- /*                        Copyright 2005 Fl·vio Ribeiro
+ /*                        Copyright 2005 Fl√°vio Ribeiro
 
          This file is part of OCOMON.
 
@@ -25,9 +25,9 @@ header('Content-Type: text/html; charset=iso-8859-1');
 	include ("includes/javascript/funcoes.js");
 
 	include ("includes/queries/queries.php");
-	include ("".$includesPath."config.inc.php");
+	include ($includesPath."config.inc.php");
 	// ("".$includesPath."languages/".LANGUAGE."");
-	include ("".$includesPath."versao.php");
+	include ($includesPath."versao.php");
 
 	include("includes/classes/conecta.class.php");
 	include("includes/classes/auth.class.php");
@@ -46,21 +46,25 @@ header('Content-Type: text/html; charset=iso-8859-1');
 
 	$_SESSION['s_page_home'] = $_SERVER['PHP_SELF'];
 
-	print "<html>";
-	print "<head>";
-	print "<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'>";
-	print "<link rel='stylesheet' type='text/css' href='includes/css/bootstrap/bootstrap.css'>";
-	print "<script src='includes/javascript/libs/jquery-1-11-0.js' type='text/javascript'></script>";
-	print "<script src='includes/javascript/libs/modernizr.js'></script>";
-	print "<script src='includes/javascript/bootstrap.js' type='text/javascript'></script>";
-	print "<title>OCOMON ".VERSAO."</title>";
-	print "<link rel=stylesheet type='text/css' href='includes/css/estilos.css.php'>";
-	print "</head>";
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>OCOMON <?php echo VERSAO; ?></title>
+
+	<link rel='stylesheet' type='text/css' href='includes/css/bootstrap/bootstrap.css'>
+	<link rel=stylesheet type='text/css' href='includes/css/estilos.css.php'>
+</head>
+<body>
+<?php
 
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],3);
 
-	//Todas as ·reas que o usu·rio percente
+	//Todas as √°reas que o usu√°rio percente
 	$uareas = $_SESSION['s_area'];
 	if ($_SESSION['s_uareas']) {
 		$uareas.=",".$_SESSION['s_uareas'];
@@ -68,38 +72,55 @@ header('Content-Type: text/html; charset=iso-8859-1');
 
 	$qryTotal = "select a.sistema area, a.sis_id area_cod from ocorrencias o left join sistemas a on o.sistema = a.sis_id".
 			" left join `status` s on s.stat_id = o.status where o.sistema in (".$uareas.") and s.stat_painel in (1,2) ";
-	$execTotal = mysqli_query($conect, $qryTotal) or die (TRANS('MSG_ERR_TOTAL_OCCO'). $qryTotal);
+	
+	$execTotal = mysqli_query($conect,$qryTotal) or die (TRANS('MSG_ERR_TOTAL_OCCO'). $qryTotal);
 	$regTotal = mysqli_num_rows($execTotal);
 
-	//Todas as ·reas que o usu·rio percente
+	//Todas as √°reas que o usu√°rio percente
 	$qryAreas = "select count(*) total, a.sistema area, a.sis_id area_cod from ocorrencias o left join sistemas a on o.sistema = a.sis_id".
 			" left join `status` s on s.stat_id = o.status where o.sistema in (".$uareas.") and s.stat_painel in (1,2) ".
 			"group by a.sistema";
 	$execAreas = mysqli_query($conect,$qryAreas) or die(TRANS('MSG_ERR_RESCUE_ALL_OCCO'). $qryAreas);
 	$regAreas = mysqli_num_rows($execAreas);
 
-	
-	
-	
-	print "<br>";
-	print "<TABLE border='0' cellpadding='5' cellspacing='0' align='center' width='100%'>";
-	print "<tr><td colspan='7'><IMG ID='imggeral' SRC='./includes/icons/close.png' width='9' height='9' ".
-			"STYLE=\"{cursor: pointer;}\" onClick=\"invertView('geral')\">&nbsp;<b>".TRANS('THEREARE')." <font color='red'>".$regTotal."</font>".
-			" ".TRANS('HOME_OPENED_CALLS').".</b></td></tr>";
+?>
+		
+	<br>
+	<table border='0' cellpadding='5' cellspacing='0' align='center' width='100%'>
+		<tr>
+			<td colspan='7'>
+				<img ID='imggeral' src='./includes/icons/close.png' width='9' height='9' style="{cursor: pointer;}" onClick="invertView('geral')">&nbsp;
+			<b><?php echo TRANS('THEREARE');?><font color='red'><?php echo $regTotal; ?></font>
+			<?php echo TRANS('HOME_OPENED_CALLS'); ?></b>
+			</td>
+		</tr>
 
-	print "<tr><td style='{padding-left:5px;}'><div id='geral' >"; //style='display:none;'
+		<tr>
+			<td style='{padding-left:5px;}'>
+				<div id='geral' > <!-- //style='display:none;' -->
 
+<?php
 	$a = 0;
 	$b = 0;
 	while ($rowAreas = mysqli_fetch_array($execAreas)) {
+?>		
 
-		print "<TABLE border='0' cellpadding='5' cellspacing='0' align='center' width='100%'>";
-		print "<tr><td colspan='7'><IMG ID='imgocorrencias".$b."' SRC='./includes/icons/close.png' width='9' height='9' ".
-					"STYLE=\"{cursor: pointer;}\" onClick=\"invertView('ocorrencias".$b."')\">&nbsp;<b>".TRANS('THEREARE')." <font color='red'>".$rowAreas['total']."</font>".
-					" ".TRANS('HOME_OPENED_CALLS_TO_AREA').": <font color='green'>".$rowAreas['area']."</font></b></td></tr>";
+					<table border='0' cellpadding='5' cellspacing='0' align='center' width='100%'>
+						<tr>
+							<td colspan='7'>
+								<IMG ID='imgocorrencias<?php echo $b;?>' SRC='./includes/icons/close.png' width='9' height='9' style="{cursor: pointer;}" onClick="invertView('ocorrencias<?php echo $b;?>')">&nbsp;
+								<b><?php echo TRANS('THEREARE');?> 
+									<font color='red'><?php echo $rowAreas['total'];?></font><?php echo TRANS('HOME_OPENED_CALLS_TO_AREA');?>: 
+									<font color='green'><?php echo $rowAreas['area'];?></font>
+								</b>
+							</td>
+						</tr>
+						<tr>
+							<td style='{padding-left:5px;}'>
+								<div id='ocorrencias<?php echo $b;?>'> <!--//style='display:none;'-->
+<?php						
 
-		print "<tr><td style='{padding-left:5px;}'><div id='ocorrencias".$b."'>"; //style='display:none;'
-			//TOTAL DE NÕVEIS DE STATUS
+			//TOTAL DE N√çVEIS DE STATUS
 		$qryStatus = "select count(*) total, o.*, s.* from ocorrencias o left join `status` s on o.status = s.stat_id where ".
 				"o.sistema = ".$rowAreas['area_cod']." and s.stat_painel in (1,2) group by s.status";
 		$execStatus = mysqli_query($conect,$qryStatus) or die (TRANS('MSG_ERR_QRY_STATUS'). $qryStatus);
@@ -108,7 +129,7 @@ header('Content-Type: text/html; charset=iso-8859-1');
 		While ($rowStatus = mysqli_fetch_array($execStatus)) {
 			print "<tr><td colspan='7'><IMG ID='imgstatus".$a."' SRC='./includes/icons/open.png' width='9' height='9' ".
 				"STYLE=\"{cursor: pointer;}\" onClick=\"invertView('status".$a."')\">&nbsp;<b>".TRANS('OCO_FIELD_STATUS').": ".$rowStatus['status']." - ".
-				"".$rowStatus['total']." ocorrÍncias</b><br>";
+				"".$rowStatus['total']." ocorr√™ncias</b><br>";
 			print "<div id='status".$a."' style='display:none;' >"; //style='display:none;'
 
 			print "<TABLE border='0' style='{padding-left:10px;}' cellpadding='5' cellspacing='0' align='left' width='100%'>";
@@ -144,7 +165,7 @@ header('Content-Type: text/html; charset=iso-8859-1');
 				$execSubCall = mysqli_query($conect,$sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$sqlSubCall);
 				$regSub = mysqli_num_rows($execSubCall);
 				if ($regSub > 0) {
-					#… CHAMADO PAI?
+					#ÔøΩ CHAMADO PAI?
 					$_sqlSubCall = "select * from ocodeps where dep_pai = ".$rowDetail['numero']."";
 					$_execSubCall = mysqli_query($conect,$_sqlSubCall) or die (TRANS('MSG_ERR_RESCUE_INFO_SUBCALL').'<br>'.$_sqlSubCall);
 					$_regSub = mysqli_num_rows($_execSubCall);
@@ -188,10 +209,15 @@ header('Content-Type: text/html; charset=iso-8859-1');
 		$a++;
 		$b++;
 	}
+
 	print "</div></td></tr>"; //geral
 	print "</table>";
 	?>
-	<SCRIPT LANGUAGE=javaScript>
+
+	<script src='includes/javascript/libs/jquery-1-11-0.js' type='text/javascript'></script>
+	<script src='includes/javascript/libs/modernizr.js'></script>
+	<script src='includes/javascript/bootstrap.js' type='text/javascript'></script>
+	<script language=javaScript>
 	<!--
 		function invertView(id) {
 			var element = document.getElementById(id);
@@ -209,8 +235,6 @@ header('Content-Type: text/html; charset=iso-8859-1');
 
 	//-->
 	</script>
-	<?php 
-
-print "</body>";
-print "</html>";
-?>
+	
+</body>
+</html>

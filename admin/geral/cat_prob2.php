@@ -31,20 +31,23 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+
 	$qry_config = "SELECT * FROM config ";
-	$exec_config = mysql_query($qry_config) or die ("ERRO AO TENTAR ACESSAR A TABELA CONFIG! CERTIFIQUE-SE DE QUE A TABELA EXISTE!");;
-	$row_config = mysql_fetch_array($exec_config);
+	$exec_config = mysqli_query($conect, $qry_config) or die ("ERRO AO TENTAR ACESSAR A TABELA CONFIG! CERTIFIQUE-SE DE QUE A TABELA EXISTE!");;
+	$row_config = mysqli_fetch_array($exec_config);
 
 
         print "<BR><B>Categorização de Problemas - ".$row_config['conf_prob_tipo_2']."</B><BR>";
 
 	$query = "SELECT * from prob_tipo_2 order by probt2_desc";
-        $resultado = mysql_query($query);
+        $resultado = mysqli_query($conect, $query);
 
 	if ((!isset($_GET['action'])) && !isset($_POST['submit'])) {
 
         print "<TD align='right'><input type='button' class='minibutton' value='Novo Tipo' onclick=\"redirect('".$_SERVER['PHP_SELF']."?action=incluir')\"></TD><br><BR>";
-        if (mysql_numrows($resultado) == 0)
+        if (mysqli_num_rows($resultado) == 0)
         {
                 echo mensagem("Não existem registros cadastrados no sistema!");
         }
@@ -52,13 +55,13 @@
         {
                 $cor=TD_COLOR;
                 $cor1=TD_COLOR;
-                $linhas = mysql_numrows($resultado);
+                $linhas = mysqli_num_rows($resultado);
                 print "<td class='line'>";
                 print "Existe(m) <b>".$linhas."</b> tipo(s) de classificação(ões) quanto a categoria \"".$row_config['conf_prob_tipo_2']."\".<br>";
                 print "<TABLE border='0' cellpadding='5' cellspacing='0'  width='50%'>";
                 print "<TR class='header'><td class='line'>DESCRIÇÃO</TD><td class='line'><b>Alterar</b></TD><td class='line'><b>Excluir</b></TD>";
                 $j=2;
-		while ($row=mysql_fetch_array($resultado))
+		while ($row=mysqli_fetch_array($resultado))
 		{
 			if ($j % 2)
 			{
@@ -99,8 +102,8 @@
 
 	if ( (isset($_GET['action']) && $_GET['action']=="alter") && !isset($_POST['submit'])) {
 		$qry = "SELECT * from prob_tipo_2 where probt2_cod = ".$_GET['cod']."";
-		$exec = mysql_query($qry);
-		$rowAlter = mysql_fetch_array($exec);
+		$exec = mysqli_query($conect, $qry);
+		$rowAlter = mysqli_fetch_array($exec);
 
 		print "<B>Edição de registro:<br>";
 		print "<form method='post' name='alter' action='".$_SERVER['PHP_SELF']."' onSubmit='return valida()'>";
@@ -119,8 +122,8 @@
 
 	if (isset($_GET['action']) && $_GET['action']=="excluir"){
 		$qry_checa = "SELECT * FROM problemas WHERE prob_tipo_2 = ".$_GET['cod']." and prob_tipo_2 is not null";
-		$exec_checa = mysql_query($qry_checa) or die ('ERRO NA TENTATIVA DE VERIFICAR A CONSISTÊNCIA DA EXCLUSÃO!<BR>'.$qry_checa);
-		$total_prob = mysql_numrows($exec_checa);
+		$exec_checa = mysqli_query($conect, $qry_checa) or die ('ERRO NA TENTATIVA DE VERIFICAR A CONSISTÊNCIA DA EXCLUSÃO!<BR>'.$qry_checa);
+		$total_prob = mysql_num_rows($exec_checa);
 		if ($total_prob != 0) {
 			print "<script>mensagem('Não é possível excluir esse registro! O mesmo está vinculado à pelo menos 1 problema!'); ".
 					"redirect('".$_SERVER['PHP_SELF']."');</script>";
@@ -128,7 +131,7 @@
 		}
 
 		$qry = "DELETE FROM prob_tipo_2 where probt2_cod = ".$_GET['cod']."";
-		$exec = mysql_query($qry) or die ('Erro na tentativa de deletar o registro!');
+		$exec = mysqli_query($conect, $qry) or die ('Erro na tentativa de deletar o registro!');
 
 		print "<script>mensagem('Registro excluído com sucesso!'); redirect('".$_SERVER['PHP_SELF']."'); window.opener.location.reload(); </script>";
 
@@ -137,14 +140,14 @@
 	if (isset($_POST['submit']) && $_POST['submit'] == "Incluir") {
 		if ((!empty($_POST['descricao'])) ){
 			$qry = "select * from prob_tipo_2 where probt2_desc = '".$_POST['descricao']."' ";
-			$exec= mysql_query($qry);
-			$achou = mysql_numrows($exec);
+			$exec= mysqli_query($conect, $qry);
+			$achou = mysqli_num_rows($exec);
 			if ($achou){
 				print "<script>mensagem('Já existe um registro com a mesma descrição!'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 			} else {
 
 				$qry = "INSERT INTO prob_tipo_2 (probt2_desc) values ('".noHtml($_POST['descricao'])."')";
-				$exec = mysql_query($qry) or die ('Erro na inclusão do registro!'.$qry);
+				$exec = mysqli_query($conect, $qry) or die ('Erro na inclusão do registro!'.$qry);
 				print "<script>mensagem('Dados incluídos com sucesso!'); redirect('".$_SERVER['PHP_SELF']."'); window.opener.location.reload(); </script>";
 			}
 		} else {
@@ -156,7 +159,7 @@
 		if ((!empty($_POST['descricao']))){
 
 			$qry = "UPDATE prob_tipo_2 set probt2_desc='".noHtml($_POST['descricao'])."' where probt2_cod=".$_POST['cod']."";
-			$exec= mysql_query($qry) or die('Não foi possível alterar os dados do registro!'.$qry);
+			$exec= mysqli_query($conect, $qry) or die('Não foi possível alterar os dados do registro!'.$qry);
 
 			print "<script>mensagem('Registro alterado com sucesso!'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 

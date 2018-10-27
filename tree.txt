@@ -1,0 +1,619 @@
+
+.
+│   centro.php
+│   home.php
+│   index.php
+│   menu.php
+│   PATHS.php
+│   sobre.php
+├───admin
+│   └───geral
+│       │   aparencia.php
+│       │   calendar.html
+│       │   cat_prob1.php
+│       │   cat_prob2.php
+│       │   cat_prob3.php
+│       │   ccustos.php
+│       │   configGeral.php
+│       │   configmail.php
+│       │   configmsgs.php
+│       │   configuserscreen.php
+│       │   dominios.php
+│       │   feriados.php
+│       │   locais.php
+│       │   mail_distribution_lists.php
+│       │   mail_history.php
+│       │   mail_templates.php
+│       │   permissoes.php
+│       │   predios.php
+│       │   prioridades.php
+│       │   prioridades_atendimento.php
+│       │   problemas.php
+│       │   problemas_2.php
+│       │   reitorias.php
+│       │   saveTheme.php
+│       │   screenprofiles.php
+│       │   screen_profile_details.php
+│       │   scripts.php
+│       │   script_modelo.php
+│       │   sistemas.php
+│       │   sistemas_conf_abertura.php
+│       │   situacoes.php
+│       │   status.php
+│       │   tipo_componentes.php
+│       │   tipo_equipamentos.php
+│       │   tipo_solucoes.php
+│       │   unidades.php
+│       │   update_old_tickets_prior.php
+│       │   usuarios.php
+│       │   
+│       └───includes
+│               header.php
+│               
+├───includes
+│   │   config.inc.php
+│   │   include_geral.inc.php
+│   │   include_geral_II.inc.php
+│   │   language.php
+│   │   logado.php
+│   │   versao.php
+│   │   
+│   ├───classes
+│   │       auth.class.php
+│   │       conecta.class.php
+│   │       dateOpers.class.php
+│   │       geralog.class.php
+│   │       headers.class.php
+│   │       lock.class.php
+│   │       paging.class.php
+│   │       
+│   ├───common
+│   │       login.php
+│   │       logout.php
+│   │       
+│   ├───css
+│   │       estilos.css.php
+│   │           
+│   ├───fckeditor
+│   │   │   fckeditor_php4.php
+│   │   │   fckeditor_php5.php
+│   │   │   
+│   │   └───editor
+│   │       │   
+│   │       ├───dialog
+│   │       │   │   
+│   │       │   │           
+│   │       │   │           
+│   │       │   ├───fck_spellerpages
+│   │       │       └───spellerpages
+│   │       │           │   
+│   │       │           └───server-scripts
+│   │       │                   spellchecker.php
+│   │       │                  
+│   │       │       
+│   │       ├───filemanager
+│   │       │   ├───browser
+│   │       │   │   ├───default
+│   │       │   │   │   │   
+│   │       │   │   │   ├───connectors
+│   │       │   │   │       │   
+│   │       │   │   │       └───php
+│   │       │   │   │               basexml.php
+│   │       │   │   │               commands.php
+│   │       │   │   │               config.php
+│   │       │   │   │               connector.php
+│   │       │   │   │               io.php
+│   │       │   │   │              util.php
+│   │       │   │   │              
+│   │       │   │   └───mcpuk
+│   │       │   │       │   
+│   │       │   │       └───connectors
+│   │       │   │           └───php
+│   │       │   │               │   config.php
+│   │       │   │               │   connector.php
+│   │       │   │               │   test.html.suspended
+│   │       │   │               │   testme.php.suspended
+│   │       │   │               │   
+│   │       │   │               ├───Auth
+│   │       │   │               │       Default.php
+│   │       │   │               │       
+│   │       │   │               ├───Commands
+│   │       │   │               │   │   CreateFolder.php
+│   │       │   │               │   │   DeleteFile.php
+│   │       │   │               │   │   DeleteFolder.php
+│   │       │   │               │   │   FileUpload.php
+│   │       │   │               │   │   GetFolders.php
+│   │       │   │               │   │   GetFoldersAndFiles.php
+│   │       │   │               │   │   GetUploadProgress.php
+│   │       │   │               │   │   RenameFile.php
+│   │       │   │               │   │   RenameFolder.php
+│   │       │   │               │   │   Thumbnail.php
+│   │       │   │               │   │   
+│   │       │   │               │   └───helpers
+│   │       │   │               │           header.cgi
+│   │       │   │               │           iconlookup.php
+│   │       │   │               │           progress.cgi
+│   │       │   │               │           upload.cgi
+│   │       │   │               │           
+│   │       │   │               ├───dtd
+│   │       │   │                      iso-lat1.ent
+│   │       │   │                      
+│   │       │   │               
+│   │       │   ├───connectors
+│   │       │   │   │   test.html
+│   │       │   │   │   uploadtest.html
+│   │       │   │   │   
+│   │       │   │   ├───asp
+│   │       │   │   │       basexml.asp
+│   │       │   │   │       class_upload.asp
+│   │       │   │   │       commands.asp
+│   │       │   │   │       config.asp
+│   │       │   │   │       connector.asp
+│   │       │   │   │       io.asp
+│   │       │   │   │       upload.asp
+│   │       │   │   │       util.asp
+│   │       │   │   │       
+│   │       │   │   ├───aspx
+│   │       │   │   │       config.ascx
+│   │       │   │   │       connector.aspx
+│   │       │   │   │       upload.aspx
+│   │       │   │   │       
+│   │       │   │   ├───cfm
+│   │       │   │   │       cf5_connector.cfm
+│   │       │   │   │       cf5_upload.cfm
+│   │       │   │   │       cf_basexml.cfm
+│   │       │   │   │       cf_commands.cfm
+│   │       │   │   │       cf_connector.cfm
+│   │       │   │   │       cf_io.cfm
+│   │       │   │   │       cf_upload.cfm
+│   │       │   │   │       cf_util.cfm
+│   │       │   │   │       config.cfm
+│   │       │   │   │       connector.cfm
+│   │       │   │   │       image.cfc
+│   │       │   │   │       ImageObject.cfc
+│   │       │   │   │       upload.cfm
+│   │       │   │   │       
+│   │       │   │   ├───lasso
+│   │       │   │   │       config.lasso
+│   │       │   │   │       connector.lasso
+│   │       │   │   │       upload.lasso
+│   │       │   │   │       
+│   │       │   │   ├───perl
+│   │       │   │   │       basexml.pl
+│   │       │   │   │       commands.pl
+│   │       │   │   │       config.pl
+│   │       │   │   │       connector.cgi
+│   │       │   │   │       io.pl
+│   │       │   │   │       upload.cgi
+│   │       │   │   │       upload_fck.pl
+│   │       │   │   │       util.pl
+│   │       │   │   │       
+│   │       │   │   ├───php
+│   │       │   │   │       basexml.php
+│   │       │   │   │       commands.php
+│   │       │   │   │       config.php
+│   │       │   │   │       connector.php
+│   │       │   │   │       io.php
+│   │       │   │   │       phpcompat.php
+│   │       │   │   │       upload.php
+│   │       │   │   │       util.php
+│   │       │   │   │       
+│   │       │   │   └───py
+│   │       │   │           config.py
+│   │       │   │           connector.py
+│   │       │   │           fckcommands.py
+│   │       │   │           fckconnector.py
+│   │       │   │           fckoutput.py
+│   │       │   │           fckutil.py
+│   │       │   │           htaccess.txt
+│   │       │   │           upload.py
+│   │       │   │           wsgi.py
+│   │       │   │           zope.py
+│   │       │   │           
+│   │       │   └───upload
+│   │       │       │   test.html
+│   │       │       │   
+│   │       │       ├───asp
+│   │       │       │       class_upload.asp
+│   │       │       │       config.asp
+│   │       │       │       io.asp
+│   │       │       │       upload.asp
+│   │       │       │       
+│   │       │       └───php
+│   │       │               config.php
+│   │       │               upload.php
+│   │       │               util.php
+│   │       │               
+│   │       │               
+│   │       │       
+│   │       └───skins
+│   │           │   
+│   │           └───default
+│   │                 fck_editor.css.php
+│   │                
+│   │                    
+│   │               
+│   ├───functions
+│   │       browser_detection.php
+│   │       download.php
+│   │       funcoes.inc
+│   │       showImg.php
+│   │       
+│   ├───help
+│   │       helpconfig.php
+│   │       helpconfiggeral.php
+│   │       helpconfigmail.php
+│   │       helpconfigmsg.php
+│   │       helpNotReady.php
+│   │       helpOabertura.php
+│   │       help_depends.php
+│   │       legenda_geral.html
+│   │      sla_popup.php
+│   │           
+│   ├───jpgraph
+│   │   │   testa_gd.php
+│   │   │   
+│   │   └───src
+│   │           Changelog
+│   │           imgdata_balls.inc
+│   │           imgdata_bevels.inc
+│   │           imgdata_diamonds.inc
+│   │           imgdata_pushpins.inc
+│   │           imgdata_squares.inc
+│   │           imgdata_stars.inc
+│   │           jpgraph.php
+│   │           jpgraph_bar.php
+│   │           jpgraph_canvas.php
+│   │           jpgraph_canvtools.php
+│   │           jpgraph_error.php
+│   │           jpgraph_flags.php
+│   │           jpgraph_gantt.php
+│   │           jpgraph_gb2312.php
+│   │           jpgraph_gradient.php
+│   │           jpgraph_imgtrans.php
+│   │           jpgraph_line.php
+│   │           jpgraph_log.php
+│   │           jpgraph_pie.php
+│   │           jpgraph_pie3d.php
+│   │           jpgraph_plotmark.inc
+│   │           jpgraph_polar.php
+│   │           jpgraph_radar.php
+│   │           jpgraph_regstat.php
+│   │           jpgraph_scatter.php
+│   │           jpgraph_stock.php
+│   │           
+│   ├───languages
+│   │       en.php
+│   │       es_CO.php
+│   │       pt_BR.php
+│   │       
+│   │       
+│   │       
+│   ├───menu
+│   │   │   example-treemenu.php
+│   │   │   menu.php
+│   │   │   menu2.php
+│   │   │   temp.php
+│   │   │   
+│   │   └───phplm320
+│   │       │   ACKNOWLEDGEMENTS
+│   │       │   CHANGELOG
+│   │       │   CHANGE_TEMPLATE_CLASS_NAME.sh
+│   │       │   copying
+│   │       │   demo.php
+│   │       │   demo.php.html
+│   │       │   demo.phps
+│   │       │   example-db-hormenu.php
+│   │       │   example-db-treemenu.notshown.php
+│   │       │   example-db-treemenu.php
+│   │       │   example-dbtofile.php
+│   │       │   example-filetodb.php
+│   │       │   example-frame-body.php
+│   │       │   example-frame-treemenu.php
+│   │       │   example-frame.html
+│   │       │   example-hormenu-old.php
+│   │       │   example-hormenu.php
+│   │       │   example-hormenu_and_treemenu.php
+│   │       │   example-hormenu_and_vermenu.php
+│   │       │   example-horplainmenu.php
+│   │       │   example-layersmenus_and_treemenus.php
+│   │       │   example-phptreemenu.php
+│   │       │   example-see-through.php
+│   │       │   example-treemenu.php
+│   │       │   example-two_treemenus.php
+│   │       │   example-vermenu.php
+│   │       │   example-verplainmenu.php
+│   │       │   invmon-menu.php
+│   │       │   
+│   │       ├───dumps
+│   │       │       mysql.demo_data.dump
+│   │       │       mysql.start.dump
+│   │       │       pgsql.demo_data.dump
+│   │       │       pgsql.start.dump
+│   │       │       phplayersmenu
+│   │       │       sqlite.demo_data.dump
+│   │       │       sqlite.demo_data.dump.php5
+│   │       │       sqlite.start.dump
+│   │       │       sqlite.start.dump.php5
+│   │       │       
+│   │       │       
+│   │       ├───lib
+│   │       │       layersmenu-browser_detection.php
+│   │       │       layersmenu-common.inc.php
+│   │       │       layersmenu-process.inc.php
+│   │       │       layersmenu.inc.php
+│   │       │       PHPLIB.php
+│   │       │       phptreemenu.inc.php
+│   │       │       plainmenu.inc.php
+│   │       │       treemenu.inc.php
+│   │       │           
+│   │       │           
+│   │       └───templates
+│   │               layersmenu-horizontal_menu-full.ihtml
+│   │               layersmenu-horizontal_menu-keramik-full.ihtml
+│   │               layersmenu-horizontal_menu-keramik.ihtml
+│   │               layersmenu-horizontal_menu-old.ihtml
+│   │               layersmenu-horizontal_menu.ihtml
+│   │               layersmenu-horizontal_plain_menu-red.ihtml
+│   │               layersmenu-horizontal_plain_menu.ihtml
+│   │               layersmenu-plain_menu-green.ihtml
+│   │               layersmenu-plain_menu.ihtml
+│   │               layersmenu-sub_menu-galaxy.ihtml
+│   │               layersmenu-sub_menu-keramik.ihtml
+│   │               layersmenu-sub_menu-old.ihtml
+│   │               layersmenu-sub_menu.ihtml
+│   │               layersmenu-vertical_menu-galaxy.ihtml
+│   │               layersmenu-vertical_menu-old.ihtml
+│   │               layersmenu-vertical_menu.ihtml
+│   │               
+│   ├───phpmailer
+│   │   │   class.phpmailer.php
+│   │   │   class.pop3.php
+│   │   │   class.smtp.php
+│   │   │   
+│   │   │       
+│   │   ├───examples
+│   │   │       pop3_before_smtp_test.php
+│   │   │       test_gmail.php
+│   │   │       test_mail.php
+│   │   │       test_sendmail.php
+│   │   │       test_smtp.php
+│   │   │           
+│   │   ├───language
+│   │   │       phpmailer.lang-br.php
+│   │   │       phpmailer.lang-ca.php
+│   │   │       phpmailer.lang-cz.php
+│   │   │       phpmailer.lang-de.php
+│   │   │       phpmailer.lang-dk.php
+│   │   │       phpmailer.lang-en.php
+│   │   │       phpmailer.lang-es.php
+│   │   │       phpmailer.lang-et.php
+│   │   │       phpmailer.lang-fi.php
+│   │   │       phpmailer.lang-fo.php
+│   │   │       phpmailer.lang-fr.php
+│   │   │       phpmailer.lang-hu.php
+│   │   │       phpmailer.lang-it.php
+│   │   │       phpmailer.lang-ja.php
+│   │   │       phpmailer.lang-nl.php
+│   │   │       phpmailer.lang-no.php
+│   │   │       phpmailer.lang-pl.php
+│   │   │       phpmailer.lang-ro.php
+│   │   │       phpmailer.lang-ru.php
+│   │   │       phpmailer.lang-se.php
+│   │   │       phpmailer.lang-tr.php
+│   │   │       
+│   │   │           
+│   │   └───test
+│   │           phpmailer_test.php
+│   │           phpunit.php
+│   │           
+│   └───queries
+│           queries.php
+│           
+├───invmon
+│   └───geral
+│       │   abertura.php
+│       │   altera_dados_computador.php
+│       │   altera_dados_documento.php
+│       │   altera_dados_marca_comp.php
+│       │   altera_dados_modelo.php
+│       │   altera_dados_ocorrencia.php
+│       │   altera_dados_resolucao.php
+│       │   altera_senha.php
+│       │   categorias.php
+│       │   comp_soft.php
+│       │   consulta_comp.php
+│       │   consulta_comp_teste.php
+│       │   consulta_garantia.php
+│       │   consulta_garantia_piece.php
+│       │   consulta_hist_inv.php
+│       │   consulta_hist_local.php
+│       │   consulta_inv.php
+│       │   consulta_piece.php
+│       │   docs_assoc_model.php
+│       │   documentos.php
+│       │   estat_compporhd.php
+│       │   estat_compporlocal.php
+│       │   estat_comppormemoria.php
+│       │   estat_compporprocessador.php
+│       │   estat_equippordia.php
+│       │   estat_equippordominio.php
+│       │   estat_equipporlocal.php
+│       │   estat_equipporreitoria.php
+│       │   estat_equipporreitoria_agrup.php
+│       │   estat_equipporsituacao.php
+│       │   estat_geral.php
+│       │   estat_instituicao.php
+│       │   estat_modelo_memoria.php
+│       │   estat_situacao_geral.php
+│       │   estat_topten_modelo.php
+│       │   estat_vencimentos.php
+│       │   estat_vencimentos_anual.php
+│       │   estat_vencimentos_full.php
+│       │   estoque.php
+│       │   exclui_dados_documento.php
+│       │   exclui_dados_equipamento.php
+│       │   exclui_dados_marca_comp.php
+│       │   exclui_dados_modelo.php
+│       │   exclui_dados_resolucao.php
+│       │   exclui_equipamento.php
+│       │   fabricantes.php
+│       │   fornecedores.php
+│       │   garantias.php
+│       │   graphteste.php
+│       │   graph_equipporreitoria.php
+│       │   graph_geral_barras.php
+│       │   graph_geral_pizza.php
+│       │   hw_alteracoes.php
+│       │   hw_historico.php
+│       │   incluir_categoria.php
+│       │   incluir_computador.php
+│       │   incluir_hws.php
+│       │   incluir_marca_comp.php
+│       │   incluir_material.php
+│       │   incluir_modelo.php
+│       │   incluir_modelo_equip.php
+│       │   incluir_molde.php
+│       │   incluir_monitor.php
+│       │   itens.php
+│       │   itens_official.php
+│       │   javascript.php
+│       │   licencas.php
+│       │   marcas_comp.php
+│       │   materiais.php
+│       │   mensagem.php
+│       │   modelos.php
+│       │   model_config.php
+│       │   monitores.php
+│       │   mostra_consulta_comp.php
+│       │   mostra_consulta_hist_local.php
+│       │   mostra_consulta_inv.php
+│       │   mostra_historico.php
+│       │   mostra_modelos_cadastrados.php
+│       │   ocorrencias.php
+│       │   pieces_x_technician.php
+│       │   piece_hist.php
+│       │   relatorios.php
+│       │   relatorio_geral.php
+│       │   relatorio_total.php
+│       │   resolucao.php
+│       │   script_modelo.php
+│       │   script_modelo_2.php
+│       │   showSelItemModels.php
+│       │   softwares.php
+│       │   sw_padrao.php
+│       │   tela_logon.inc
+│       │   tempo_garantia.php
+│       │   testa_grafico.php
+│       │   
+│       └───includes
+│               header.php
+│               
+└───ocomon
+    └───geral
+        │   abertura.php
+        │   abertura_user.php
+        │   alterar.php
+        │   alterar_ocorrencia.php
+        │   altera_dados_ocorrencia.php
+        │   atender.php
+        │   avisos.php
+        │   chamados_x_etiqueta.php
+        │   confirma.php
+        │   consultar.php
+        │   consulta_solucoes.php
+        │   emprestimos.php
+        │   encaminhar.php
+        │   encerramento.php
+        │   excluir_ocorrencia.php
+        │   form_send_mail.php
+        │   graph_geral_pizza.php
+        │   incluir.php
+        │   incluir_2.php
+        │   insert_comment.php
+        │   lista.php
+        │   listFiles.php
+        │   logado.php
+        │   mensagem.php
+        │   mostra_chamados.php
+        │   mostra_consulta.php
+        │   mostra_hist_status.php
+        │   mostra_relatorio_data_abertura.php
+        │   mostra_relatorio_data_encerramento.php
+        │   mostra_relatorio_individual.php
+        │   mostra_relatorio_intranet.php
+        │   mostra_relatorio_local.php
+        │   mostra_relatorio_ocorrencia.php
+        │   mostra_relatorio_operador.php
+        │   mostra_relatorio_periodo_equipamento.php
+        │   mostra_relatorio_periodo_local.php
+        │   mostra_relatorio_periodo_numero.php
+        │   mostra_relatorio_periodo_operador.php
+        │   mostra_relatorio_periodo_problema.php
+        │   mostra_relatorio_periodo_sistema.php
+        │   mostra_relatorio_periodo_status.php
+        │   mostra_relatorio_problema.php
+        │   mostra_relatorio_sistema.php
+        │   mostra_relatorio_status.php
+        │   mostra_resultado_consulta.php
+        │   mostra_resultado_relatorio.php
+        │   mostra_resultado_relatorio_total.php
+        │   mostra_resultado_solucoes.php
+        │   mostra_sla_definido.php
+        │   newUser.php
+        │   ocorrencias.php
+        │   relatorios.php
+        │   relatorio_chamados_area.php
+        │   relatorio_chamados_categorias.php
+        │   relatorio_data_abertura.php
+        │   relatorio_data_encerramento.php
+        │   relatorio_geral.php
+        │   relatorio_geral_sicpa.php
+        │   relatorio_gerencial.php
+        │   relatorio_individual.php
+        │   relatorio_intranet.php
+        │   relatorio_local.php
+        │   relatorio_ocorrencias.php
+        │   relatorio_operador.php
+        │   relatorio_operadores_areas.php
+        │   relatorio_periodo_equipamento.php
+        │   relatorio_periodo_local.php
+        │   relatorio_periodo_numero.php
+        │   relatorio_periodo_operador.php
+        │   relatorio_periodo_problema.php
+        │   relatorio_periodo_sistema.php
+        │   relatorio_periodo_status.php
+        │   relatorio_problema.php
+        │   relatorio_problemas_areas.php
+        │   relatorio_setores_areas.php
+        │   relatorio_sistema.php
+        │   relatorio_slas.php
+        │   relatorio_slas_2.php
+        │   relatorio_slas_2_default.php
+        │   relatorio_slas_3.php
+        │   relatorio_slas_usuario_final.php
+        │   relatorio_status.php
+        │   relatorio_total.php
+        │   relatorio_usuarios_areas.php
+        │   relatorio_usuario_final.php
+        │   reopen.php
+        │   resultado_relatorio_total.php
+        │   script_modelo.php
+        │   setores_meses.php
+        │   showEquipments.php
+        │   showInformacaoProb.php
+        │   showOperators.php
+        │   showProbs.php
+        │   showSelLocais.php
+        │   showSelProbs.php
+        │   sla_standalone.php
+        │   solucoes.php
+        │   tempo_doc.php
+        │   updateCollapseSession.php
+        │   user_lang.php
+        │   user_theme.php
+        │   validacookie.php
+        │   
+        └───includes
+                header.php
+                

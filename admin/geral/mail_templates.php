@@ -31,6 +31,9 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+
     	print "<BR><B>".TRANS('TTL_CONFIG_MAIL_TEMPLATES').":</b><BR><br>";
         print "<TD align='left'>".
         		"<input type='button' class='button' id='idBtIncluir' value='".TRANS('ACT_NEW')."' onClick=\"redirect('".$_SERVER['PHP_SELF']."?action=new&cellStyle=true');\">".
@@ -45,12 +48,12 @@
 		if (isset($_GET['cod'])) {
 			$query .= "WHERE tpl_cod=".$_GET['cod']."";
 		}
-		$resultado = mysql_query($query) or die (TRANS('ERR_QUERY'));
+		$resultado = mysqli_query($conect, $query) or die (TRANS('ERR_QUERY'));
 
 	if ((empty($_GET['action'])) and empty($_POST['submit'])){
 
 
-		if (mysql_numrows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('MSG_NO_RECORDS'));
 		}
@@ -58,7 +61,7 @@
 		{
 				$cor=TD_COLOR;
 				$cor1=TD_COLOR;
-				$linhas = mysql_numrows($resultado);
+				$linhas = mysqli_num_rows($resultado);
 
 				print "<TABLE border='0' cellpadding='1' cellspacing='0' width='100%'>";
 				print "<tr class='header'>";
@@ -69,7 +72,7 @@
 				print "</tr>";
 
 				$j = 2;
-				while ($row = mysql_fetch_array($resultado)) {
+				while ($row = mysqli_fetch_array($resultado)) {
 					if ($j % 2) {
 							$trClass = "lin_par";
 					}
@@ -92,7 +95,7 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="alter") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<script type='text/javascript' src='../../includes/fckeditor/fckeditor.js'></script>";
 
@@ -158,7 +161,7 @@
 		$qry = "INSERT INTO mail_templates (tpl_sigla, tpl_subject, tpl_msg_html, tpl_msg_text) values ".
 				//"('".noHtml($_POST['tpl_sigla'])."', '".noHtml($_POST['tpl_subject'])."', '".$_POST['msg_html']."', '".noHtml($_POST['msg_text'])."');";
 				"('".noHtml($_POST['tpl_sigla'])."', '".noHtml($_POST['tpl_subject'])."', '".$_POST['msg_text']."', '".noHtml($_POST['msg_text'])."');";
-		$execQry = mysql_query($qry) or die(mysql_error());
+		$execQry = mysqli_query($conect, $qry) or die(mysqli_error($conect));
 
 		print "<script>mensagem('".TRANS('OK_CAD','',0)."!'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 
@@ -171,7 +174,7 @@
 				"tpl_msg_html = '".noHtml($_POST['msg_text'])."', tpl_msg_text = '".noHtml($_POST['msg_text'])."' ".
 			" WHERE tpl_cod = ".$_POST['cod']."";
 
-		$exec= mysql_query($qry) or die(TRANS('ERR_EDIT'));
+		$exec= mysqli_query($conect, $qry) or die(TRANS('ERR_EDIT'));
 
 		print "<script>mensagem('".TRANS('OK_EDIT')."!'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 	} else
@@ -179,7 +182,7 @@
 	if (isset($_GET['action']) && $_GET['action'] == "excluir"){
 
 		$query2 = "DELETE FROM mail_templates WHERE tpl_cod='".$_GET['cod']."'";
-		$resultado2 = mysql_query($query2);
+		$resultado2 = mysqli_query($conect, $query2);
 
 		if ($resultado2 == 0)
 		{
@@ -192,12 +195,11 @@
 		print "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 
 	}
+?>
 
+		</table>
+	</form>
 
-	print "</table>";
-	print "</form>";
-
-	?>
 	<script language="JavaScript">
 
 		function valida(){
@@ -211,12 +213,5 @@
 		}
 	//-->
 	</script>
-	<?php 
-
-
-
-
-print "</body>";
-print "</html>";
-
-?>
+</body>
+</html>

@@ -31,6 +31,9 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+
 	print "<BR><B>".TRANS('ADM_PRIORITIES')."</B><BR>";
 
 	print "<FORM method='POST' action='".$_SERVER['PHP_SELF']."' onSubmit=\"return valida()\">";
@@ -43,20 +46,19 @@
 
 
 
-
 		$query = "select p.*, sl.* from prioridades as p left join sla_solucao as sl on p.prior_sla = sl.slas_cod";
 		if (isset($_GET['cod'])) {
 			$query.= " WHERE p.prior_cod = ".$_GET['cod']." ";
 		}
 		$query .=" ORDER  BY p.prior_nivel";
-		$resultado = mysql_query($query) or die(TRANS('ERR_QUERY'));
-		$registros = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $query) or die(TRANS('ERR_QUERY'));
+		$registros = mysqli_num_rows($resultado);
 
 	if ((!isset($_GET['action'])) && empty($_POST['submit'])) {
 
 		//print "<TR><TD bgcolor='".BODY_COLOR."'><a href='".$_SERVER['PHP_SELF']."?action=incluir&cellStyle=true'>Incluir Nível de Prioridade</a></TD></TR>";
 		print "<TR><TD><input type='button' class='button' id='idBtIncluir' value='".TRANS('BT_NEW_RECORD','',0)."' onClick=\"redirect('".$_SERVER['PHP_SELF']."?action=incluir&cellStyle=true');\"></TD></TR>";
-		if (mysql_num_rows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('MSG_NO_RECORDS'));
 		}
@@ -70,7 +72,7 @@
 			print "<TR class='header'><td class='line'>".TRANS('COL_LEVEL')."</TD><td class='line'>".TRANS('COL_SLA')."</TD><td class='line'>".TRANS('COL_EDIT')."</TD><td class='line'>".TRANS('COL_DEL')."</TD></tr>";
 
 			$j=2;
-			while ($row = mysql_fetch_array($resultado))
+			while ($row = mysqli_fetch_array($resultado))
 			{
 				if ($j % 2)
 				{
@@ -108,8 +110,8 @@
 			print "<option value=-1>".TRANS('SEL_SLA')."</option>";
 
 				$sql="select * from sla_solucao order by slas_tempo";
-				$commit = mysql_query($sql);
-				while($row = mysql_fetch_array($commit)){
+				$commit = mysqli_query($conect, $sql);
+				while($row = mysqli_fetch_array($commit)){
 					print "<option value=".$row['slas_cod'].">".$row["slas_desc"]."</option>";
 				} // while
 		print "</select>";
@@ -128,7 +130,7 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="alter") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<BR><B>".TRANS('TTL_EDIT_RECORD')."</B><BR>";
 
@@ -142,12 +144,12 @@
 			"<TD width='80%' align='left' bgcolor='".BODY_COLOR."'><select class='select' name='sla' id='idSla'>";
 
 			$sql = "select * from sla_solucao where slas_cod=".$row["slas_cod"]."";
-			$commit = mysql_query($sql);
+			$commit = mysqli_query($conect, $sql);
 			$rowR = mysql_fetch_array($commit);
 				print "<option value=-1 >".TRANS('SEL_SLA')."</option>";
 					$sql="select * from sla_solucao order by slas_tempo";
-					$commit = mysql_query($sql);
-					while($rowB = mysql_fetch_array($commit)){
+					$commit = mysqli_query($conect, $sql);
+					while($rowB = mysqli_fetch_array($commit)){
 						print "<option value=".$rowB["slas_cod"]."";
                         			if ($rowB['slas_cod'] == $row['slas_cod'] ) {
                             				print " selected";
@@ -177,8 +179,8 @@
 		$total = 0; $texto = "";
 
 		$sql_2 = "SELECT * FROM localizacao where loc_prior ='".$_GET['cod']."'";
-		$exec_2 = mysql_query($sql_2);
-		$total+= mysql_numrows($exec_2);
+		$exec_2 = mysqli_query($conect, $sql_2);
+		$total+= mysqli_num_rows($exec_2);
 		if (mysql_numrows($exec_2)!=0) $texto.="localizacao, ";
 
 		if ($total!=0)
@@ -189,7 +191,7 @@
 		else
 		{
 			$query2 = "DELETE FROM prioridades WHERE prior_cod='".$_GET['cod']."'";
-			$resultado2 = mysql_query($query2) or die (TRANS('ERR_QUERY')."!<br>".$query2);
+			$resultado2 = mysqli_query($conect, $query2) or die (TRANS('ERR_QUERY')."!<br>".$query2);
 
 			if ($resultado2 == 0)
 			{
@@ -211,8 +213,8 @@
 		$erro=false;
 
 		$qryl = "SELECT * FROM prioridades WHERE prior_nivel='".$_POST['p_nivel']."'";
-		$resultado = mysql_query($qryl);
-		$linhas = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $qryl);
+		$linhas = mysqli_num_rows($resultado);
 
 		if ($linhas > 0)
 		{
@@ -224,7 +226,7 @@
 		{
 
 			$query = "INSERT INTO prioridades (prior_nivel, prior_sla) values ('".noHtml($_POST['p_nivel'])."', ".$_POST['sla'].")";
-			$resultado = mysql_query($query);
+			$resultado = mysqli_query($conect, $query);
 			if ($resultado == 0)
 			{
 				$aviso = TRANS('ERR_INSERT');
@@ -242,7 +244,7 @@
 	if ($_POST['submit'] == TRANS('BT_ALTER')){
 
 		$query2 = "UPDATE prioridades SET prior_nivel='".noHtml($_POST['p_nivel'])."', prior_sla = ".$_POST['sla']." WHERE prior_cod='".$_POST['cod']."'";
-		$resultado2 = mysql_query($query2);
+		$resultado2 = mysqli_query($conect, $query2);
 
 		if ($resultado2 == 0)
 		{
@@ -256,23 +258,18 @@
 		echo "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 
 	}
-
-	print "</table>";
-
 ?>
-<script type="text/javascript">
-<!--
-	function valida(){
-		var ok = validaForm('idNivel','','Nível',1);
-		if (ok) var ok = validaForm('idSla','COMBO','SLA',1);
+	</table>
 
-		return ok;
-	}
+	<script type="text/javascript">
+	<!--
+		function valida(){
+			var ok = validaForm('idNivel','','Nível',1);
+			if (ok) var ok = validaForm('idSla','COMBO','SLA',1);
 
--->
-</script>
-
-
-<?php 
-print "</body>";
-print "</html>";
+			return ok;
+		}
+	//-->
+	</script>
+</body>
+</html>

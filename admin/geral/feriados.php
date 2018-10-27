@@ -32,17 +32,19 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
 
         print "<BR><B>".TRANS('ADM_HOLIDAYS').":</B><BR>";
 
 	$query = "SELECT * from feriados order by data_feriado DESC";
-        $resultado = mysql_query($query);
+        $resultado = mysqli_query($conect, $query);
 
 	if ((!isset($_GET['action'])) && !isset($_POST['submit'])) {
 
         	//print "<TD align='right'><a href='".$_SERVER['PHP_SELF']."?action=incluir'>Incluir feriado.</a></TD><BR>";
         	print "<TR><TD><input type='button' class='button' id='idBtIncluir' value='".TRANS('BT_NEW_RECORD','',0)."' onClick=\"redirect('".$_SERVER['PHP_SELF']."?action=incluir&cellStyle=true');\"></TD></TR>";
-		if (mysql_numrows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('MSG_NO_RECORDS')."!");
 		}
@@ -50,14 +52,14 @@
 		{
 			$cor=TD_COLOR;
 			$cor1=TD_COLOR;
-			$linhas = mysql_numrows($resultado);
+			$linhas = mysqli_num_rows($resultado);
 
 			print "<br><br><TR><td class='line'>";
 			print "".TRANS('THERE_IS_ARE')." <b>".$linhas."</b> ".TRANS('RECORDS_IN_SYSTEM').".</TD></TR>";
 			print "<TABLE border='0' cellpadding='5' cellspacing='0'  width='50%'>";
 			print "<TR class='header'><td class='line'>".TRANS('COL_DATE')."</TD><td class='line'>".TRANS('COL_DESC')."</TD><td class='line'>".TRANS('COL_PERSISTANT','PERMANENTE')."</TD><td class='line'><b>".TRANS('COL_EDIT')."</b></TD><td class='line'><b>".TRANS('COL_DEL')."</b></TD>";
 			$j=2;
-			while ($row=mysql_fetch_array($resultado))
+			while ($row=mysqli_fetch_array($resultado))
 			{
 				if ($j % 2)
 				{
@@ -108,8 +110,8 @@
 
 	if ( (isset($_GET['action']) && $_GET['action']=="alter") && !isset($_POST['submit'])) {
 		$qry = "SELECT * from feriados where cod_feriado = ".$_GET['cod']."";
-		$exec = mysql_query($qry);
-		$rowAlter = mysql_fetch_array($exec);
+		$exec = mysqli_query($conect, $qry);
+		$rowAlter = mysqli_fetch_array($exec);
 
 		print "<B>".TRANS('TTL_EDIT_RECORD').":<br>";
 		print "<form method='post' name='alter' action='".$_SERVER['PHP_SELF']."' onSubmit='return valida()'>";
@@ -136,25 +138,25 @@
 	} else
 
 	if (isset($_GET['action']) && $_GET['action']=="excluir"){
-			$qry = "DELETE FROM feriados where cod_feriado = ".$_GET['cod']."";
-			$exec = mysql_query($qry) or die (TRANS('ERR_DEL')."!");
-			if ($exec == 0)
-			{
-				$aviso = TRANS('ERR_DEL');
-			}
-			else
-			{
-				$aviso = TRANS('OK_DEL');
-			}
-			print "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
+		$qry = "DELETE FROM feriados where cod_feriado = ".$_GET['cod']."";
+		$exec = mysqli_query($conect, $qry) or die (TRANS('ERR_DEL')."!");
+		if ($exec == 0)
+		{
+			$aviso = TRANS('ERR_DEL');
+		}
+		else
+		{
+			$aviso = TRANS('OK_DEL');
+		}
+		print "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 
 	} else
 
 	if (isset($_POST['submit']) && $_POST['submit'] == TRANS('bt_cadastrar')) {
 		if ((!empty($_POST['descricao'])) && (!empty($_POST['data']))){
 			$qry = "select * from feriados where desc_feriado = '".$_POST['descricao']."' and data_feriado = '".$_POST['data']."'";
-			$exec= mysql_query($qry);
-			$achou = mysql_numrows($exec);
+			$exec= mysqli_query($conect, $qry);
+			$achou = mysqli_numr_ows($exec);
 			if ($achou){
 				print "<script>mensagem('".TRANS('MSG_RECORD_EXISTS','',0)."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 			} else {
@@ -169,7 +171,7 @@
 
 				$qry = "INSERT INTO feriados (desc_feriado,data_feriado, fixo_feriado) ".
 						"values ('".noHtml($_POST['descricao'])."','".$data."', ".$permanente.")";
-				$exec = mysql_query($qry) or die ('Erro na inclusão do feriado!'.$qry);
+				$exec = mysqli_query($conect, $qry) or die ('Erro na inclusão do feriado!'.$qry);
 				print "<script>mensagem('".TRANS('OK_INSERT')."!'); redirect('feriados.php');</script>";
 				}
 		} else {
@@ -189,12 +191,11 @@
 			} else
 				$permanente = 0;
 
-
 			//$qry = "UPDATE feriados set desc_feriado='".noHtml($descricao)."', data_feriado='".$data."' where cod_feriado=".$cod."";
 			$qry = "UPDATE feriados set desc_feriado='".noHtml($_POST['descricao'])."', ".
 					"data_feriado='".$data."', fixo_feriado=".$permanente." ".
 				"WHERE cod_feriado=".$_POST['cod']."";
-			$exec= mysql_query($qry) or die(TRANS('ERR_QUERY'));
+			$exec= mysqli_query($conect, $qry) or die(TRANS('ERR_QUERY'));
 
 			print "<script>mensagem('".TRANS('OK_EDIT')."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 
@@ -202,24 +203,18 @@
 			print "<script>mensagem('".TRANS('MSG_EMPTY_DATA')."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 		}
 	}
-
-
-
-
-print "</body>";
 ?>
-<script type="text/javascript">
-<!--
-	function valida(){
-		var ok = validaForm('idDesc','','Descrição',1);
-		if (ok) var ok = validaForm('idData','DATA-','Data',1);
-		//if (ok) var ok = validaForm('idStatus','COMBO','Status',1);
 
-		return ok;
-	}
--->
-</script>
-<?php 
-print "</html>";
+	<script type="text/javascript">
+	<!--
+		function valida(){
+			var ok = validaForm('idDesc','','Descrição',1);
+			if (ok) var ok = validaForm('idData','DATA-','Data',1);
+			//if (ok) var ok = validaForm('idStatus','COMBO','Status',1);
 
-?>
+			return ok;
+		}
+	//-->
+	</script>
+</body>
+</html>

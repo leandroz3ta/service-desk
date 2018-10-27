@@ -29,6 +29,9 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],2);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+
 	$hoje = date("Y-m-d H:i:s");
 
 
@@ -37,8 +40,8 @@
 	$cor3 = BODY_COLOR;
 
 	$queryInst = "SELECT * from instituicao order by inst_nome";
-	$resultadoInst = mysql_query($queryInst);
-	$linhasInst = mysql_num_rows($resultadoInst);	
+	$resultadoInst = mysqli_query($conect, $queryInst);
+	$linhasInst = mysqli_num_rows($resultadoInst);	
 
 		$saida="";
 		if (isset ($_POST['instituicao'])) {
@@ -57,8 +60,8 @@
 			$msgInst = TRANS('ALL');
 		} else {
 			$sqlA ="select inst_nome as inst from instituicao where inst_cod in (".$saida.")";
-			$resultadoA = mysql_query($sqlA);
-			while ($rowA = mysql_fetch_array($resultadoA)) {
+			$resultadoA = mysqli_query($conect, $sqlA);
+			while ($rowA = mysqli_fetch_array($resultadoA)) {
 				$msgInst.= $rowA['inst'].', ';
 			}
 			$msgInst = substr($msgInst,0,-2);
@@ -69,8 +72,10 @@
 
 
 		$queryB = "SELECT count(*) from equipamentos $clausula";
-		$resultadoB = mysql_query($queryB);
-		$total = mysql_result($resultadoB,0);
+		$resultadoB = mysqli_query($conect, $queryB);
+		//$total = mysqli_result($resultadoB,0);
+		$row = mysqli_fetch_row($resultadoB);
+		$total = $row[0];
 
 		//Query para retornar a quantidade individual de cada tipo de equipamento
   		$queryAux = "SELECT count(*) as Quantidade, T.tipo_nome as Equipamento, T.tipo_cod as tipo
@@ -78,8 +83,8 @@
   					WHERE C.comp_tipo_equip = T.tipo_cod ".$clausula2."
   					GROUP by C.comp_tipo_equip ORDER BY Equipamento";
 
-		$resultadoAux = mysql_query($queryAux);
-		$linhasAux = mysql_num_rows($resultadoAux);
+		$resultadoAux = mysqli_query($conect, $queryAux);
+		$linhasAux = mysqli_num_rows($resultadoAux);
 
 		//Monta o cabeçalho do quadro de estatística
 		print "<TABLE border='0' cellpadding='5' cellspacing='0' align='left' width='80%' bgcolor='".$cor3."'>";
@@ -112,7 +117,7 @@
 			print "</tr>";
 
 
-			while ($rowAux = mysql_fetch_array($resultadoAux)) {
+			while ($rowAux = mysqli_fetch_array($resultadoAux)) {
 
 				$tipo_equip = $rowAux['tipo'];
 				$qtd_equip = $rowAux['Quantidade'];
@@ -128,10 +133,10 @@
 				GROUP  BY t.tipo_nome, s.situac_nome
 				ORDER  BY equipamento,qtd_situac DESC ";
 				//and (comp_tipo_equip=1 or comp_tipo_equip=2)
-				$resultado = mysql_query($query);
-				$linhas = mysql_num_rows($resultado);
+				$resultado = mysqli_query($conect, $query);
+				$linhas = mysqli_num_rows($resultado);
 
-				while ($row = mysql_fetch_array($resultado)) {
+				while ($row = mysqli_fetch_array($resultado)) {
 					$color =  BODY_COLOR;
 					print "<TR>";
 					print "<TD bgcolor='".$color."'><a href='mostra_consulta_comp.php?comp_tipo_equip=".$row['tipo_cod']."&comp_situac=".$row['situac_cod']."&ordena=local,etiqueta' title='Exibe a listagem dos equipamentos desse tipo.'>".$row['equipamento']."</a></TD>";
@@ -142,26 +147,17 @@
 			} //Fim do loop externo
 
 
-			print "<TR><TD bgcolor='".$cor3."'><b></TD><TD bgcolor='".$cor3."'><b></TD><TD bgcolor='".$cor3."'><b>".TRANS('TOTAL').": ".$total."</TD><TD bgcolor='".$cor3."'><b>".TRANS('TXT_100')."%</b></TD></tr>";
-			print "</TABLE>";
-			print "</fieldset>";
+			print "<tr><td bgcolor='".$cor3."'><b></td><td bgcolor='".$cor3."'><b></td><td bgcolor='".$cor3."'><b>".TRANS('TOTAL').": ".$total."</td><td bgcolor='".$cor3."'><b>".TRANS('TXT_100')."%</b></td></tr>";
+?>		
+			</table>
+		</fieldset>
 
-		print "<TABLE width='80%' align='center'>";
-		// print "<tr><td class='line'></TD></tr>";
-		// print "<tr><td class='line'></TD></tr>";
-		// print "<tr><td class='line'></TD></tr>";
-		// print "<tr><td class='line'></TD></tr>";
-		// print "</TABLE>";
-
-		// print "<TABLE width='80%' align='center'>";
-		// print "<tr><td class='line'></TD></tr>";
-		// print "<tr><td class='line'></TD></tr>";
-		// print "<tr><td class='line'></TD></tr>";
-		// print "<tr><td class='line'></TD></tr>";
-
-		print "<tr><td width='80%' align='center'><b>".TRANS('SLOGAN_OCOMON')." <a href='http://www.unilasalle.edu.br' target='_blank'>".TRANS('COMPANY')."</a>.</b></td></tr>";
-		print "</TABLE>";
-
-print "</BODY>";
-print "</HTML>";
-?>
+	<table width='80%' align='center'>
+		<tr>
+			<td width='80%' align='center'>
+				<b><?php echo TRANS('SLOGAN_OCOMON'); ?> <a href='http://www.unilasalle.edu.br' target='_blank'><?php echo TRANS('COMPANY'); ?></a>.</b>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

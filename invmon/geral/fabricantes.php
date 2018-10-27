@@ -33,6 +33,9 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+
 	$PAGE = new paging;
 	$PAGE->setRegPerPage(10);
 
@@ -65,8 +68,8 @@
 			$query.= " AND f.fab_cod = ".$_GET['cod']." ";
 		}
 		$query .=" ORDER BY tipo_it_desc,fab_nome";
-		$resultado = mysql_query($query) or die(TRANS('ERR_QUERY'));
-		$registros = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $query) or die(TRANS('ERR_QUERY'));
+		$registros = mysqli_num_rows($resultado);
 
 		if (isset($_GET['LIMIT']))
 			$PAGE->setLimit($_GET['LIMIT']);
@@ -76,7 +79,7 @@
 	if ((!isset($_GET['action'])) && empty($_POST['submit'])) {
 
 		print "<TR><TD bgcolor='".BODY_COLOR."'><a href='".$_SERVER['PHP_SELF']."?action=incluir&cellStyle=true'>".TRANS('TXT_CAD_MANUFAC')."</a></TD></TR>";
-		if (mysql_num_rows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('MSG_NOT_REG_CAD'));
 		}
@@ -92,7 +95,7 @@
 
 			$j=2;
 			//while ($row = mysql_fetch_array($resultado))
-			while ($row=mysql_fetch_array($PAGE->RESULT_SQL))
+			while ($row=mysqli_fetch_array($PAGE->RESULT_SQL))
 			{
 				if ($j % 2)
 				{
@@ -134,8 +137,8 @@
 			print "<select class='select' name='tipo' id='idTipo'>";
 				print "<option value=-1 selected>".TRANS('SEL_TYPE')."</option>";
 				$select = "select * from tipo_item order by tipo_it_desc";
-				$exec = mysql_query($select);
-				while($row = mysql_fetch_array($exec)){
+				$exec = mysqli_query($conect, $select);
+				while($row = mysqli_fetch_array($exec)){
 					print "<option value=".$row['tipo_it_cod'].">".$row['tipo_it_desc']."</option>";
 				} // while
 			print "</select>";
@@ -155,7 +158,7 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="alter") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<BR><B>".TRANS('SUBTTL_EDIT_MANUFAC')."</B><BR>";
 
@@ -169,12 +172,12 @@
 			"<TD width='80%' align='left' bgcolor='".BODY_COLOR."'><select class='select' name='tipo' id='idTipo'>";
 
 			$sql = "select * from tipo_item where tipo_it_cod=".$row["fab_tipo"]."";
-			$commit = mysql_query($sql);
-			$rowR = mysql_fetch_array($commit);
+			$commit = mysqli_query($conect, $sql);
+			$rowR = mysqli_fetch_array($commit);
 				print "<option value=-1 >".TRANS('SEL_TYPE')."</option>";
 					$sql="select * from tipo_item order by tipo_it_desc";
-					$commit = mysql_query($sql);
-					while($rowB = mysql_fetch_array($commit)){
+					$commit = mysqli_query($conect, $sql);
+					while($rowB = mysqli_fetch_array($commit)){
 						print "<option value=".$rowB["tipo_it_cod"]."";
                         			if ($rowB['tipo_it_cod'] == $row['fab_tipo'] ) {
                             				print " selected";
@@ -202,14 +205,14 @@
 
 		$total = 0; $texto = "";
 		$sql_1 = "SELECT * from equipamentos where comp_fab='".$_GET['cod']."'";
-		$exec_1 = mysql_query($sql_1);
-		$total+=mysql_numrows($exec_1);
-		if (mysql_numrows($exec_1)!=0) $texto.="equipamentos, ";
+		$exec_1 = mysqli_query($conect, $sql_1);
+		$total+=mysqli_num_rows($exec_1);
+		if (mysqli_num_rows($exec_1)!=0) $texto.="equipamentos, ";
 
 		$sql_2 = "SELECT * FROM softwares where soft_fab ='".$_GET['cod']."'";
-		$exec_2 = mysql_query($sql_2);
-		$total+= mysql_numrows($exec_2);
-		if (mysql_numrows($exec_2)!=0) $texto.="softwares, ";
+		$exec_2 = mysqli_query($conect, $sql_2);
+		$total+= mysqli_numrows($exec_2);
+		if (mysqli_num_rows($exec_2)!=0) $texto.="softwares, ";
 
 
 		if ($total!=0)
@@ -220,7 +223,7 @@
 		else
 		{
 			$query2 = "DELETE FROM fabricantes WHERE fab_cod='".$_GET['cod']."'";
-			$resultado2 = mysql_query($query2);
+			$resultado2 = mysqli_query($conect, $query2);
 
 			if ($resultado2 == 0)
 			{
@@ -242,8 +245,8 @@
 		$erro=false;
 
 		$qryl = "SELECT * FROM fabricantes WHERE fab_nome='".$_POST['fab_nome']."'";
-		$resultado = mysql_query($qryl);
-		$linhas = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $qryl);
+		$linhas = mysqli_num_rows($resultado);
 
 		if ($linhas > 0)
 		{
@@ -255,7 +258,7 @@
 		{
 
 			$query = "INSERT INTO fabricantes (fab_nome, fab_tipo) values ('".noHtml($_POST['fab_nome'])."', ".$_POST['tipo'].")";
-			$resultado = mysql_query($query);
+			$resultado = mysqli_query($conect, $query);
 			if ($resultado == 0)
 			{
 				$aviso = TRANS('ERR_INSERT');
@@ -273,7 +276,7 @@
 	if ($_POST['submit'] == TRANS('BT_ALTER')){
 
 		$query2 = "UPDATE fabricantes SET fab_nome='".noHtml($_POST['fab_nome'])."', fab_tipo=".noHtml($_POST['tipo'])." WHERE fab_cod='".$_POST['cod']."'";
-		$resultado2 = mysql_query($query2);
+		$resultado2 = mysqli_query($conect, $query2);
 
 		if ($resultado2 == 0)
 		{
@@ -287,23 +290,20 @@
 		echo "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 
 	}
-
-	print "</table>";
-
 ?>
-<script type="text/javascript">
-<!--
-	function valida(){
-		var ok = validaForm('idFabricante','','Fabricante',1);
-		if (ok) var ok = validaForm('idTipo','COMBO','Tipo',1);
+	</table>
 
-		return ok;
-	}
+	<script type="text/javascript">
+	<!--
+		function valida(){
+			var ok = validaForm('idFabricante','','Fabricante',1);
+			if (ok) var ok = validaForm('idTipo','COMBO','Tipo',1);
 
--->
-</script>
+			return ok;
+		}
 
+	//-->
+	</script>
 
-<?php 
-print "</body>";
-print "</html>";
+</body>
+</html>
