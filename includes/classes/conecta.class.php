@@ -50,7 +50,7 @@ class conexao {
 		/*if ($this->con) {
             return NULL;
         }*/
-		$this->con=mysqli_connect(SQL_SERVER,SQL_USER,SQL_PASSWD, SQL_DB)or die(mysql_error());
+		$this->con=mysqli_connect(SQL_SERVER,SQL_USER,SQL_PASSWD, SQL_DB)or die(mysqli_error());
 		/*$this->db=mysqli_select_db($this->con, SQL_DB);
 	        if (!$this->con){
 	        	$retorno = "ERRO DE CONEX�O - SERVIDOR!<br>";
