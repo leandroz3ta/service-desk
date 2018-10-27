@@ -48,8 +48,8 @@
     	print "<BR><B>".TRANS('TTL_APPEARANCE','Configurações de aparência do sistema').":</b><BR>";
 
 		$query = "SELECT * FROM styles ";
-        	$resultado = mysql_query($query) or die (TRANS('ERR_QUERY'));
-		$row = mysql_fetch_array($resultado);
+        	$resultado = mysqli_query($conect,$query) or die (TRANS('ERR_QUERY'));
+		$row = mysqli_fetch_array($resultado);
 
 
 	if ((empty($_GET['action'])) and empty($_POST['submit'])){
@@ -57,7 +57,7 @@
 		print "<br><TD align='left'>".
 				"<input type='button' class='button' id='idBtIncluir' value='".TRANS('BT_EDIT_CONFIG','Editar Configuração',0)."' onClick=\"redirect('".$_SERVER['PHP_SELF']."?action=alter&cellStyle=true');\">".
 			"</TD><br><BR>";
-		if (mysql_numrows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('ALERT_CONFIG_EMPTY'));
 		}
@@ -65,7 +65,7 @@
 		{
 				$cor=TD_COLOR;
 				$cor1=TD_COLOR;
-				$linhas = mysql_numrows($resultado);
+				$linhas = mysqli_num_rows($resultado);
 				print "<td>";
 				print "<TABLE border='0' cellpadding='5' cellspacing='0'  width='50%'>";
 				print "<TR class='header'><td>".TRANS('OPT_DIRETIVA','Diretiva')."</TD><td>".TRANS('OPT_VALOR','Valor')."</TD></TD></tr>";
@@ -391,15 +391,6 @@
 					"&nbsp;&nbsp;<a onClick=\"loadDefaultValue('idBody','#F6F6F6');\" title='".TRANS('HNT_LOAD_DEFAULT_COLOR')."'>".
 					"<img src='".ICONS_PATH."rebuild.png' width='16' height='16' border='0'></a></td>".
 			"</tr>";
-/*			print "<tr><td>COR DO TD_COLOR:</td><td>".
-				"<input type='text'  class='mini2' name='cor_tab' id='idTab' ".
-					"value='".$row['tm_color_tab']."' ".
-					"style=\"{background-color:".$row['tm_color_tab'].";}\">".
-					"<a href='#' onClick=\"cp.select(document.forms[0].cor_tab,'pick6');return false;\" name='pic6' id='pick6' title='".TRANS('EDIT_CURRENT_COLOR')."'>".
-					"<img src='".ICONS_PATH."edit.png' width='16' height='16' border='0'></a>".
-					"&nbsp;&nbsp;<a onClick=\"loadDefaultValue('idTab','#DBDBDB');\" title='".TRANS('HNT_LOAD_DEFAULT_COLOR')."'>".
-					"<img src='".ICONS_PATH."rebuild.png' width='16' height='16' border='0'></a></td>".
-			"</tr>";*/
 		print "<tr><td>".TRANS('COLOR_COL','COR DAS COLUNAS').":</td><td>".
 				"<input type='text'  class='mini2' name='cor_td' id='idTD' ".
 					"value='".$row['tm_color_td']."' ".
@@ -531,11 +522,15 @@
 
 		//print $qry;
 		//exit;
-		$exec= mysql_query($qry) or die(TRANS('ERR_EDIT'));
+		$conec = new conexao;
+		$conect=$conec->conecta('MYSQL');
+
+		$exec = mysqli_query($conect, $qry) or die(TRANS('ERR_EDIT'));
 
 		//print "<script>mensagem('Configuração alterada com sucesso!'); window.open('../../index.php?LOAD=ADMIN','_parent',''); </script>";
 		print "<script>mensagem('".TRANS('MSG_SUCCESS_CONFIG_SQUEMA','Configuração alterada com sucesso!\\nO Esquema selecionado será carregado agora',0)."!'); window.open('../../index.php?LOAD=ADMIN','_parent',''); </script>";
 		//redirect('configGeral.php');
+		
 	}
 
 ?>

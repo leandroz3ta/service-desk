@@ -1,5 +1,4 @@
 <?php
-
 // arquivo: config.inc.php
 
 // configurar de acordo com as suas necessidades
@@ -7,10 +6,12 @@
 // Configurações vitais
 
 //Usuario do banco
+
+
 define ( "SQL_USER", "ocomon"); //NOME DO USUÁRIO PARA ACESSAR A BASE DO OCOMON - ESSE USUÁRIO É CRIADO AUTOMATICAMENTE NA INSTALACAO DO SISTEMA!!
 
 //Senha do banco
-define ( "SQL_PASSWD", "senha_ocomon_mysql");//ESSA SENHA É A SENHA PADRAO CRIADA NA INSTALACAO DO SISTEMA. É RECOMENDÁVEL A ALTERACAO DA MESMA NO MYSQL.
+define ( "SQL_PASSWD", "senha_mysql");//ESSA SENHA É A SENHA PADRAO CRIADA NA INSTALACAO DO SISTEMA. É RECOMENDÁVEL A ALTERACAO DA MESMA NO MYSQL.
 //Servidor do banco
 define ( "SQL_SERVER", "localhost"); //SE O BANCO DE DADOS ESTIVER EM UM SERVIDOR DIFERENTE DO SERVIDOR WEB DEVE-SE ALTERAR O VALOR "localhost"
 //Nome do banco

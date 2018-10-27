@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -48,15 +49,15 @@
 			$query.= " AND e.empr_id= ".$_GET['cod']." ";
 		}
 		$query .=" ORDER  BY data_devol";
-		$resultado = mysql_query($query) or die(TRANS('ERR_QUERY').'<br>'.$query);
-		$registros = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $query) or die(TRANS('ERR_QUERY').'<br>'.$query);
+		$registros = mysqli_num_rows($resultado);
 
 	if ((!isset($_GET['action'])) && !isset($_POST['submit'])) {
 
 		print "<TR><TD bgcolor='".BODY_COLOR."'>".
 				"<input type='button' class='button' id='idBtIncluir' value='".TRANS('BT_NEW_LOAN')."' onClick=\"redirect('".$_SERVER['PHP_SELF']."?action=incluir&cellStyle=true');\">".
 				"</TD></TR>";
-		if (mysql_num_rows($resultado) == 0) {
+		if (mysqli_num_rows($resultado) == 0) {
 			echo "<tr><td align='center'>".mensagem("".TRANS('MSG_NO_LOAN')."")."</td></tr>";
 		} else {
 			$cor=TD_COLOR;
@@ -69,7 +70,7 @@
 				<td class='line'>".TRANS('COL_EDIT')."</TD><td class='line'>".TRANS('COL_DEL')."</TD></TR>";
 
 			$j=2;
-			while ($row = mysql_fetch_array($resultado)) {
+			while ($row = mysqli_fetch_array($resultado)) {
 				if ($j % 2)
 				{
 					$trClass = "lin_par";
@@ -119,8 +120,8 @@
 			print "<option value=-1>".TRANS('OCO_SEL_LOCAL')."</option>";
 
 				$sql="select * from localizacao order by local";
-				$commit = mysql_query($sql);
-				while($row = mysql_fetch_array($commit)){
+				$commit = mysqli_query($conect, $sql);
+				while($row = mysqli_fetch_array($commit)){
 					print "<option value=".$row['loc_id'].">".$row["local"]."</option>";
 				} // while
 		print "</select>";
@@ -147,7 +148,7 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="alter") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<BR><B>".TRANS('COL_EDIT_LOAN')."</B><BR>";
 
@@ -177,12 +178,12 @@
 			"<TD width='30%' align='left' bgcolor='".BODY_COLOR."'><select class='select' name='responsavel' id='idResponsavel'>";
 
 			$sql = "select * from usuarios where user_id=".$row['responsavel']."";
-			$commit = mysql_query($sql);
-			$rowR = mysql_fetch_array($commit);
+			$commit = mysqli_query($conect, $sql);
+			$rowR = mysqli_fetch_array($commit);
 				print "<option value=-1 >".TRANS('OCO_SEL_OPERATOR')."</option>";
 					$sql="select * from usuarios order by nome";
-					$commit = mysql_query($sql);
-					while($rowB = mysql_fetch_array($commit)){
+					$commit = mysqli_query($sql);
+					while($rowB = mysqli_fetch_array($commit)){
 						print "<option value=".$rowB["user_id"]."";
                         			if ($rowB['user_id'] == $row['user_id'] ) {
                             				print " selected";
@@ -199,8 +200,8 @@
 			print "<option value='-1'>Selecione o local</option>";
 
 				$sql="select * from localizacao order by local";
-				$commit = mysql_query($sql);
-				while($rowL = mysql_fetch_array($commit)){
+				$commit = mysqli_query($conect, $sql);
+				while($rowL = mysqli_fetch_array($commit)){
 					print "<option value=".$rowL['loc_id']."";
 					if ($rowL['loc_id'] == $row['local'])
 						print " selected";
@@ -227,7 +228,7 @@
 	if (isset($_GET['action']) && $_GET['action'] == "excluir"){
 
 		$query2 = "DELETE FROM emprestimos WHERE empr_id='".$_GET['cod']."'";
-		$resultado2 = mysql_query($query2);
+		$resultado2 = mysqli_query($conect, $query2);
 
 		if ($resultado2 == 0)
 		{
@@ -251,7 +252,7 @@
 			$query = "INSERT INTO emprestimos (material, responsavel, data_empr, data_devol, quem, local, ramal) values".
 				" ('".noHtml($_POST['material'])."', '".$_SESSION['s_uid']."','".datam($_POST['saida'])."','".datam($_POST['volta'])."',".
 				"'".$_POST['quem']."', '".$_POST['local']."', '".$_POST['ramal']."')";
-			$resultado = mysql_query($query) or die (TRANS('ERR_QUERY').'<br>'.$query);
+			$resultado = mysqli_query($conect, $query) or die (TRANS('ERR_QUERY').'<br>'.$query);
 
 			if ($resultado == 0)
 			{
@@ -272,7 +273,7 @@
                 $query2 = "UPDATE emprestimos SET material='".noHtml($_POST['material'])."', responsavel='".noHtml($_POST['responsavel'])."', ".
                 	"ramal = '".$_POST['ramal']."', local = ".$_POST['local'].", data_empr='".datam($_POST['saida'])."', data_devol='".datam($_POST['volta'])."', ".
                 	"quem='".$_POST['quem']."' WHERE empr_id='".$_POST['cod']."'";
-		$resultado2 = mysql_query($query2);
+		$resultado2 = mysqli_query($conect, $query2);
 
 		if ($resultado2 == 0)
 		{

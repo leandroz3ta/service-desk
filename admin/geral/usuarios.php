@@ -1,5 +1,5 @@
 <?php 
-
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -24,6 +24,9 @@
 	include ('includes/header.php');
 	include ("../../includes/classes/paging.class.php");
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');	
+	
 	$_SESSION['s_page_admin'] = $_SERVER['PHP_SELF'];
 
 	$hoje = date("d-m-Y H:i:s");
@@ -100,8 +103,8 @@
 		//------------------------------------------------------------- FIM ALTERACAO --------------------------------------------------------------
 		
 		$query.=" ORDER BY u.nome";
-		$resultado = mysql_query($query) or die($query."<br>".mysql_error());
-		$registros = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect,$query) or die($query."<br>".mysql_error());
+		$registros = mysqli_num_rows($resultado);
 
 		if (isset($_GET['LIMIT']))
 			$PAGE->setLimit($_GET['LIMIT']);
@@ -145,10 +148,10 @@
 				$qryarea = "SELECT sis_id, sistema FROM sistemas ORDER BY sistema";
 				if($OPERADOR_AREA)
 					$qryarea = "SELECT sis_id, sistema FROM sistemas WHERE sis_id = ".$_SESSION['s_area']." ";//OR sis_id = 2 -  2 - USUARIOS
-				$execarea = mysql_query($qryarea);
+				$execarea = mysqli_query($conect,$qryarea);
 				print "<td colspan='3'><SELECT class='select' name='id_sistema' size='1'>";
 					print "<option value='-1'>".TRANS('OCO_SEL_AREA')."</option>";
-					while ($rowArea=mysql_fetch_array($execarea)){
+					while ($rowArea=mysqli_fetch_array($execarea)){
 						$isSelecionado = "";
 						if ($rowArea['sis_id'] == $_SESSION['id_sistema_filtro'])
 							$isSelecionado = " selected";
@@ -184,7 +187,7 @@
 					"<td class='line'>".TRANS('OCO_FIELD_EXCLUDE','Excluir')."</TD></TR>";
 			$i=0;
 			$j=2;
-			while ($row=mysql_fetch_array($PAGE->RESULT_SQL))
+			while ($row=mysqli_fetch_array($PAGE->RESULT_SQL))
 			{
 				($j % 2)?$trClass = "lin_par":$trClass = "lin_impar";
 				$j++;
@@ -213,7 +216,7 @@
 	} else
 	if ((isset($_GET['action']) && ($_GET['action'] == "incluir") )&& empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<BR>";
 		print "<B>".TRANS('CADASTRE_USERS').":</B>";
@@ -235,10 +238,10 @@
 			} else			
 				$query = "SELECT * from nivel order by nivel_nome";
 			
-			$resultado = mysql_query($query);
-			$registros = mysql_num_rows($resultado);
+			$resultado = mysqli_query($conect,$query);
+			$registros = mysqli_num_rows($resultado);
 			$i=0;
-			while ($rownivel = mysql_fetch_array($resultado)){
+			while ($rownivel = mysqli_fetch_array($resultado)){
 				print "<option value='".$rownivel['nivel_cod']."'>".$rownivel['nivel_nome']."</option>";
 			}
 			print "</select>";
@@ -272,9 +275,9 @@
 				$query = "SELECT * from sistemas WHERE sis_status not in (0) AND sis_id = ".$_SESSION['s_area']." order by sistema ";
 			} else
 				$query = "SELECT * from sistemas where sis_status not in (0) order by sistema";
-			$resultado = mysql_query($query);
-			$registros = mysql_num_rows($resultado);
-			while ($rowarea = mysql_fetch_array($resultado)) {
+			$resultado = mysqli_query($conect,$query);
+			$registros = mysqli_num_rows($resultado);
+			while ($rowarea = mysqli_fetch_array($resultado)) {
 				print "<option value='".$rowarea['sis_id']."'>".$rowarea['sistema']."</option>";
 			}
 		print "</SELECT>";
@@ -284,10 +287,10 @@
 		print "</TR>";
 
 			$qry = "select * from sistemas where sis_status not in (0) and sis_atende =1";
-			$exec = mysql_query($qry);
+			$exec = mysqli_query($conect,$qry);
 			$i=0;
 			print "<tr><td colspan='4'>".TRANS('COL_SECUNDARY_AREAS').":</td></tr>";
-			while ($rowa=mysql_fetch_array($exec)){
+			while ($rowa=mysqli_fetch_array($exec)){
 				print "<tr><td colspan='4'>";
 				print "<input type='checkbox' name='grupo[".$i."]' value='".$rowa['sis_id']."'>".$rowa['sistema']."";
 				print "</td></tr>";
@@ -307,7 +310,7 @@
 		print "<B>".TRANS('TTL_EDIT_RECORD').":</B>";
 		print "<BR>";
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 		//print "<FORM method='POST' action='".$_SERVER['PHP_SELF']."' onSubmit=\"return valida()\">";
 		//print "<TABLE border='0' align='center' width='100%' bgcolor='".BODY_COLOR."'>";
 		print "<TR>";
@@ -322,12 +325,12 @@
 				$qrynivel = "SELECT * FROM nivel order by nivel_nome";
 			
 			
-			$execnivel = mysql_query($qrynivel);
+			$execnivel = mysqli_query($conect,$qrynivel);
 
 			print "<TD width='30%' align='left' bgcolor='".BODY_COLOR."'>";
 		print "<SELECT class='select' name='categoria' id='idCategoria'>";
 			print "<option value=-1>".TRANS('SEL_LEVEL')."</option>";
-			while ($rownivel = mysql_fetch_array($execnivel)){
+			while ($rownivel = mysqli_fetch_array($execnivel)){
 				print "<option value='".$rownivel['nivel_cod']."'";
 				if ($rownivel['nivel_cod'] == $row['nivel_cod']){
 					print " selected";
@@ -365,11 +368,11 @@
 			} else
 				$qryarea = "SELECT * from sistemas where sis_status not in (0) order by sistema";			
 			//$qryarea = "SELECT * FROM sistemas WHERE sis_status not in (0)";
-			$execarea = mysql_query($qryarea);
+			$execarea = mysqli_query($conect,$qryarea);
 			print "<TD colspan='3' width='80%' align='left' bgcolor='".BODY_COLOR."'>";
 			print "<SELECT class='select' name='area' id='idArea'>";
 			print "<option value=-1>Selecione a área</option>";
-			while ($rowarea = mysql_fetch_array($execarea)){
+			while ($rowarea = mysqli_fetch_array($execarea)){
 				print "<option value='".$rowarea['sis_id']."'";
 				if ($rowarea['sis_id'] == $row['sis_id']){
 					print " selected";
@@ -393,20 +396,20 @@
 
 
 			$qry_areas = "select * from usuarios_areas where uarea_uid=".$_GET['login']."";
-			$exec_areas = mysql_query($qry_areas);
+			$exec_areas = mysqli_query($conect,$qry_areas);
 			$total_areas = 0;
-			while ($row_areas = mysql_fetch_array($exec_areas)){
+			while ($row_areas = mysqli_fetch_array($exec_areas)){
 				$uareas[$total_areas]= $row_areas['uarea_sid'];
 				$total_areas++;
 			}
 
 			$qry = "select * from sistemas order by sistema";
-			$exec = mysql_query($qry);
+			$exec = mysqli_query($conect,$qry);
 
 			$checked = array();
 			$i = 0;
 			print "<tr><td colspan='4'>".TRANS('COL_SECUNDARY_AREAS').":</td></tr>";
-			while ($rowa=mysql_fetch_array($exec)){
+			while ($rowa=mysqli_fetch_array($exec)){
 				print "<tr><td colspan='4'>";
 				for ($j=0; $j<$total_areas; $j++){
 					//$checked[$i] = "";
@@ -434,7 +437,7 @@
 		$qryStat = "SELECT count(*) quantidade, n.nivel_nome nivel, n.nivel_cod nivel_cod FROM usuarios u, nivel n
 					WHERE u.nivel = n.nivel_cod GROUP by nivel ORDER BY quantidade desc, nome";
 
-		$execStat = mysql_query($qryStat) or die (TRANS('ERR_QUERY').$qryStat);
+		$execStat = mysqli_query($conect,$qryStat) or die (TRANS('ERR_QUERY').$qryStat);
 
 		$background = '#CDE5FF';
 
@@ -442,7 +445,7 @@
 		print "<table class='centro' cellspacing='0' border='1' align='center'>";
 		print "<tr bgcolor='".$background."'><td class='line'>".strtoupper(TRANS('COL_LEVEL'))."</td><td class='line'>".strtoupper(TRANS('COL_QTD'))."</td></tr>";
 		$TOTAL = 0;
-		while ($rowStat = mysql_fetch_array($execStat)) {
+		while ($rowStat = mysqli_fetch_array($execStat)) {
 			print "<tr><td class='line'><a href='usuarios.php?nivel=".$rowStat['nivel_cod']."&n_desc=".$rowStat['nivel']."'>".$rowStat['nivel']."</a></td><td class='line'>".$rowStat['quantidade']."</td></tr>";
 			$TOTAL+=$rowStat['quantidade'];
 		}
@@ -453,13 +456,13 @@
 		if (!$OPERADOR_AREA){
 	
 			$qryTmp = "SELECT * FROM utmp_usuarios ORDER BY utmp_nome, utmp_cod";
-			$execTmp = mysql_query($qryTmp);
-			$registrosTmp = mysql_num_rows($execTmp);
+			$execTmp = mysqli_query($conect,$qryTmp);
+			$registrosTmp = mysqli_num_rows($execTmp);
 			if ($registrosTmp > 0) {
 				print "<br><BR><center><b/>".TRANS('TTL_WAITING_CONFIRMATION')."</center><br>";
 				print "<table class='centro' cellspacing='0' border='1' align='center'>";
 				print "<tr bgcolor='".$background."'><td class='line'>".TRANS('COL_NAME')."</td><td class='line'>".TRANS('COL_LOGIN')."</td><td class='line'>".TRANS('COL_EMAIL')."</td><td class='line'>".TRANS('COL_CONFIRM')."</td><td class='line'>".TRANS('COL_DEL')."</td></tr>";
-				while ($rowtmp = mysql_fetch_array($execTmp)) {
+				while ($rowtmp = mysqli_fetch_array($execTmp)) {
 					print "<tr><td class='line'>".$rowtmp['utmp_nome']."</a></td><td class='line'>".$rowtmp['utmp_login']."</td><td class='line'>".$rowtmp['utmp_email']."</td>";
 					print "<td class='line'><a onClick=\"javascript:confirmaAcao('".TRANS('ENSURE_CONFIRM')." ".$rowtmp['utmp_nome']."?','usuarios.php','action=addtmp&cod=".$rowtmp['utmp_cod']."');\"><img height='16' width='16' src='".ICONS_PATH."ok.png' title='".TRANS('HNT_CONFIRM')."'></TD>";
 					print "<td class='line'><a onClick=\"javascript:confirmaAcao('".TRANS('ENSURE_DEL')." ".$rowtmp['utmp_nome']."?','usuarios.php','action=deltmp&cod=".$rowtmp['utmp_cod']."');\"><img height='16' width='16' src='".ICONS_PATH."drop.png' title='".TRANS('HNT_DEL')."'></TD>";
@@ -479,9 +482,9 @@
 	if (isset($_GET['action']) && $_GET['action'] == "excluir"){
 
 		$qrydel = "select * from ocorrencias where operador=".$_GET['login']." OR aberto_por = ".$_GET['login']." ";
-		$execdel = mysql_query($qrydel) or die (TRANS('ERR_QUERY'));
+		$execdel = mysqli_query($conect,$qrydel) or die (TRANS('ERR_QUERY'));
 
-		$regs = mysql_num_rows($execdel);
+		$regs = mysqli_num_rows($execdel);
 
 		if ($regs!=0){
 			print "<script>mensagem('".TRANS('MSG_CANT_DEL').": ocorrencias ".TRANS('LINKED_TABLE')."!');
@@ -490,7 +493,7 @@
 		}
 		else {
 			$qrydel = "DELETE FROM usuarios WHERE user_id=".$_GET['login']."";
-			$execdel = mysql_query($qrydel) or die ('Erro na exlusão do registro'.$qrydel);
+			$execdel = mysqli_query($conect,$qrydel) or die ('Erro na exlusão do registro'.$qrydel);
 			print "<script>mensagem('".TRANS('OK_DEL')."');".
 					"redirect ('".$_SERVER['PHP_SELF']."');</script>";
 		}
@@ -499,7 +502,7 @@
 
 	if ( isset($_GET['action']) && $_GET['action'] == "deltmp"){
 		$qrydel = "DELETE FROM utmp_usuarios where utmp_cod = ".$_GET['cod']."";
-		$execdel = mysql_query($qrydel) or die (TRANS('ERR_DEL'));
+		$execdel = mysqli_query($conect,$qrydel) or die (TRANS('ERR_DEL'));
 
 		print "<script>mensagem('".TRANS('OK_DEL')."');".
 					"redirect ('usuarios.php?action=stat');</script>";
@@ -509,8 +512,8 @@
 	if (isset($_GET['action']) && $_GET['action'] == "addtmp"){
 		//print "<script>mensagem('FUNÇÃO DE CONFIRMAÇÃO AINDA NÃO IMPLEMENTADA!'); redirect('usuarios.php?action=stat');</script>";
 		$qryadd = "SELECT utmp_rand FROM utmp_usuarios WHERE utmp_cod = ".$_GET['cod']."";
-		$execadd = mysql_query($qryadd) or die (TRANS('ERR_QUERY'));
-		$rowadd = mysql_fetch_array($execadd);
+		$execadd = mysqli_query($conect,$qryadd) or die (TRANS('ERR_QUERY'));
+		$rowadd = mysqli_fetch_array($execadd);
 		print "<script>redirect('../../ocomon/geral/confirma.php?rand=".$rowadd['utmp_rand']."&fromAdmin=true');</script>";
 
 
@@ -522,8 +525,8 @@
 		$pass = md5($_POST['password']);
 
 		$qrytesta = "SELECT * FROM sistemas where sis_id = ".$_POST['area']."";
-		$execteste = mysql_query($qrytesta);
-		$rowtesta = mysql_fetch_array($execteste);
+		$execteste = mysqli_query($conect,$qrytesta);
+		$rowtesta = mysqli_fetch_array($execteste);
 
 		if ($_POST['categoria'] == 3 and $rowtesta['sis_atende']) {
 			$aviso = TRANS('MSG_ONLY_OPEN_USERS');
@@ -536,8 +539,8 @@
 
 
 		$qryins= "SELECT login FROM usuarios WHERE login = '".$_POST['login']."'";
-		$execins = mysql_query($qryins) or die(TRANS('ERR_QUERY').$qryins);
-		$regs = mysql_num_rows($execins);
+		$execins = mysqli_query($conect,$qryins) or die(TRANS('ERR_QUERY').$qryins);
+		$regs = mysqli_num_rows($execins);
 		if ($regs > 0){
 			$aviso = TRANS('MSG_RECORD_EXISTS');
 			$erro = true;
@@ -558,16 +561,16 @@
 					"values ('".noHtml($_POST['login'])."','".noHtml($_POST['nome'])."','".$pass."','".$data_inc."'".
 					",'".$data_admis."','".$_POST['email']."','".$_POST['telefone']."', ".$_POST['categoria'].", "
 					.$_POST['area'].", '".$areaadmin."')";
-			$execins = mysql_query($qryins) or die (TRANS('ERR_INSERT').$qryins);
-			$uid = mysql_insert_id();
+			$execins = mysqli_query($conect,$qryins) or die (TRANS('ERR_INSERT').$qryins);
+			$uid = mysqli_insert_id();
 
 			$qrycountarea = "SELECT count(*) tAreas from sistemas";
-			$execcountarea = mysql_query($qrycountarea) or die (TRANS('ERR_QUERY').$qrycountarea);
-			$rowcountarea = mysql_fetch_array($execcountarea);
+			$execcountarea = mysqli_query($conect,$qrycountarea) or die (TRANS('ERR_QUERY').$qrycountarea);
+			$rowcountarea = mysqli_fetch_array($execcountarea);
 			for ($j=0; $j<$rowcountarea['tAreas']; $j++){
 				if (!empty($_POST['grupo'][$j])){
 					$qry_areas = "insert into usuarios_areas (uarea_uid,uarea_sid) values (".$uid.",".$_POST['grupo'][$j].")";
-					$exec_qryareas = mysql_query($qry_areas) or die (TRANS('ERR_QUERY'));
+					$exec_qryareas = mysqli_query($qry_areas) or die (TRANS('ERR_QUERY'));
 				}
 				//$error.=$qry_areas." | ";
 			}
@@ -597,20 +600,20 @@
 						"data_inc='".$data_inc."', data_admis='".$data_admis."', email='".$_POST['email']."', ".
 						"fone='".$_POST['telefone']."', nivel=".$_POST['categoria'].", AREA=".$_POST['area'].", ".
 						" user_admin='".$_POST['areaadmin']."' WHERE user_id=".$_POST['login']."";
-			$resultado2 = mysql_query($query2) or die ('Erro - '.$query2);
+			$resultado2 = mysqli_query($conect,$query2) or die ('Erro - '.$query2);
 
 			/*     ----------------------------------------------------------------------------------------  */
 
 			$qry = "delete from usuarios_areas where uarea_uid=".$_POST['login']."";
-			$exec = mysql_query($qry) or die(TRANS('ERR_QUERY').$qry);
+			$exec = mysqli_query($conect,$qry) or die(TRANS('ERR_QUERY').$qry);
 
 			$qrycountarea = "SELECT count(*) tAreas from sistemas";
-			$execcountarea = mysql_query($qrycountarea) or die (TRANS('ERR_QUERY').$qrycountarea);
-			$rowcountarea = mysql_fetch_array($execcountarea);
+			$execcountarea = mysqli_query($conect,$qrycountarea) or die (TRANS('ERR_QUERY').$qrycountarea);
+			$rowcountarea = mysqli_fetch_array($execcountarea);
 			for ($j=0; $j<$rowcountarea['tAreas']; $j++){
 				if (!empty($_POST['grupo'][$j])){
 					$qry_areas = "insert into usuarios_areas (uarea_uid,uarea_sid) values (".$_POST['login'].",".$_POST['grupo'][$j].")";
-					$exec_qry = mysql_query($qry_areas) or die(TRANS('ERR_QUERY'));
+					$exec_qry = mysqli_query($conect,$qry_areas) or die(TRANS('ERR_QUERY'));
 				}
 				//$error.=$qry_areas." | ";
 			 }
@@ -621,32 +624,26 @@
 		}
 		print "<script>mensagem('".$aviso."'); redirect('usuarios.php');</script>";
 	}
-	print "</table>";
-	print "</form>";
 ?>
-<script type="text/javascript">
-<!--
-	function valida(){
+			</table>
+		</form>
+	<script type="text/javascript">
+	<!--
+		function valida(){
 
-		var ok = validaForm('idLogin','ALFAFULL','Login',1)
-		if (ok) var ok = validaForm('idCategoria','COMBO','Categoria',1);
-		if (ok) var ok = validaForm('idNome','','Nome',1);
-		if (ok) var ok = validaForm('idSenha','ALFAFULL','Senha',1);
-		if (ok) var ok = validaForm('idDataInc','DATA','Data Inscrição',1);
-		if (ok) var ok = validaForm('idDataAdmis','DATA','Data Admissão',1);
-		if (ok) var ok = validaForm('idEmail','EMAIL','Email',1);
-		if (ok) var ok = validaForm('idTelefone','FONE','Telefone',1);
-		if (ok) var ok = validaForm('idArea','COMBO','Área',1);
+			var ok = validaForm('idLogin','ALFAFULL','Login',1)
+			if (ok) var ok = validaForm('idCategoria','COMBO','Categoria',1);
+			if (ok) var ok = validaForm('idNome','','Nome',1);
+			if (ok) var ok = validaForm('idSenha','ALFAFULL','Senha',1);
+			if (ok) var ok = validaForm('idDataInc','DATA','Data Inscrição',1);
+			if (ok) var ok = validaForm('idDataAdmis','DATA','Data Admissão',1);
+			if (ok) var ok = validaForm('idEmail','EMAIL','Email',1);
+			if (ok) var ok = validaForm('idTelefone','FONE','Telefone',1);
+			if (ok) var ok = validaForm('idArea','COMBO','Área',1);
 
-		return ok;
-	}
--->
-</script>
-<?php 
-
-
-print "</body>";
-print "</html>";
-
-
-?>
+			return ok;
+		}
+	-->
+	</script>
+</body>
+</html>

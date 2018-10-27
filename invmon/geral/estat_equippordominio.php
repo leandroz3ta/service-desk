@@ -29,6 +29,9 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],2);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
+
 	$hoje = date("Y-m-d H:i:s");
 
 
@@ -37,8 +40,10 @@
 	$cor3 = BODY_COLOR;
 
 	$queryB = "SELECT count(*) from equipamentos, localizacao where comp_local = loc_id and loc_dominio is not null"; //todos equipamentos que possuem domínio definido
-	$resultadoB = mysql_query($queryB);
-	$total = mysql_result($resultadoB,0);
+	$resultadoB = mysqli_query($conect, $queryB);
+	//$total = mysql_result($resultadoB,0);
+	$row = mysqli_fetch_row($resultadoB);
+	$total = $row[0];
 
 	if (!isset($discrimina)) $discrimina = true;
 
@@ -51,7 +56,7 @@
 
 	if (isset($_GET['discrimina']) && $_GET['discrimina']==1) {
 		$query.= " , equipamento ";
-		$coluna = "<TD bgcolor=".$cor3."><b>".TRANS('MNL_CAD_EQUIP')."</TD>";
+		$coluna = "<td bgcolor=".$cor3."><b>".TRANS('MNL_CAD_EQUIP')."</td>";
 		$discrimina = 0;
 	} else {
 		$coluna = "";
@@ -60,42 +65,79 @@
 
 		$query.=" ORDER  BY dominio, qtd DESC";
 
-		$resultado = mysql_query($query);
-		$linhas = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $query);
+		$linhas = mysqli_num_rows($resultado);
 
 		//$discrimina = !$discrimina;
-
-		print "<TABLE border='0' cellpadding='5' cellspacing='0' align='center' width='80%' bgcolor='".$cor3."'>";
-
-			print "<tr><td width='80%' align='center'><b>".TRANS('TTL_TOTAL_EQUIP_CAD_FOR_DOMAIN').":</b></td></tr>";
-
-
-			print "<td class='line'>";
-			print "<fieldset><legend>".TRANS('TTL_EQUIP_X_DOMAIN')."</legend>";
-			print "<TABLE border='0' cellpadding='5' cellspacing='0' align='center' width='80%' bgcolor='".$cor3."'>";
-			print "<TR><TD bgcolor='".$cor3."'><b>".TRANS('COL_DOMAIN')."</TD>".$coluna."<TD bgcolor='".$cor3."'><b>".TRANS('COL_QTD')."</TD><TD bgcolor='".$cor3."'><b>".TRANS('COL_PORCENTEGE')."</TD></tr>";
+?>
+	<table border='0' cellpadding='5' cellspacing='0' align='center' width='80%' bgcolor='<?php echo $cor3;?>'>
+		<tr>
+			<td width='80%' align='center'>
+				<b><?php echo TRANS('TTL_TOTAL_EQUIP_CAD_FOR_DOMAIN');?>:</b>
+			</td>
+		</tr>
+		<tr>
+			<td class='line'>
+				<fieldset>
+					<legend><?php echo TRANS('TTL_EQUIP_X_DOMAIN');?></legend>
+					<table border='0' cellpadding='5' cellspacing='0' align='center' width='80%' bgcolor='<?php echo $cor3;?>'>
+						<tr>
+							<td bgcolor='<?php echo $cor3;?>'>
+								<b><?php echo TRANS('COL_DOMAIN');?>
+								<?php echo $coluna;?></b>
+							</td>
+							<td bgcolor='<?php echo $cor3;?>'>
+								<b><?php echo TRANS('COL_QTD');?></b>
+							</td>
+							<td bgcolor='<?php echo $cor3;?>'>
+								<b><?php echo TRANS('COL_PORCENTEGE');?></b>
+							</td>
+						</tr>
+<?php						
 			$i=0;
 			$j=2;
 
-			while ($row = mysql_fetch_array($resultado)) {
+			while ($row = mysqli_fetch_array($resultado)) {
 				$color =  BODY_COLOR;
 				$j++;
-				print "<TR>";
-				print "<TD bgcolor='".$color."'>".$row['dominio']."</TD>";
+?>				
+						<tr>
+							<td bgcolor='<?php echo $color;?>'>
+								<?php echo $row['dominio'];?>
+							</td>
+<?php							
 				if(isset($_GET['discrimina']) && $_GET['discrimina'] == 1) {
-					print "<td bgcolor=".$color.">".$row['equipamento']."</td>";
+?>
+							<td bgcolor='<?php echo $color;?>'><?php echo $row['equipamento'];?>
+							</td>
+<?php
 				}
-				print "<TD bgcolor='".$color."'><a href='".$_SERVER['PHP_SELF']."?discrimina=".$discrimina."'>".$row['qtd']."</a></TD>";
-				print "<TD bgcolor='".$color."'>".$row['porcento']."%</TD>";
-				print "</TR>";
+?>
+							<td bgcolor='<?php echo $color;?>'>
+								<a href='<?php echo $_SERVER['PHP_SELF'];?>?discrimina=<?php echo $discrimina;?>'><?php echo $row['qtd'];?></a>
+							</td>
+							<td bgcolor='<?php echo $color;?>'><?php echo $row['porcento'];?>% </td>
+						</tr>
+<?php						
 				$i++;
 			}
+?>
+						<tr>
+							<td bgcolor='<?php echo $cor3;?>'>
+								<b></b>
+							</td>
+							<td bgcolor='<?php echo $cor3;?>'>
+								<b></b>
+							</td>
+							<td bgcolor='<?php echo $cor3;?>'>
+								<b><?php echo TRANS('TOTAL');?>: <?php echo $total;?></b>
+							</td>
+						</tr>
+					</table>
+				</fieldset>
 
-			print "<TR><TD bgcolor='".$cor3."'><b></TD><TD bgcolor='".$cor3."'><b></TD><TD bgcolor='".$cor3."'><b>".TRANS('TOTAL').": ".$total."</TD></tr>";
-			print "</TABLE>";
-			print "</fieldset>";
-
-		print "<TABLE width='80%' align='center'>";
+				<table width='80%' align='center'>
+<?php					
 		// print "<tr><td class='line'></TD></tr>";
 		// print "<tr><td class='line'></TD></tr>";
 		// print "<tr><td class='line'></TD></tr>";
@@ -107,10 +149,17 @@
 		// print "<tr><td class='line'></TD></tr>";
 		// print "<tr><td class='line'></TD></tr>";
 		// print "<tr><td class='line'></TD></tr>";
-
-		print "<tr><td width='80%' align='center'><b>".TRANS('SLOGAN_OCOMON')." <a href='http://www.unilasalle.edu.br' target='_blank'>".TRANS('COMPANY')."</a>.</b></td></tr>";
-		print "</TABLE>";
-
-print "</BODY>";
-print "</HTML>";
 ?>
+					<tr>
+						<td width='80%' align='center'>
+							<b><?php echo TRANS('SLOGAN_OCOMON');?> 
+							<a href='http://www.unilasalle.edu.br' target='_blank'><?php echo TRANS('COMPANY');?></a>.
+							</b>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

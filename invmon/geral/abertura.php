@@ -1,5 +1,5 @@
 <?php 
-
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Fl�io Ribeiro
 
          This file is part of OCOMON.
@@ -30,22 +30,20 @@
 	$cab->set_title(TRANS("html_title"));
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],4);
+	
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');	
 
 	print "<BODY bgcolor=".BODY_COLOR.">";
 	$hoje = date("d-m-Y H:i:s");
-
-// 	$cor  = TD_COLOR;
-// 	$cor1 = TD_COLOR;
-// 	$cor3 = BODY_COLOR;
 
 	$dados = array(); //Array que ir�guardar os valores para montar o gr�ico
 	$legenda = array ();
 
 
 	$queryB = $QRY["total_equip"]." where comp_inst not in (".INST_TERCEIRA.")";
-	$resultadoB = mysql_query($queryB);
-	$row = mysql_fetch_array($resultadoB);
-	//$total = mysql_result($resultadoB,0);
+	$resultadoB = mysqli_query($conect, $queryB);
+	$row = mysqli_fetch_array($resultadoB);
 	$total = $row["total"];
 
 	// Select para retornar a quantidade e percentual de equipamentos cadastrados no sistema
@@ -55,8 +53,8 @@
 		"WHERE C.comp_tipo_equip = T.tipo_cod and C.comp_inst not in (".INST_TERCEIRA.") ".
 		"GROUP by C.comp_tipo_equip ORDER BY Quantidade desc,Equipamento";
 
-	$resultado = mysql_query($query);
-	$linhas = mysql_num_rows($resultado);
+	$resultado = mysqli_query($conect, $query);
+	$linhas = mysqli_num_rows($resultado);
 
 	print "<table class=estat60 align=center>";
 	print "<tr><td></TD></tr>";
@@ -71,7 +69,7 @@
 	$i=0;
 	$j=2;
 
-	while ($row = mysql_fetch_array($resultado)) {
+	while ($row = mysqli_fetch_array($resultado)) {
 		$color =  BODY_COLOR;
 		$j++;
 		print "<tr id='linha".$j."' onMouseOver=\"destaca('linha".$j."');\" onMouseOut=\"libera('linha".$j."');\"  ".
@@ -124,9 +122,9 @@
 			"onClick=\"return popup('graph_geral_barras.php?".$valores."&".$nome."&instituicao=".$msgInst."')\"></td></tr>";
 
 
-		print "<tr><td width=60% align=center><b>".TRANS('em_desenv')." <a ".
+		/*print "<tr><td width=60% align=center><b>".TRANS('em_desenv')." <a ".
 			"href=http://www.intranet.lasalle.tche.br/cinfo/helpdesk TARGET=_blank title='".TRANS('hint_desenv')."'>".
-			"Helpdesk Unilasalle</a>.</b></td></tr>";
+			"Helpdesk Unilasalle</a>.</b></td></tr>";*/
 
 
 		print "</TABLE>";

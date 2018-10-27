@@ -1,12 +1,12 @@
 ## task
 > path files
 * /
-    - [ ] [centro.php](./centro.php)
+    - [x] [centro.php](./centro.php) -- atualizado para html:5
     - [ ] [home.php](./home.php)
-    - [ ] [index.php](./index.php)
-    - [ ] [menu.php](./menu.php)
-    - [ ] [PATHS.php](./PATHS.php)
-    - [ ] [sobre.php](./sobre.php)
+    - [x] [index.php](./index.php)
+    - [x] [menu.php](./menu.php)
+    - [x] [PATHS.php](./PATHS.php) -- Sem ação
+    - [x] [sobre.php](./sobre.php) -- Atualizado para html:5
     * admin
         * geral
             - [ ] [aparencia.php](./admin/geral/aparencia.php)
@@ -14,18 +14,18 @@
             - [ ] [cat_prob1.php](./admin/geral/cat_prob1.php)
             - [ ] [cat_prob2.php](./admin/geral/cat_prob2.php)
             - [ ] [cat_prob3.php](./admin/geral/cat_prob3.php)
-            - [ ] [ccustos.php](./admin/geral/ccustos.php)
+            - [x] [ccustos.php](./admin/geral/ccustos.php)
             - [ ] [configGeral.php](./admin/geral/configGeral.php)
             - [ ] [configmail.php](./admin/geral/configmail.php)
             - [ ] [configmsgs.php](./admin/geral/configmsgs.php)
             - [ ] [configuserscreen.php](./admin/geral/configuserscreen.php)
             - [ ] [dominios.php](./admin/geral/dominios.php)
             - [ ] [feriados.php](./admin/geral/feriados.php)
-            - [ ] [locais.php](./admin/geral/locais.php)
+            - [x] [locais.php](./admin/geral/locais.php)
             - [ ] [mail_distribution_lists.php](./admin/geral/mail_distribution_lists.php)
             - [ ] [mail_history.php](./admin/geral/mail_history.php)
             - [ ] [mail_templates.php](./admin/geral/mail_templates.php)
-            - [ ] [permissoes.php](./admin/geral/permissoes.php)
+            - [x] [permissoes.php](./admin/geral/permissoes.php)
             - [ ] [predios.php](./admin/geral/predios.php)
             - [ ] [prioridades.php](./admin/geral/prioridades.php)
             - [ ] [prioridades_atendimento.php](./admin/geral/prioridades_atendimento.php)
@@ -39,14 +39,14 @@
             - [ ] [script_modelo.php](./admin/geral/script_modelo.php)
             - [ ] [sistemas.php](./admin/geral/sistemas.php)
             - [ ] [sistemas_conf_abertura.php](./admin/geral/sistemas_conf_abertura.php)
-            - [ ] [situacoes.php](./admin/geral/situacoes.php)
+            - [x] [situacoes.php](./admin/geral/situacoes.php)
             - [ ] [status.php](./admin/geral/status.php)
-            - [ ] [tipo_componentes.php](./admin/geral/tipo_componentes.php)
-            - [ ] [tipo_equipamentos.php](./admin/geral/tipo_equipamentos.php)
+            - [x] [tipo_componentes.php](./admin/geral/tipo_componentes.php)
+            - [x] [tipo_equipamentos.php](./admin/geral/tipo_equipamentos.php)
             - [ ] [tipo_solucoes.php](./admin/geral/tipo_solucoes.php)
-            - [ ] [unidades.php](./admin/geral/unidades.php)
+            - [x] [unidades.php](./admin/geral/unidades.php)
             - [ ] [update_old_tickets_prior.php](./admin/geral/update_old_tickets_prior.php)
-            - [ ] [usuarios.php](./admin/geral/usuarios.php)
+            - [x] [usuarios.php](./admin/geral/usuarios.php)
         * includes
             - [ ] [header.php](./admin/geral/includes/header.php)
     * includes
@@ -354,8 +354,8 @@
         - [ ] [exclui_dados_modelo.php](./admin/invmon/geral/exclui_dados_modelo.php)
         - [ ] [exclui_dados_resolucao.php](./admin/invmon/geral/exclui_dados_resolucao.php)
         - [ ] [exclui_equipamento.php](./admin/invmon/geral/exclui_equipamento.php)
-        - [ ] [fabricantes.php](./admin/invmon/geral/fabricantes.php)
-        - [ ] [fornecedores.php](./admin/invmon/geral/fornecedores.php)
+        - [x] [fabricantes.php](./admin/invmon/geral/fabricantes.php)
+        - [x] [fornecedores.php](./admin/invmon/geral/fornecedores.php)
         - [ ] [garantias.php](./admin/invmon/geral/garantias.php)
         - [ ] [graphteste.php](./admin/invmon/geral/graphteste.php)
         - [ ] [graph_equipporreitoria.php](./admin/invmon/geral/graph_equipporreitoria.php)
@@ -397,10 +397,10 @@
         - [ ] [script_modelo.php](./admin/invmon/geral/script_modelo.php)
         - [ ] [script_modelo_2.php](./admin/invmon/geral/script_modelo_2.php)
         - [ ] [showSelItemModels.php](./admin/invmon/geral/showSelItemModels.php)
-        - [ ] [softwares.php](./admin/invmon/geral/softwares.php)
-        - [ ] [sw_padrao.php](./admin/invmon/geral/sw_padrao.php)
+        - [x] [softwares.php](./admin/invmon/geral/softwares.php)
+        - [x] [sw_padrao.php](./admin/invmon/geral/sw_padrao.php)
         - [ ] [tela_logon.inc](./admin/invmon/geral/tela_logon.inc)
-        - [ ] [tempo_garantia.php](./admin/invmon/geral/tempo_garantia.php)
+        - [x] [tempo_garantia.php](./admin/invmon/geral/tempo_garantia.php)
         - [ ] [testa_grafico.php](./admin/invmon/geral/testa_grafico.php)
         * includes
             - [ ] [header.php](./admin/invmon/geral/includes/header.php)
@@ -504,7 +504,7 @@
     - [ ] [solucoes.php](./ocomon/solucoes.php)
     - [ ] [tempo_doc.php](./ocomon/tempo_doc.php)
     - [ ] [updateCollapseSession.php](./ocomon/updateCollapseSession.php)
-    - [ ] [user_lang.php](./ocomon/user_lang.php)
+    - [x] [user_lang.php](./ocomon/user_lang.php)
     - [ ] [user_theme.php](./ocomon/user_theme.php)
     - [ ] [validacookie.php](./ocomon/validacookie.php)
     * includes

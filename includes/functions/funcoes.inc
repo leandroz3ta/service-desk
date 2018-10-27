@@ -1,4 +1,5 @@
-<?php  /*                        Copyright 2005 Flávio Ribeiro
+<?php  
+/*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
 
@@ -164,8 +165,8 @@
 	function conecta($host, $bd, $user, $senha, $sistema)
 	{
 		// $host = servidor do mysql, $bd = nome do banco de dados, $user = usuário do mysql, $senha = senha dp mysql, $sistema = sistema que esta sendo usado
-		$conexao=mysql_connect($host,$user,$senha) or die(mysql_error());
-		$db=mysql_select_db($bd,$conexao);
+		$conexao=mysqli_connect($host,$user,$senha) or die(mysql_error());
+		$db=mysqli_select_db($bd,$conexao);
 		if ($conexao == 0)
 		{
 			$retorno = "ERRO DE CONEXÃO - Servidor ".$host." - Sistema ".$sistema."<br>";
@@ -186,19 +187,20 @@
 		mysql_close($conexao);
 	}
 
-	function senha_system($user,$password,$tabela)
+	function senha_system($conect,$user,$password,$tabela)
 	{
+
 		// $user = usuário para login, $senha = senha do usuário, $tabela = nome da tabela de usuários
 		$login = md5($password);
 		$query = "SELECT * from ".$tabela." where (login = '".$user."' and password = '".$login."')";
 
-		$resultado = mysql_query($query) or die(mysql_error());
-		if ($resultado == 0)
+		$resultado = mysqli_query($conect,$query) or die(mysqli_error());
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			$retorno = "ERRO DE LOGIN - Tabela ".$tabela."<br>";
 		}
 		else
-		if (mysql_numrows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			$retorno = "ERRO DE LOGIN - Usuário ".$user."<br>";
 		}
@@ -424,7 +426,7 @@ function menu_admin(){
 
 function veremail($email)
 {
-	if(!eregi("^[0-9a-z]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.[a-z]{2,3}$",$email))
+	if(!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.[a-z]{2,3}$/",$email))
 		$passou = "erro";
 	else
 		$passou = "ok";
@@ -1095,7 +1097,7 @@ function showArray($array){
 }
 
 function isImage($type){
-	if(eregi("^image\/(pjpeg|jpeg|png|gif|x-ms-bmp)$", $type))
+	if(preg_match("/^image\/(pjpeg|jpeg|png|gif|x-ms-bmp)$/", $type))
 		return true; else
 		return false;
 }
@@ -1159,7 +1161,7 @@ function upload($img_file,$config, $FILE_TYPES="%%IMG%") {
 		for ($i=0; $i<count($TYPE); $i++) {
 			if (strlen($types)>0) $types.=", ";
 			$types.=$TYPE[$i];
-			if(eregi("^".$mime[$TYPE[$i]]."$", $arquivo["type"])) {
+			if(preg_match("/^".$mime[$TYPE[$i]]."$/", $arquivo["type"])) {
 				$typeOK = true;
 			}
 		}
@@ -1175,7 +1177,7 @@ function upload($img_file,$config, $FILE_TYPES="%%IMG%") {
 				$erro[] = "Arquivo em tamanho muito grande! O arquivo deve ser de no máximo " . $kbytes . " Kbytes.";
 			}
 
-			if(eregi("^image\/(pjpeg|jpeg|png|gif|bmp)$", $arquivo["type"])) {
+			if(preg_match("/^image\/(pjpeg|jpeg|png|gif|bmp)$/", $arquivo["type"])) {
 				// Para verificar as dimensões da imagem
 				$tamanhos = getimagesize($arquivo["tmp_name"]);
 				// Verifica largura
@@ -1333,7 +1335,7 @@ function upload($img_file,$config, $FILE_TYPES="%%IMG%") {
 			if ($dh = opendir($dir)) {
 				while (($file = readdir($dh)) !== false) {
 					if($file != '..' && $file !='.' && $file !=''){
-						if (eregi("\.(".$ext."){1}$", $file))
+						if (preg_match("/\.(".$ext."){1}$/", $file))
 							$array[]=$file;
 					}
 				}

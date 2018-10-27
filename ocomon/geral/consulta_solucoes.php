@@ -1,4 +1,5 @@
 <?php 
+header('Content-Type: text/html; charset=iso-8859-1');
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -20,6 +21,10 @@
 
 	include ("../../includes/include_geral.inc.php");
 	include ("../../includes/include_geral_II.inc.php");
+	
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');  	
+	
 	print "<link rel='stylesheet' href='../../includes/css/calendar.css.php' media='screen'></LINK>";
 
 	$_SESSION['s_page_ocomon'] = $_SERVER['PHP_SELF'];
@@ -64,8 +69,8 @@
                 	print "<SELECT class='select' name='operador' size=1>";
                 		print "<option value=-1 selected>".TRANS('OCO_SEL_OPERATOR')."</option>";
 				$query = "SELECT * from usuarios order by nome";
-				$resultado = mysql_query($query);
-				while ($row = mysql_fetch_array($resultado))
+				$resultado = mysqli_query($conect,$query);
+				while ($row = mysqli_fetch_array($resultado))
 				{
 					print "<option value='".$row['user_id']."'>".$row['nome']."</option>";
 				}

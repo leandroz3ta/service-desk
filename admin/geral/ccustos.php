@@ -31,16 +31,18 @@
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
 
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
 
 	print "<BR><B>".TRANS('TTL_CENTER_CUST').":</B><BR>";
 
 	$query = "SELECT * from `".DB_CCUSTO."`.".TB_CCUSTO." order by ".CCUSTO_DESC."";
         //print $query; exit;
-	$resultado = mysql_query($query);
+	$resultado = mysqli_query($conect, $query);
 
 	if ((!isset($_GET['action'])) and (!isset($_POST['submit']))) {
         print "<TD align='right'><a href='".$_SERVER['PHP_SELF']."?action=incluir'>".TRANS('TXT_INC_CENTER_CUST')."</a></TD><BR>";
-        if (mysql_numrows($resultado) == 0)
+        if (mysqli_num_rows($resultado) == 0)
         {
                 echo mensagem(TRANS('MSG_NOT_CENTER_CUST_IN_SYSTEM'));
         }
@@ -102,8 +104,8 @@
 
 		$qry = "SELECT * from `".DB_CCUSTO."`.".TB_CCUSTO." where codigo = ".$_GET['cod']."";
 
-		$exec = mysql_query($qry);
-		$rowAlter = mysql_fetch_array($exec);
+		$exec = mysqli_query($conect, $qry);
+		$rowAlter = mysqli_fetch_array($exec);
 
 		print "<B>".TRANS('SUBTTL_ALTER_CENTER_CUST').":<br>";
 		print "<form name='alter' method='post' action='".$_SERVER['PHP_SELF']."' onSubmit='return valida()'>";
@@ -128,8 +130,8 @@
 	if (isset($_GET['action']) && $_GET['action']=="excluir"){
 
 		$qryBusca = "SELECT C.*, E.* from equipamentos E, `".DB_CCUSTO."`.".TB_CCUSTO." C where E.comp_ccusto = C.codigo and C.codigo = ".$_GET['cod']."";
-		$execBusca = mysql_query($qryBusca) or die ( TRANS('MSG_ERR_CENTER_CUST') .$qryBusca);
-		$achou = mysql_numrows($execBusca);
+		$execBusca = mysqli_query($conect, $qryBusca) or die ( TRANS('MSG_ERR_CENTER_CUST') .$qryBusca);
+		$achou = mysqli_num_rows($execBusca);
 		if ($achou) {
 
 			print "<script>mensagem('".TRANS('MSG_THIS_REG_DONT_DEL_EXIST')."". $achou. "".TRANS('MSG_TAG_ASSOC')."');
@@ -140,7 +142,7 @@
 		} else {
 
 			$qry = "DELETE FROM `".DB_CCUSTO."`.".TB_CCUSTO." where codigo = ".$_GET['cod']."";
-			$exec = mysql_query($qry) or die (TRANS('MSG_ERR_DEL_REG'));
+			$exec = mysqli_query($conect, $qry) or die (TRANS('MSG_ERR_DEL_REG'));
 
 			print "<script>mensagem('".TRANS('OK_DEL')."'); window.location.href='".$_SERVER['PHP_SELF']."'; </script>";
 
@@ -150,15 +152,15 @@
 	if ($_POST['submit']== TRANS('BT_INCLUDE')){
 		if ((isset($_POST['descricao'])) && (isset($_POST['codigo']))){
 			$qry = "select * from `".DB_CCUSTO."`.".TB_CCUSTO." where ".CCUSTO_DESC."='".$_POST['descricao']."' and codccusto = ".$_POST['codigo']."";
-			$exec= mysql_query($qry);
-			$achou = mysql_numrows($exec);
+			$exec= mysqli_query($conect, $qry);
+			$achou = mysqli_num_rows($exec);
 			if ($achou){
 
 				print "<script>mensagem('".TRANS('MSG_CENTER_CUST_EXIST_SYSTEM')."'); history.go(-2)(); </script>";
 
 			} else {
 				$qry = "INSERT INTO `".DB_CCUSTO."`.".TB_CCUSTO." (".CCUSTO_DESC.",codccusto) values ('".noHtml($_POST['descricao'])."','".noHtml($_POST['codigo'])."')";
-				$exec = mysql_query($qry) or die ( TRANS('MSG_ERR_INC_CENTER_CUST') .$qry);
+				$exec = mysqli_query($conect, $qry) or die ( TRANS('MSG_ERR_INC_CENTER_CUST') .$qry);
 
 				print "<script>mensagem('".TRANS('MSG_DATA_INCLUDE_OK')."'); history.go(-2)(); </script>";
 
@@ -174,7 +176,7 @@
 	if ($_POST['submit'] = TRANS('BT_ALTER')){
 		if ((isset($_POST['descricao'])) && (isset($_POST['codigo']))){
 			$qry = "UPDATE `".DB_CCUSTO."`.".TB_CCUSTO." set ".CCUSTO_DESC."='".noHtml($_POST['descricao'])."', codccusto='".noHtml($_POST['codigo'])."' where codigo=".$_POST['cod']."";
-			$exec= mysql_query($qry) or die('Não foi possível alterar os dados do registro!'.$qry);
+			$exec= mysqli_query($conect, $qry) or die('Não foi possível alterar os dados do registro!'.$qry);
 
 			print "<script>mensagem('".TRANS('MSG_DATA_ALTER_OK')."'); history.go(-2)(); </script>";
 

@@ -30,6 +30,9 @@
 
 	$auth = new auth;
 	$auth->testa_user($_SESSION['s_usuario'],$_SESSION['s_nivel'],$_SESSION['s_nivel_desc'],1);
+	
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
 
     	print "<BR><B>".TRANS('TTL_CONFIG_MAIL_DISTR_LISTS').":</b><BR><br>";
         print "<TD align='left'>".
@@ -45,12 +48,12 @@
 		if (isset($_GET['cod'])) {
 			$query .= "WHERE ml_cod=".$_GET['cod']."";
 		}
-		$resultado = mysql_query($query) or die (TRANS('ERR_QUERY'));
+		$resultado = mysqli_query($conect, $query) or die (TRANS('ERR_QUERY'));
 
 	if ((empty($_GET['action'])) and empty($_POST['submit'])){
 
 
-		if (mysql_numrows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			echo mensagem(TRANS('MSG_NO_RECORDS'));
 		}
@@ -58,7 +61,7 @@
 		{
 				$cor=TD_COLOR;
 				$cor1=TD_COLOR;
-				$linhas = mysql_numrows($resultado);
+				$linhas = mysqli_num_rows($resultado);
 
 				print "<TABLE border='0' cellpadding='1' cellspacing='0' width='100%'>";
 				print "<tr class='header'>";
@@ -70,7 +73,7 @@
 				print "</tr>";
 
 				$j = 2;
-				while ($row = mysql_fetch_array($resultado)) {
+				while ($row = mysqli_fetch_array($resultado)) {
 					if ($j % 2) {
 							$trClass = "lin_par";
 					}
@@ -94,7 +97,7 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="alter") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<script type='text/javascript' src='../../includes/fckeditor/fckeditor.js'></script>";
 
@@ -134,7 +137,7 @@
 		$qry = "INSERT INTO mail_list (ml_sigla, ml_desc, ml_addr_to, ml_addr_cc) values ".
 				"('".noHtml($_POST['ml_sigla'])."', '".noHtml($_POST['ml_desc'])."', '".noHtml($_POST['ml_address'])."', ".
 				"'".noHtml($_POST['ml_address_cc'])."');";
-		$execQry = mysql_query($qry) or die(mysql_error());
+		$execQry = mysqli_query($conect, $qry) or die(mysqli_error($conect));
 
 		print "<script>mensagem('".TRANS('OK_CAD','',0)."!'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 
@@ -148,7 +151,7 @@
 				"ml_addr_cc = '".noHtml($_POST['ml_address_cc'])."' ".
 			" WHERE ml_cod = ".$_POST['cod']."";
 
-		$exec= mysql_query($qry) or die(TRANS('ERR_EDIT'));
+		$exec= mysqli_query($conect, $qry) or die(TRANS('ERR_EDIT'));
 
 		print "<script>mensagem('".TRANS('OK_EDIT')."!'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 	} else
@@ -156,7 +159,7 @@
 	if (isset($_GET['action']) && $_GET['action'] == "excluir"){
 
 		$query2 = "DELETE FROM mail_list WHERE ml_cod='".$_GET['cod']."'";
-		$resultado2 = mysql_query($query2);
+		$resultado2 = mysqli_query($conect, $query2);
 
 		if ($resultado2 == 0)
 		{
@@ -169,12 +172,11 @@
 		print "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 
 	}
-
-
-	print "</table>";
-	print "</form>";
-
 	?>
+
+		</table>
+	</form>
+
 	<script language="JavaScript">
 
 		function valida(){
@@ -189,10 +191,5 @@
 		}
 	//-->
 	</script>
-	<?php 
-
-
-print "</body>";
-print "</html>";
-
-?>
+</body>
+</html>

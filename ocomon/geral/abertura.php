@@ -1,4 +1,6 @@
-<?php session_start();
+<?php 
+header('Content-Type: text/html; charset=iso-8859-1');
+session_start();
  /*                        Copyright 2005 Flávio Ribeiro
 
          This file is part of OCOMON.
@@ -96,8 +98,8 @@
 	}
 
 	$query = "SELECT a.*, u.*, ar.* from usuarios u, avisos a left join sistemas ar on a.area = ar.sis_id where (a.area in (".$uareas.") or a.area=-1) and a.origem=u.user_id and upper(a.status) = 'ALTA'";
-	$resultado = mysql_query($query) or die (TRANS('ERR_QUERY').$query);
-        $linhas = mysql_num_rows($resultado);
+	$resultado = mysqli_query($conect,$query) or die (TRANS('ERR_QUERY').$query);
+        $linhas = mysqli_num_rows($resultado);
         if ($linhas>0)
         {
         	print "<BR>";
@@ -147,8 +149,8 @@
         print "<TD class='line' >";
 
         $query = "SELECT aviso_id FROM avisos WHERE upper(status) = 'NORMAL' and area in (".$uareas.")"; //area=".$_SESSION['s_area'].")
-        $resultado = mysql_query($query) or die (TRANS('ERR_QUERY').$query);
-        $linhas = mysql_num_rows($resultado);
+        $resultado = mysqli_query($conect,$query) or die (TRANS('ERR_QUERY').$query);
+        $linhas = mysqli_num_rows($resultado);
         if ($linhas==1)
                 print "<TR><TD  class='line' bgcolor='".$cor1."'><B>".TRANS('THEREIS','Existe')."&nbsp;".$linhas."&nbsp;".TRANS('OCO_HIDDEN_NOTICE','aviso não exibido nessa tela!  Verifique no mural').".</B></TD></TR><BR>";
         if ($linhas>1)
@@ -156,8 +158,8 @@
 
 
         $query = "SELECT empr_id FROM emprestimos WHERE (data_devol <= '".date("Y-m-d H:i:s")."' AND responsavel='".$_SESSION['s_uid']."')";
-        $resultado = mysql_query($query);
-        $linhas = mysql_num_rows($resultado);
+        $resultado = mysqli_query($conect, $query);
+        $linhas = mysqli_num_rows($resultado);
         if ($linhas==1)
                 print "<TR><TD class='line' >".TRANS('FOUND_ONE','Foi encontrado')."&nbsp;".$linhas."&nbsp;".TRANS('OCO_LENDING_ONE','empréstimo pendente para este usuário').".</TD></TR><BR>";
         if ($linhas>1)
@@ -166,8 +168,8 @@
 		## OCORRENCIAS AGENDADAS ###
 
 	$query = $QRY["ocorrencias_full_ini"]." WHERE o.oco_scheduled=1 and o.sistema in (".$uareas.") ORDER BY numero";
-	$resultado_oco = mysql_query($query) or die (TRANS('ERR_QUERY').$query);
-        $linhas = mysql_num_rows($resultado_oco);
+	$resultado_oco = mysqli_query($conect, $query) or die (TRANS('ERR_QUERY').$query);
+        $linhas = mysqli_num_rows($resultado_oco);
 
 	if ($linhas == 0) {
         	echo mensagem("".TRANS('OCO_NOT_SCHEDULED_CALLS','Não existem ocorrências agendadas no sistema'));
@@ -230,7 +232,7 @@
         }
         $i=0;
         $j=2;
-        while ($rowAT = mysql_fetch_array($resultado_oco))
+        while ($rowAT = mysqli_fetch_array($resultado_oco))
         {
         	if ($j % 2) {
 			$trClass = "lin_par";
@@ -414,8 +416,8 @@
 
 	$query = $QRY["ocorrencias_full_ini"]." WHERE s.stat_painel in (1) and o.operador = ".$_SESSION['s_uid']." ".
 				"and o.oco_scheduled=0 ORDER BY numero";
-	$resultado_oco = mysql_query($query) or die (TRANS('ERR_QUERY').$query);
-        $linhas = mysql_num_rows($resultado_oco);
+	$resultado_oco = mysqli_query($conect, $query) or die (TRANS('ERR_QUERY').$query);
+        $linhas = mysqli_num_rows($resultado_oco);
 
 	if ($linhas == 0) {
         	echo mensagem("".TRANS('OCO_NOT_PENDING_TO_USER','Não existem ocorrências pendentes para o usuário')."&nbsp;".$_SESSION['s_usuario'].".");
@@ -481,7 +483,7 @@
         }
         $i=0;
         $j=2;
-        while ($rowAT = mysql_fetch_array($resultado_oco))
+        while ($rowAT = mysqli_fetch_array($resultado_oco))
         {
         	if ($j % 2) {
 			$trClass = "lin_par";
@@ -492,27 +494,27 @@
 		print "<tr class=".$trClass." id='linhaxx".$j."' onMouseOver=\"destaca('linhaxx".$j."','".$_SESSION['s_colorDestaca']."');\" onMouseOut=\"libera('linhaxx".$j."','".$_SESSION['s_colorLinPar']."','".$_SESSION['s_colorLinImpar']."');\"  onMouseDown=\"marca('linhaxx".$j."','".$_SESSION['s_colorMarca']."');\">";
 
 		$qryImg = "select * from imagens where img_oco = ".$rowAT['numero']."";
-		$execImg = mysql_query($qryImg) or die (TRANS('ERR_QUERY'));
-		$rowTela = mysql_fetch_array($execImg);
-		$regImg = mysql_num_rows($execImg);
+		$execImg = mysqli_query($conect, $qryImg) or die (TRANS('ERR_QUERY'));
+		$rowTela = mysqli_fetch_array($execImg);
+		$regImg = mysqli_num_rows($execImg);
 		if ($regImg!=0) {
 			//$linkImg = "<a onClick=\"javascript:popupWH('../../includes/functions/showImg.php?file=".$rowAT['numero']."&cod=".$rowTela['img_cod']."',".$rowTela['img_largura'].",".$rowTela['img_altura'].")\"><img src='../../includes/icons/attach2.png'></a>";
 			$linkImg = "<a onClick=\"javascript:popup_wide('listFiles.php?COD=".$rowAT['numero']."')\"><img src='../../includes/icons/attach2.png'></a>";
 		} else $linkImg = "";
 
 		$sqlSubCall = "select * from ocodeps where dep_pai = ".$rowAT['numero']." or dep_filho=".$rowAT['numero']."";
-		$execSubCall = mysql_query($sqlSubCall) or die (TRANS('ERR_QUERY').'<br>'.$sqlSubCall);
-		$regSub = mysql_num_rows($execSubCall);
+		$execSubCall = mysqli_query($conect, $sqlSubCall) or die (TRANS('ERR_QUERY').'<br>'.$sqlSubCall);
+		$regSub = mysqli_num_rows($execSubCall);
 		if ($regSub > 0) {
 			#É CHAMADO PAI?
 			$sqlSubCall = "select * from ocodeps where dep_pai = ".$rowAT['numero']."";
-			$execSubCall = mysql_query($sqlSubCall) or die (TRANS('ERR_QUERY').$sqlSubCall);
-			$regSub = mysql_num_rows($execSubCall);
+			$execSubCall = mysqli_query($conect, $sqlSubCall) or die (TRANS('ERR_QUERY').$sqlSubCall);
+			$regSub = mysqli_num_rows($execSubCall);
 			$comDeps = false;
-			while ($rowSubPai = mysql_fetch_array($execSubCall)){
+			while ($rowSubPai = mysqli_fetch_array($execSubCall)){
 				$sqlStatus = "select o.*, s.* from ocorrencias o, `status` s  where o.numero=".$rowSubPai['dep_filho']." and o.`status`=s.stat_id and s.stat_painel not in (3) ";
-				$execStatus = mysql_query($sqlStatus) or die (TRANS('ERR_QUERY').$sqlStatus);
-				$regStatus = mysql_num_rows($execStatus);
+				$execStatus = mysqli_query($conect, $sqlStatus) or die (TRANS('ERR_QUERY').$sqlStatus);
+				$regStatus = mysqli_num_rows($execStatus);
 				if ($regStatus > 0) {
 					$comDeps = true;
 				}
@@ -795,8 +797,8 @@
 	//print $query;
 	
 	
-	$resultado = mysql_query($query);
-        $linhas = mysql_num_rows($resultado);
+	$resultado = mysqli_query($conect, $query);
+        $linhas = mysqli_num_rows($resultado);
 
 	if (isset($_GET['LIMIT']))
 		$PAGE->setLimit($_GET['LIMIT']);
@@ -848,7 +850,7 @@
         $i=0;
         $j=2;
         //while ($row = mysql_fetch_array($resultado))
-        while ($row=mysql_fetch_array($PAGE->RESULT_SQL))
+        while ($row=mysqli_fetch_array($PAGE->RESULT_SQL))
         {
 		if ($j % 2) {
 			$trClass = "lin_par";
@@ -861,18 +863,18 @@
 		print "<tr class=".$trClass." id='linha".$j."' onMouseOver=\"destaca('linha".$j."','".$_SESSION['s_colorDestaca']."');\" onMouseOut=\"libera('linha".$j."','".$_SESSION['s_colorLinPar']."','".$_SESSION['s_colorLinImpar']."');\"  onMouseDown=\"marca('linha".$j."','".$_SESSION['s_colorMarca']."');\">";
 
 		$sqlSubCall = "select * from ocodeps where dep_pai = ".$row['numero']." or dep_filho=".$row['numero']."";
-		$execSubCall = mysql_query($sqlSubCall) or die (TRANS('ERR_QUERY').'<br>'.$sqlSubCall);
-		$regSub = mysql_num_rows($execSubCall);
+		$execSubCall = mysqli_query($conect, $sqlSubCall) or die (TRANS('ERR_QUERY').'<br>'.$sqlSubCall);
+		$regSub = mysqli_num_rows($execSubCall);
 		if ($regSub > 0) {
 			#É CHAMADO PAI?
 			$sqlSubCall = "select * from ocodeps where dep_pai = ".$row['numero']."";
-			$execSubCall = mysql_query($sqlSubCall) or die (TRANS('ERR_QUERY').'<br>'.$sqlSubCall);
-			$regSub = mysql_num_rows($execSubCall);
+			$execSubCall = mysqli_query($conect, $sqlSubCall) or die (TRANS('ERR_QUERY').'<br>'.$sqlSubCall);
+			$regSub = mysqli_num_rows($execSubCall);
 			$comDeps = false;
-			while ($rowSubPai = mysql_fetch_array($execSubCall)){
+			while ($rowSubPai = mysqli_fetch_array($execSubCall)){
 				$sqlStatus = "select o.*, s.* from ocorrencias o, `status` s  where o.numero=".$rowSubPai['dep_filho']." and o.`status`=s.stat_id and s.stat_painel not in (3) ";
-				$execStatus = mysql_query($sqlStatus) or die (TRANS('ERR_QUERY').$sqlStatus);
-				$regStatus = mysql_num_rows($execStatus);
+				$execStatus = mysqli_query($conect, $sqlStatus) or die (TRANS('ERR_QUERY').$sqlStatus);
+				$regStatus = mysqli_num_rows($execStatus);
 				if ($regStatus > 0) {
 					$comDeps = true;
 				}
@@ -885,9 +887,9 @@
 			$imgSub = "";
 
 		$qryImg = "select * from imagens where img_oco = ".$row['numero']."";
-		$execImg = mysql_query($qryImg) or die (TRANS('ERR_QUERY'));
-		$rowTela = mysql_fetch_array($execImg);
-		$regImg = mysql_num_rows($execImg);
+		$execImg = mysqli_query($conect, $qryImg) or die (TRANS('ERR_QUERY'));
+		$rowTela = mysqli_fetch_array($execImg);
+		$regImg = mysqli_num_rows($execImg);
 		if ($regImg!=0) {
 			//$linkImg = "<a onClick=\"javascript:popupWH('../../includes/functions/showImg.php?file=".$row['numero']."&cod=".$rowTela['img_cod']."',".$rowTela['img_largura'].",".$rowTela['img_altura'].")\"><img src='".ICONS_PATH."attach2.png' width='16' height='16'></a>";
 			$linkImg = "<a onClick=\"javascript:popup_wide('listFiles.php?COD=".$row['numero']."')\"><img src='../../includes/icons/attach2.png'></a>";

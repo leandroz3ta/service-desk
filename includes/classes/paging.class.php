@@ -177,8 +177,10 @@ class paging
 	}
 
 	function execSQL() {
-		$this->RESULT_FULL =	mysql_query($this->SQLFull);
-		$this->RESULT_SQL = mysql_query($this->SQL);
+		$conec = new conexao;
+		$conect = $conec->conecta('MYSQL');
+		$this->RESULT_FULL =	mysqli_query($conect, $this->SQLFull);
+		$this->RESULT_SQL = mysqli_query($conect, $this->SQL);
 		$this->setNumberOfRegs();
 		$this->getPage();
 	}
@@ -199,8 +201,10 @@ class paging
 
 
 	function setNumberOfRegs(){
-		$this->NUMBER_REGS = mysql_num_rows($this->RESULT_FULL);
-		$this->NUMBER_REGS_PAGE = mysql_num_rows($this->RESULT_SQL);
+		$conec = new conexao;
+		$conect = $conec->conecta('MYSQL');
+		$this->NUMBER_REGS = mysqli_num_rows($this->RESULT_FULL);
+		$this->NUMBER_REGS_PAGE = mysqli_num_rows($this->RESULT_SQL);
 	}
 
 	function getNumberOfPages (){

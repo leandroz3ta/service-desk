@@ -25,6 +25,9 @@
 	include ("../../includes/classes/paging.class.php");
 
 	$_SESSION['s_page_admin'] = $_SERVER['PHP_SELF'];
+
+	$conec = new conexao;
+	$conect=$conec->conecta('MYSQL');
 	
 	$OPERADOR_AREA = false;
 	if(isset($_SESSION['s_area_admin']) && $_SESSION['s_area_admin'] == '1' && $_SESSION['s_nivel'] != '1')
@@ -69,8 +72,8 @@
 		$search = "";
 
 		$qry_config = "SELECT * FROM config ";
-        	$exec_config = mysql_query($qry_config) or die (TRANS('ERR_TABLE_CONFIG'));
-		$row_config = mysql_fetch_array($exec_config);
+        	$exec_config = mysqli_query($conect, $qry_config) or die (TRANS('ERR_TABLE_CONFIG'));
+		$row_config = mysqli_fetch_array($exec_config);
 
 		$WHERE = false;
 		$query = "SELECT sr.*, prsc.*, pr.*, a.* FROM scripts as sr ".
@@ -120,9 +123,9 @@
 		$query.=" ORDER BY sr.scpt_nome";
 		
 		//print $query; //dump($_GET['action'],'ACTION'); dump($_GET,'GET');
-		$resultado = mysql_query($query) or die(TRANS('ERR_QUERY')."<br>".$query);
-		$resultado2 = mysql_query($query);
-		$registros = mysql_num_rows($resultado);
+		$resultado = mysqli_query($conect, $query) or die(TRANS('ERR_QUERY')."<br>".$query);
+		$resultado2 = mysqli_query($conect, $query);
+		$registros = mysqli_num_rows($resultado);
 
 		if (isset($_GET['LIMIT']))
 			$PAGE->setLimit($_GET['LIMIT']);
@@ -140,10 +143,10 @@
 				$qryarea = "SELECT sis_id, sistema FROM sistemas WHERE sis_id = ".$_SESSION['s_area']." ORDER BY sistema"; else
 				$qryarea = "SELECT sis_id, sistema FROM sistemas ORDER BY sistema";
 			
-			$execarea = mysql_query($qryarea);
+			$execarea = mysqli_query($conect, $qryarea);
 			print "<SELECT class='select' name='id_sistema' size='1'>";
 				print "<option value='-1'>".TRANS('OCO_SEL_AREA')."</option>";
-				while ($rowArea=mysql_fetch_array($execarea)){
+				while ($rowArea=mysqli_fetch_array($execarea)){
 					$isSelecionado = "";
 					if ($rowArea['sis_id'] == $_SESSION['id_sistema_filtro'])
 						$isSelecionado = " selected";
@@ -157,7 +160,7 @@
 			print "<script>foco('idSearch');</script>";
 		}
 
-		if (mysql_num_rows($resultado) == 0)
+		if (mysqli_num_rows($resultado) == 0)
 		{
 			print "<tr><td align='center'>";
 			echo mensagem(TRANS('NO_RECORDS'));
@@ -175,7 +178,7 @@
 				"<td class='line'>".TRANS('COL_EDIT','')."</TD><td class='line'>".TRANS('COL_DEL','')."</TD></tr>";
 
 			$j=2;
-			while ($row = mysql_fetch_array($PAGE->RESULT_SQL))
+			while ($row = mysqli_fetch_array($PAGE->RESULT_SQL))
 			{
 				if ($j % 2)
 				{
@@ -201,10 +204,10 @@
 						"AND prscpt_prob_id = prob_id ".
 						"GROUP BY problema ".
 						"ORDER BY problema ";
-				$execProb = mysql_query($qryProb);
+				$execProb = mysqli_query($conect, $qryProb);
 				
 				$allProbs = "";
-				while ($rowProb = mysql_fetch_array($execProb)){
+				while ($rowProb = mysqli_fetch_array($execProb)){
 					!empty($allProbs)?$allProbs.=",<br>":$allProbs.="";
 					$allProbs.= $rowProb['problema'];
 				}
@@ -223,7 +226,7 @@
 	} else
 	if ((isset($_GET['action'])  && ($_GET['action'] == "details") )&& empty($_POST['submit'])) {
 	
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<BR><B>".TRANS('TTL_RECORD_INFO').":</B><BR>";
 
@@ -241,7 +244,7 @@
 		
 		$titleShown = false;
 		$j=2;
-		while ($row2=mysql_fetch_array($resultado2)) {
+		while ($row2=mysqli_fetch_array($resultado2)) {
 		
 			if (!empty($row2['problema'])){	
 				
@@ -267,8 +270,8 @@
 						" ".
 					"ORDER BY s.sistema, p.problema";
 				//print $queryCat."<br />";
-				$execCat = mysql_query($queryCat) or die($queryCat);
-				$rowCat = mysql_fetch_array($execCat);
+				$execCat = mysqli_query($conect, $queryCat) or die($queryCat);
+				$rowCat = mysqli_fetch_array($execCat);
 				
 				
 				$area = TRANS('ALL');
@@ -310,7 +313,7 @@
 			print "<TR class='header'><td class='line'>".TRANS('COL_SCRIPT_NAME','')."</TD><td class='line'>".TRANS('COL_DESC')."</TD></tr>";		
 			$titleShown = false;
 			$j=2;
-			while ($row=mysql_fetch_array($resultado)) {
+			while ($row=mysqli_fetch_array($resultado)) {
 				if (!$titleShown){
 					print "<BR><B>".TRANS('TTL_PROB_SCRIP_CLUE')." <font color='green'>".$row['problema']."</font></B><BR>";
 					$titleShown = true;
@@ -338,7 +341,7 @@
 		
 		if ($registros == 1) {
 		
-			$row = mysql_fetch_array($resultado);
+			$row = mysqli_fetch_array($resultado);
 			
 			print "<BR><B>".TRANS('TTL_PROB_SCRIP_CLUE')." <font color='green'>".$row['problema']."</font></B><BR>";
 			print "<BR><i>".$row['prob_descricao']."</font></i><BR>";
@@ -429,9 +432,9 @@
 				$query = "SELECT s.* from sistemas s WHERE s.sis_status NOT IN (0) AND s.sis_atende = 1 ORDER BY sistema"; //NOT in (0) = INATIVO 
 				print "<option value=-1 selected>".TRANS('OCO_SEL_AREA')."</option>";
 			}
-			$resultado = mysql_query($query);
+			$resultado = mysqli_query($conect, $query);
 
-			while ($rowArea=mysql_fetch_array($resultado)){
+			while ($rowArea=mysqli_fetch_array($resultado)){
 				$isSelecionado = "";
 				if ($rowArea['sis_id'] == $_SESSION['id_sistema_filtro'])
 					$isSelecionado = " selected";
@@ -470,7 +473,7 @@
 
 	if ((isset($_GET['action']) && $_GET['action']=="alter") && empty($_POST['submit'])) {
 
-		$row = mysql_fetch_array($resultado);
+		$row = mysqli_fetch_array($resultado);
 
 		print "<BR><B>".TRANS('TTL_EDIT_RECORD').":</B><BR>";
 
@@ -523,7 +526,7 @@
 		
 		$titleShown = false;
 		$j=2;
-		while ($row2=mysql_fetch_array($resultado2)) {
+		while ($row2=mysqli_fetch_array($resultado2)) {
 		
 			if (!empty($row2['problema'])){	
 				
@@ -559,8 +562,8 @@
 					"WHERE prob_id = ".$row2['prob_id']."  ".
 						" ".
 					"ORDER BY s.sistema, p.problema";
-				$execCat = mysql_query($queryCat) or die($queryCat);
-				$rowCat = mysql_fetch_array($execCat);
+				$execCat = mysqli_query($conect, $queryCat) or die($queryCat);
+				$rowCat = mysqli_fetch_array($execCat);
 				
 				$area = TRANS('ALL');
 				if (!empty($row2['sistema'])){
@@ -597,9 +600,9 @@
 				$query = "SELECT s.* from sistemas s WHERE s.sis_status NOT IN (0) AND s.sis_atende = 1 ORDER BY sistema"; //NOT in (0) = INATIVO 
 				print "<option value=-1 selected>".TRANS('OCO_SEL_AREA')."</option>";
 			}
-			$resultado = mysql_query($query);
+			$resultado = mysqli_query($conect, $query);
 
-			while ($rowArea=mysql_fetch_array($resultado)){
+			while ($rowArea=mysqli_fetch_array($resultado)){
 				$isSelecionado = "";
 				if ($rowArea['sis_id'] == $_SESSION['id_sistema_filtro'])
 					$isSelecionado = " selected";
@@ -647,7 +650,7 @@
 		$total = 0; $texto = "";
 
 		$query2 = "DELETE FROM scripts WHERE scpt_id='".$_GET['cod']."'";
-		$resultado2 = mysql_query($query2) or die(TRANS('ERR_DEL'));
+		$resultado2 = mysqli_query($conect, $query2) or die(TRANS('ERR_DEL'));
 
 		$aviso = "";
 		if ($resultado2 == 0)
@@ -660,7 +663,7 @@
 		}			
 		
 		$query3 = "DELETE FROM prob_x_script WHERE prscpt_scpt_id = ".$_GET['cod']." ";
-		$resultado3 = mysql_query($query3) or $aviso.=TRANS('MSG_NOT_EXCLUDED_LINKS');
+		$resultado3 = mysqli_query($conect, $query3) or $aviso.=TRANS('MSG_NOT_EXCLUDED_LINKS');
 
 
 		print "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
@@ -685,14 +688,14 @@
 			$query = "INSERT INTO scripts (scpt_nome, scpt_desc, scpt_script, scpt_enduser) ".
 						"values ('".$_POST['nome']."', '".$_POST['desc']."', '".$descScript."', ".$enduser.") ";
 			
-			$resultado = mysql_query($query) or die($query.'<br>'.mysql_error());
+			$resultado = mysqli_query($conect, $query) or die($query.'<br>'.mysql_error());
 			
-			$script_id = mysql_insert_id();
+			$script_id = mysqli_insert_id($conect);
 			
 			if (isset($_POST['radio_prob'])){
 				$query2 = "INSERT INTO prob_x_script (prscpt_prob_id, prscpt_scpt_id) values ".
 						"(".$_POST['radio_prob'].", ".$script_id.") ";
-				$execQuery2 = mysql_query($query2) or die($query2);
+				$execQuery2 = mysqli_query($conect, $query2) or die($query2);
 			}			
 			
 			if ($resultado == 0)
@@ -722,7 +725,7 @@
 					"scpt_nome='".noHtml($_POST['nome'])."', scpt_desc = '".$_POST['desc']."', ".
 					"scpt_script = '".$descScript."', scpt_enduser = ".$enduser."  ".
 					"WHERE scpt_id='".$_POST['cod']."'";
-		$resultado2 = mysql_query($query2);
+		$resultado2 = mysqli_query($conect, $query2);
 
 		
 		$catProb = "";
@@ -737,7 +740,7 @@
 		if (!empty($catProb)){
 			$query2 = "INSERT INTO prob_x_script (prscpt_prob_id, prscpt_scpt_id) values ".
 					"(".$catProb.", ".$_POST['cod'].") ";
-			$execQuery2 = mysql_query($query2) or die($query2);
+			$execQuery2 = mysqli_query($conect, $query2) or die($query2);
 		}			
 		
 		if ($resultado2 == 0)
@@ -754,7 +757,7 @@
 			for ($j=1; $j<=$_POST['j']; $j++) {
 				if (isset($_POST['delProb'][$j])){
 					$qryDel = "DELETE FROM prob_x_script WHERE prscpt_id = ".$_POST['delProb'][$j]."";
-					$execDel = mysql_query($qryDel) or die (TRANS('MSG_NOT_EXCLUDED_PROBLEM'));
+					$execDel = mysqli_query($conect, $qryDel) or die (TRANS('MSG_NOT_EXCLUDED_PROBLEM'));
 				}
 			}			
 		}		
@@ -763,25 +766,20 @@
 		echo "<script>mensagem('".$aviso."'); redirect('".$_SERVER['PHP_SELF']."');</script>";
 
 	}
-
-	print "</table>";
-
 ?>
-<script type="text/javascript">
-<!--
-	function valida(){
-		var ok = validaForm('idNome','','Nome',1);
-		if (ok) var ok = validaForm('idDesc','','Descricao',1);
-		if (ok) var ok = validaForm('idScript','','Script',1);
+	</table>
 
-		return ok;
-	}
+	<script type="text/javascript">
+	<!--
+		function valida(){
+			var ok = validaForm('idNome','','Nome',1);
+			if (ok) var ok = validaForm('idDesc','','Descricao',1);
+			if (ok) var ok = validaForm('idScript','','Script',1);
 
--->
-</script>
+			return ok;
+		}
 
-
-<?php 
-print "</body>";
-print "</html>";
-?>
+	//-->
+	</script>
+</body>
+</html>

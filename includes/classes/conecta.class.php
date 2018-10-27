@@ -1,6 +1,6 @@
 <?php 
 
- /*                        Copyright 2005 Flávio Ribeiro
+ /*                        Copyright 2005 Flï¿½vio Ribeiro
 
          This file is part of OCOMON.
 
@@ -45,30 +45,30 @@ class conexao {
 
 
 
-
-
 	function conecta($BANCO){
 		if (strtoupper($BANCO) =='MYSQL') {
-
-		$this->con=mysql_connect(SQL_SERVER,SQL_USER,SQL_PASSWD)or die(mysql_error());
-		$this->db=mysql_select_db(SQL_DB,$this->con);
-	        if ($this->con == 0){
-	        	$retorno = "ERRO DE CONEXÃO - SERVIDOR!<br>";
+		/*if ($this->con) {
+            return NULL;
+        }*/
+		$this->con=mysqli_connect(SQL_SERVER,SQL_USER,SQL_PASSWD, SQL_DB)or die(mysql_error());
+		/*$this->db=mysqli_select_db($this->con, SQL_DB);
+	        if (!$this->con){
+	        	$retorno = "ERRO DE CONEXï¿½O - SERVIDOR!<br>";
 	        }
 	        else if ($this->db == 0){
-	        	$retorno = "ERRO DE CONEXÃO - BANCO DE DADOS!<br>";
+	        	$retorno = "ERRO DE CONEXï¿½O - BANCO DE DADOS!<br>";
 	        } else {
 	            $retorno = "";
-	        }
+	        }*/
 
-			return  $retorno;
+			return  $this->con;
 
 		}
 
 	}
 
 	function desconecta($BANCO){
-		    mysql_close($this->con);
+		    mysqli_close($this->con);
 	}
  //-----------------------------------------------------------------------------------//
 
@@ -129,7 +129,7 @@ class conexao {
 			$this->BIND = @ldap_bind($this->DS, $this->LDAP_DN, $this->LDAP_PASSWORD);
 			return true;
 		} else {
-			$this->ERROR = "Não foi possível conectar ao servidor LDAP!";
+			$this->ERROR = "Nï¿½o foi possï¿½vel conectar ao servidor LDAP!";
 			print $this->ERROR;
 			return false;
 		}
